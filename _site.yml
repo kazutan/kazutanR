@@ -1,0 +1,31 @@
+name: "Kazutan.R"
+navbar:
+  title: "Kazutan.R"
+  left:
+    - text: "home"
+      href: index.html
+    - text: "データ操作"
+      menu:
+        - text: "dplyr, tidyr"
+          href: data_handling.html
+        - text: "stringr"
+          href: stringr-intro.html
+        - text: "forcats"
+          href: forcats_test.html
+    - text: "可視化"
+      menu:
+        - text: "DT"
+          href: DT_demo.html
+        - text: "leaflet"
+          href: leaflet_d.html
+output:
+  html_document:
+    theme: cosmo
+    highlight: textmate
+    toc: true
+    toc_float: true
+    df_print: "tibble"
+    include:
+      after_body: footer.html
+    css: site_style.css
+output_dir: "docs"

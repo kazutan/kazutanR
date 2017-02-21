@@ -1,0 +1,521 @@
+---
+title: "データハンドリング"
+output:
+  html_document:
+    number_section: yes
+    theme: cosmo
+    toc: yes
+    toc_depth: 2
+    toc_float: yes
+---
+
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(tidyr)
+library(knitr)
+```
+
+# 今回の内容
+
+## Rのポイントはデータハンドリング
+
+- 変数(列)の選択
+- 変数(列)を新規で作成、更新
+- レコード(行)を条件により抽出、並べ替え
+- データを集計(要約)
+- データをグループ化
+- 複数のデータセットを結合
+- wide型(横型)とlong型(縦型)を変換
+- 列の結合と分離
+
+## みなさんどうやってます?
+
+- これらは基本の関数などでも可能
+    - 丁寧な説明は、こちらをご覧ください
+    - [HiRoshima.R #5 入門者講習スライド sakaue 先生](http://www.slideshare.net/sakaue/hiroshimar5intro)
+- これらをdplyr + tidyrを活用してやってみます
+- まずはどういう感じなのかみてみます
+
+
+# 具体例_1
+
+## 具体例_1: ほしいもの
+
+このような結果がほしいとします:
+
+```{r op_demo1_result, echo=FALSE}
+demo1 <-iris %>% 
+  dplyr::select(starts_with("sepal"),Species) %>% 
+  dplyr::group_by(Species) %>% 
+  dplyr::summarize_each(funs(mean)) %>% 
+  dplyr::arrange(Sepal.Width)
+kable(demo1)
+```
+
+## 具体例_1: コード
+
+```{r op_demo1}
+iris %>% 
+  dplyr::select(starts_with("sepal"),Species) %>% 
+  dplyr::group_by(Species) %>% 
+  dplyr::summarize_each(funs(mean)) %>% 
+  dplyr::arrange(Sepal.Width) 
+```
+
+## 具体例_1: 内容
+
+```{r op_demo1_no, eval=FALSE}
+iris %>% 
+  dplyr::select(starts_with("sepal"),Species) %>% 
+  dplyr::group_by(Species) %>% 
+  dplyr::summarize_each(funs(mean)) %>% 
+  dplyr::arrange(Sepal.Width) 
+```
+
+```
+irisデータを…
+  "sepal"で始まる変数と"Species"を取り出して…
+  "Species"の値でグループ化して…
+  各列に対して"平均"で要約して…
+  "Sepal.Width"の昇順でソート
+```
+
+
+# 具体例_2
+
+## 具体例_2: ほしいもの
+
+このような結果がほしいとします:
+
+```{r op_demo2_result, echo=FALSE}
+demo2 <- iris %>% 
+  dplyr::select(-Species) %>% 
+  tidyr::gather(key = var_name, value = value) %>% 
+  head
+kable(demo2)
+```
+
+## 具体例_2: コード
+
+```{r op_demo2}
+iris %>% 
+  dplyr::select(-Species) %>% 
+  tidyr::gather(key = var_name, value = value) %>% 
+  head
+```
+
+
+## 具体例_2: 内容
+
+```{r op_demo2_no, eval=FALSE}
+iris %>% 
+  dplyr::select(-Species) %>% 
+  tidyr::gather(key = var_name, value = value) %>% 
+  head
+```
+
+```
+irisデータを…
+  "Species"以外の変数を取り出して…
+  4つの変数を縦型のデータに整形して…
+  上6つのデータを表示
+```
+
+
+# 補足: %>% について
+
+## %>% はpipe演算子
+
+- "%>%"は、前のコマンドでのoutputを、**次のコマンドの第一引数に放り込む**
+- dplyrを読み込むと利用可能
+
+```{r pipe_example}
+# 使わない書き方
+df <- subset(iris, Species == "setosa")
+df2 <- subset(df, select = c(Sepal.Length, Sepal.Width))
+head(df2, 2)
+
+# 使った書き方
+(df <- subset(iris, Species == "setosa") %>% 
+  subset(select = c(Sepal.Length, Sepal.Width)) %>% 
+  head(2))
+```
+
+## ポイント
+
+### メリット
+- 流れるようにコードがかける
+- 引き渡しのためにわざわざオブジェクトを作る必要がない  
+  混乱やメモリを抑制できる
+- RStudioにショートカットがある(Ctrl/Cmd + Shift + M)
+- dplyrやtidyrとの相性が非常にいい
+
+### デメリット
+- 第一引数に投入されるため、使用できる関数に制限あり  
+  明示的に放り込む方法はあるが割愛
+- (人によっては)掴みづらい
+
+# 前準備
+
+## パッケージインストール
+
+必要なパッケージをインストール&読み込み
+
+```{r inst, eval=FALSE}
+install.packages("dplyr")
+install.packages("tidyr")
+library(dplyr)
+library(tidyr)
+```
+
+- CRANにあります
+- 今回は以下のバージョンで説明します
+- dplyr 0.5.0
+- tidyr 0.6.0
+
+## sessioninfo
+```{r sessioninfo}
+sessionInfo()
+```
+
+
+# 変数(列)の選択
+
+## dplyr::select
+
+```{r select1}
+df <- dplyr::select(iris, c(Sepal.Width,Species))
+head(df, 3)
+```
+
+- dplyr::select(データフレーム, 列の指定, ...)
+- 列の指定方法は、基本subsetと同様
+- 列の指定については、さらに特別な関数が利用可能
+
+## 列選択用関数: starts_with()
+
+```{r select2}
+df <- dplyr::select(iris, starts_with("sepal"))
+head(df, 3)
+```
+
+- start_with(x, ignore.case = TRUE)
+- **前方一致**で変数を検索してもってくる
+- なお`ignore.case = FALSE`にすると、大文字と小文字を区別してくれる
+
+## 列選択用関数: ends_with()
+
+```{r select3}
+df <- dplyr::select(iris, ends_with("width"))
+head(df, 3)
+```
+
+- ends_with(x, ignore.case = TRUE)
+- **後方一致**で変数を検索して持ってくる
+
+## 列選択用関数: contains()
+
+```{r select4}
+df <- dplyr::select(iris, contains("pe"))
+head(df, 3)
+```
+
+- contains(x, ignore.case = TRUE)
+- **部分一致**で変数を検索して持ってくる
+
+## 列選択用関数: matches()
+
+```{r select5}
+df <- dplyr::select(iris, matches(".t."))
+head(df, 3)
+```
+
+- matches(x, ignore.case = TRUE)
+- **正規表現で指定**してマッチする変数を持ってくる
+
+## 列選択用関数: num_range()
+
+```{r select6}
+df <- as.data.frame(matrix(1:30, nrow = 3, ncol = 10))
+colnames(df) <- c(paste0("beer", 1:5), paste0("sake0", 1:5))
+ls(df)
+dplyr::select(df, num_range("beer", 1:3, 1))
+dplyr::select(df, num_range("sake", 2:4, 2))
+```
+
+- num_range("文字列", 対象の数値, 桁数)
+- "beer1からbeer3まで"といった指定方法。桁数があるのがGood!
+
+## 列選択用関数: one_of()
+
+```{r select7}
+vname <- c("Petal.Length", "Sepal.Width")
+df <- dplyr::select(iris, one_of(vname))
+head(df, 3)
+```
+
+- 変数名を文字列ベクトルでまとめて渡す時に使用。
+- これで挟み込まずにそのままベクトルを指定してもエラーが出る
+
+## 列選択用関数: everything()
+```{r select8}
+df <- as.data.frame(matrix(1:15, nrow = 3, ncol = 5))
+colnames(df) <- c("touyama", "hanazawa", "komatsu", "asumi", "sakura")
+dplyr::select(df, everything())
+dplyr::select(df, hanazawa, touyama, everything())
+```
+
+- 全部持ってくる
+
+---
+
+こういう使い方も。
+
+```{r select9}
+head(dplyr::select(iris, kosaki=starts_with("Petal"), everything()))
+```
+
+
+# 変数(列)を新規で作成、更新
+
+## dplyr::mutate()
+
+```{r mutate1}
+df <- dplyr::mutate(iris, beer=Sepal.Width*2)
+head(df, 2)
+df <- dplyr::mutate(df, beer=Sepal.Width*3)
+head(df, 2)
+```
+
+- dplyr::mutate(データフレーム、変数名=処理内容)
+- データフレームに新たに列を追加します
+- 変数名に既存の変数を指定すると上書きします
+
+## dplyr::mutate_each()
+
+```{r mutate2}
+df <- dplyr::mutate_each(iris, funs(. * 2), -Species)
+kable(head(df,2))
+```
+
+- dplyr::mutate_each(データフレーム、関数, ...)
+- 複数の列に、関数の内容を一気にあてます
+- ...のところで変数を指定します
+    - select()と同様に指定可能
+
+## (参考)その他のmutate関連関数
+
+- mutate_if(), mutate_at(), mutate_all()が追加されています
+- dplyrを最新にして，ヘルプで確認してみてください
+
+# レコード(行)を条件により抽出、並べ替え
+
+## dplyr::filter()
+
+```{r filter1}
+df <- dplyr::filter(iris, Species=='virginica')
+head(df, 3)
+```
+
+- dplyr::filter(データフレーム, 条件式)
+- 使い方はsubset()と同様
+
+## dplyr::arrange()
+
+```{r arrange1}
+df <- dplyr::arrange(iris, Sepal.Length)
+head(df, 3)
+df <- dplyr::arrange(df, desc(Sepal.Length))
+head(df, 3)
+```
+
+- dplyr::arrange(データフレーム, キー列)で昇順
+- dplyr::arrange(データフレーム, desc(キー列))で降順
+
+# データを集計(要約)
+
+## dplyr::summarize()
+
+```{r summarize1}
+df <- dplyr::summarize(iris, varmean=mean(Sepal.Length))
+df
+```
+
+- dplyr::summarize(データフレーム, 新変数名=関数(処理対象の変数名))
+- 列の集計を算出
+- 使える関数はsum,sd,meanなど
+
+## dplyr::summarize_each()
+
+```{r summarize2}
+df <- dplyr::summarize_each(iris, funs(min, mean, max, sd), ends_with("Length"))
+df
+```
+
+- dplyr::summarize_each(データフレーム, funs(関数), 変数)
+- 変数で指定した各変数に対して、関数で集計した結果を返します
+- 変数の指定には、dplyr::select()での方法がそのまま使えます
+
+## (参考)その他のsummarize関連関数
+
+- summarize_if(), summarize_at(), summarize_all()が追加されています
+- dplyrを最新にして，ヘルプで確認してみてください
+
+# データをグループ化
+
+## dplyr::group_by()
+
+```{r group_by1}
+df <- dplyr::group_by(iris, Species) %>% 
+  dplyr::summarize(cmean=mean(Sepal.Length))
+df
+```
+
+- dplyr::group_by(データフレーム、グループ化に使う変数)
+- これを当てると、データがグループ化されます
+- この後にグループごとにやりたい処理を実行すると、このようになります
+
+# 複数のデータセットを結合
+
+## データセットの準備
+
+- 例として、以下のデータフレームを使います
+
+```{r merge0}
+a <- data.frame(x1=c("A","B","C"),x2=1:3)
+b <- data.frame(x1=c("A","B","D"),x3=c(TRUE, FALSE, TRUE))
+y <- data.frame(x1=c("A","B","C"),x2=1:3)
+z <- data.frame(x1=c("B","C","D"),x2=2:4)
+```
+
+- aとbを結合する場合、共通する変数はx1  
+  x1をキーにして、mergeします
+- yとzを結合する場合、変数は共通です
+  行を追加してまとめる、あるいは列を追加してまとめます
+
+## dplyr::full_join()
+
+```{r merge1}
+df <- dplyr::full_join(a,b,by="x1")
+kable(df)
+```
+
+- dplyr::full_join(データフレーム1, データフレーム2, by=キー変数)
+- 全ての行と列を結合します
+- 該当するものがない場合、`NA`がはいります
+
+## dplyr::inner_join()
+
+```{r merge2}
+df <- dplyr::inner_join(a,b,by="x1")
+kable(df)
+```
+
+- dplyr::full_join(データフレーム1, データフレーム2, by=キー変数)
+- 両方のデータフレームに存在する行のみを残して結合します
+
+## dplyr::bind_cols()
+
+```{r merge3}
+df <- dplyr::bind_cols(y, z)
+kable(df)
+```
+
+- 左のデータフレームに右のデータフレームの**列を追加**します
+- 行数が一致してないとエラーになります
+
+## dplyr::bind_rows()
+
+```{r merge4}
+df <- dplyr::bind_rows(y, z)
+kable(df)
+```
+
+- 左のデータフレームに右のデータフレームの**行を追加**します
+- 列数が一致してないとエラーになります
+
+## dplyr::bind_row(..., .id=)
+
+```{r merge5}
+df <- dplyr::bind_rows(y, z, .id = "df_id")
+kable(df)
+```
+
+- 引数として`.id=**`を指定すると、テーブルidを変数として作成してくれます
+- これ、めっちゃ便利です
+
+# wide型(横型)とlong型(縦型)を変換
+
+## tidyr::gather()
+
+```{r gather1}
+df <- tidyr::gather(data=iris, key = keykey, value = valuevalue, -Species)
+kable(head(df, 4))
+```
+
+- data: 使用するデータフレーム
+- key: まとめた時に、「この行の値はどの変数に入ってたものか」を示す変数。
+- value: まとめた変数の値。
+- ...: まとめる変数を指定します。dplyr::select()のテクニックがそのまま使えます
+
+## tidyr::spread()
+```{r spread1}
+# irisにID列を追加して、gatherでまとめている
+df <- dplyr::mutate(iris, id=rownames(iris)) %>% 
+  tidyr::gather(key = keykey, value = valuevalue, contains("l."))
+knitr::kable(head(df,2))
+
+# ひっつけたけどspreadでバラします
+df_2 <- tidyr::spread(df, key = keykey, value = valuevalue)
+knitr::kable(head(df_2,2))
+```
+
+- gatherと逆の動きをします
+- ただし、**spreadを実行した後に、主キーとなるような変数が存在する必要**があります
+- データベース的なものがあるんだと思います
+
+# 列の結合・分離
+
+## tidyr::unite
+
+```{r unite}
+df <- tidyr::unite(data = iris, col = colll, starts_with("Sepal"), sep = "-")
+knitr::kable(head(df))
+```
+
+- 複数の列をひっつけて一つの列にします
+
+## tidyr::separate
+```{r separate}
+# 一旦ひっつけます(uniteのコードと同一)
+df <- tidyr::unite(data = iris, col = colll, starts_with("Sepal"), sep = "-")
+
+# separateを実行
+df2 <- tidyr::separate(data = df, col = colll, into = c("Sepal.Length","Sepal.Width"), sep = "-")
+knitr::kable(head(df2))
+```
+
+- 一つの列を、指定した文字で分割して別々の列にします
+
+# 参考資料
+
+## RStudio謹製チートシート
+
+https://www.rstudio.com/resources/cheatsheets/
+
+- 「Data Wrangling Cheat Sheet」というのがdplyr&tidyrのチートシート
+- 正直、これ1枚あれば今日の説明は不要です
+- 英語がいやなら、日本語もあります(Data Wranglingのみ, pdf)
+
+https://www.rstudio.com/wp-content/uploads/2015/09/data-wrangling-japanese.pdf
+
+## その他のWeb上にある資料
+
+- [dplyr::selectのSpecial Functionsについて](https://rpubs.com/kazutan/dplyr_select_sf)  
+select()内で使える関数を、今回のスライドよりも少しだけ丁寧に説明しています
+- [{tidyr}でよく使う関数のメモ](https://rpubs.com/kazutan/tidyr_memo)  
+tidyrのよく使う関数を、今回のスライドよりも少しだけ丁寧に説明しています
+
+## Enjoy!
+

@@ -1,0 +1,448 @@
+---
+title: "leafletではじめるRによる地図プロット"
+---
+
+```{r setup, include=FALSE}
+library(leaflet)
+library(devtools)
+library(DT)
+library(dplyr)
+```
+# はじめに
+
+また、この内容は2015年12月5日に私がJapan.R 2015にて発表した内容をベースに、説明をくわえ再編集したものです。その時のスライドは以下に設置しています:
+
+http://rpubs.com/kazutan/leaflet_slide
+
+## leafletとは
+leafletとは、JavaScriptのオープンソースライブラリである"leaflet.js"をRでも利用できるようにしたパッケージです。これはhtmlwidgetsパッケージにより実現されています。**JavaScriptを使わなくてもRだけで利用可能**ということで、非常に注目を集めているパッケージです。
+
+## 特徴
+最大の特徴は、htmlで動的な地図が作れることです。主に以下のような特徴が挙げられます。
+
+- ぐりぐり動かせる
+- デフォルトの地図がOpenStreetMap
+- レイヤー構造
+- 標準でいろいろな機能を搭載
+- Shinyでアプリケーションもつくれる
+
+## インストール
+安定版(1.0.0)はcranからインストールできます。
+
+```{r inst, eval=FALSE}
+install.packages("leaflet")
+library(leaflet)
+```
+
+また、最新の開発版(1.0.1.9002)はgithubからインストールできます
+
+```{r inst_github, eval=FALSE}
+install.packages("devtools")
+devtools::install_github("rstudio/leaflet")
+library(leaflet)
+```
+
+# hello, leaflet
+
+## レイヤー構造
+以下の様な構造になっています:
+```{r layer_str, echo=FALSE}
+df_layer=data.frame(Category=c("tile","marker", "popup", "shape", "geojson", "topjson", "control"),
+							Add_function=c("addTiles, addProviderTiles","addMarkers, addCircleMarkers","addPopups","addPolygons, addPolylines, addCircles, addRectangles","addTopoJSON","addTopoJSON","addControl")
+)
+knitr::kable(df_layer)
+```
+
+大体のイメージがつかめればOKです。
+
+## 基本的な考え方
+以下のような手順で作成します:
+
+- leafletオブジェクト作る %>% 
+    - 地図タイルを選択 %>% 
+    - デフォルトの視点をセット %>% 
+    - プロットレイヤー %>% 
+    - その他レイヤー …(ry
+
+パイプ(` %>% `)を使わなくても、一旦オブジェクトに放り込んでおき、追加していってもOKです。
+
+## 地図を表示
+まずは地図を表示させてみましょう。以下のコードを実行すれば、あっという間に地図ができます:
+
+```{r leaflet_start}
+leaflet() %>% 
+	addTiles()
+```
+
+最初の`leaflet()`関数でleafletオブジェクトを生成し、`addTiles()`で地図タイルレイヤーを重ねています。
+
+なお、`leaflet()`関数の引数には`data`があります。これにあらかじめデータオブジェクトを指定しておけば、以降のレイヤーで変数を参照するのにそのまま使える(例えば`addCircles(lat = ~latitude, lng = ~longtitude)`)ので、利用するのであればここで指定しておくのをオススメします。
+
+## ズームや位置の設定
+```{r setzoom}
+leaflet() %>% 
+	addTiles() %>% 
+	setView(lng=135,lat=35,zoom=7)
+```
+
+`setView()`関数で、視点をセットできます。このレイヤーは省略可能で、省略した場合、以降のプロットで使用した値(lng, latなど)から丁度いい具合に自動的にセットします。
+
+# プロットの基本
+
+## 前準備
+
+プロット用データを準備しときます。
+```{r sample_df}
+df <- data.frame(
+	id = 1:5,
+	lng = rnorm(5,mean=135,sd=0.5),
+	lat = rnorm(5,mean=35,sd=0.5),
+	pop = c("kosaki","chitoge","tsugumi","marika","yui")
+)
+knitr::kable(df)
+```
+
+あと、前準備としてまっさらの地図を準備しときます。
+
+```{r base_leaf}
+m <- leaflet(df) %>% addTiles()
+m
+```
+
+## プロットの基本
+プロットするためには、その位置情報が必須となります。これは緯度(latなど)と経度(lng,lonなど)で指定することとなります。
+
+また、引数にはデータフレームから変数を渡すと便利です。あとは各種に対応して色々設定すればOKですが、たまにトラップがあります。その点については、なるべく付記していきます。また、ぜひ[公式ドキュメント](https://rstudio.github.io/leaflet/)、および関数のヘルプを一読してください。
+
+## マーカー
+マーカーは、`addMarkers()`でプロットできます。
+
+```{r add_markers}
+m %>% 
+	addMarkers(lng=~lng,lat=~lat)
+```
+
+上述のコードのように、`lng=*, lat=*`と位置情報を指定するだけで、その地点にマーカーを置きます。なお引数がいろいろあり、このようなことも可能です:
+
+```{r add_markers2}
+m %>% 
+	addMarkers(lng=~lng,lat=~lat,popup=~pop,label=paste(df$lng,df$lat,sep=","))
+```
+
+マーカーにマウスを重ねると、`label`で指定した文字列が表示されます。これは文字列しか受け付けないので注意してください。
+
+また、マーカーをクリックすると`popup`で指定した文字がポップアップで表示されます。この内容はhtmlタグも評価します。
+
+さらに、マーカーのアイコンには自分で好きな画像を利用することも可能です。詳しくは公式ドキュメントを参照してください。
+
+## サークル
+地図上に円を描きます:
+
+```{r add_circles}
+#radiusは半径(メートル単位)、weightは線幅
+m %>% 
+	addCircles(lng=~lng,lat=~lat,radius=1000,color="#09f",weight=20)
+```
+
+引数のradiusは円の半径で、メートル単位です。そのため地図を拡大していけば大きさは広がります。Weightは外枠の太さを指定します。これの単位は…多分pxだと思います。地図の拡大・縮小で太さは変化してないようなので…。
+
+塗りつぶしの色や透明度、ポップアップやラベルも使えます。詳しくは関数のヘルプを参照してください。
+
+## サークルマーカー
+地図上に円を描きます:
+
+```{r add_circlemarkers}
+#radiusはピクセル単位
+m %>% 
+	addCircleMarkers(lng=~lng,lat=~lat,radius=20,color="#09f",weight=2)
+```
+
+サークルとの違いは、引数の`radius`は円の半径だけどピクセル単位だということです。なので地図を拡大しても、円のサイズは変化しません。あとの部分は同一です。
+
+## ポップアップ
+地図上にポップアップを表示させます:
+
+```{r popup}
+m %>% 
+	addPopups(lng=~lng,lat=~lat,popup=~pop)
+```
+
+そのままです。なお引数の`options=popupOptions()`で色々指定することができます。ぜひ一度`?popupOption`で確認してみてください。
+
+## ライン
+位置情報を線でつなぎます:
+
+```{r polyline}
+m %>% 
+	addPolylines(lng=~lng,lat=~lat,color="#f30",weight="10")
+```
+
+線をつなぐ順番は、データの並び順となります。経路を描写したい時などは、あらかじめデータを整列させておいたほうがいいでしょう。
+
+# 出力方法
+
+主に3つの方法があります。
+
+## htmlウィジェット
+RStudio上で実行するとPlotsに地図が描写されますので、これを"Export▼"から"Web Page..."を選択すれば、htmlファイル(中身はleaflet出力地図のみ)が生成されます。これを他のhtmlファイルにiframeなどで放り込めばOKです。
+
+## R Markdown
+これが一番楽です。RmdファイルのRチャンクに、普通に記述すればそのまま出力されます。標準の書式(css)であれば特に問題なく描写してくれるでしょう。
+
+ただし、カスタムcssを利用する時には注意してください。崩れる場合があります。また、Rmdスライドに組み込むには注意が必要で、大抵のスライドでは標準でうまく表示してくれません。もしhtmlスライドで使用したい場合は、setupチャンクで以下のコードを記述してください:
+
+```{r set_iframe, eval=FALSE}
+knit_print.htmlwidget <- function (widget, ..., options = NULL) 
+{
+	file <- basename(tempfile(fileext = ".html"))
+	selfcontained <- if(is.null(rmarkdown::metadata$self_contained)) TRUE else rmarkdown::metadata$self_contained
+	
+	htmlwidgets::saveWidget(widget, file = file, selfcontained = selfcontained)
+	content <- if (selfcontained) {
+		on.exit(unlink(file), add = TRUE)
+		list(srcdoc = paste(readLines(file), collapse = "\n")) 
+	}
+	else {
+		list(src = file)
+	}
+	
+	x <- htmltools::tag("iframe", content)
+	
+	knitr::knit_print(x, options = options, ...)
+}
+```
+
+これはr-wakalangでyutannihilationさんから教えていただきました。ありがとうございます。
+
+詳細は省略しますが、地図の部分を`iframe`要素として組み込むためのものです。ただこれだけだとサイズが小さく組み込まれるので、私はcssに以下の設定を組み込んでいます:
+
+```
+/* for htmlwidgets to iframe */
+.reveal .slides iframe {
+	height: 450px;
+	width: 100%;
+	margin-left:auto;
+	margin-right:auto;
+}
+```
+
+こまかい数値は各自で設定してください。
+
+## Shiny
+これが一番すごく、インタラクティブな地図アプリを作成可能となります。方法については公式ドキュメントを参照してください。また、具体的な例については、以下を参照してください:
+
+- [Twitter ShinyappsResent](https://twitter.com/ShinyappsRecent)
+- [Recent Shiny Applications - Shinyapps Gallery](https://shinyapps-recent.appspot.com/recent.html)
+
+
+# 応用編
+
+## プロットあれこれ
+上述のプロットを色々同時に載せることも可能です:
+
+```{r plot_ijiri}
+# 詳細は ?addControl を参照
+m %>% 
+	addCircleMarkers(~lng, ~lat, radius=~2*nchar(as.character(pop)),
+									 popup=~pop, stroke=FALSE, fillOpacity=0.8) %>% 
+	addPolylines(~lng, ~lat, dashArray="10,10") %>% 
+	addPopups(~mean(lng), ~mean(lat),
+						popup='ぞうさん<br/><img src="user.png" width=50>')
+```
+
+特にポイントは、**`radius`などにも変数(および計算式)が利用可能**だということです。このコードや関数のヘルプを見て、確認してみてください。
+
+## マーカーのクラスター化
+大量のマーカーをプロットする時には、クラスター化を行うことができます:
+
+```{r cluster}
+df2 <- data.frame(id=1:1000, lng=135+rnorm(1000), lat=35+rnorm(1000))
+leaflet(df2) %>% addTiles() %>% 
+	addMarkers(~lng, ~lat, label=~paste0(id,"番"),
+						 clusterOptions = markerClusterOptions())
+```
+
+地図を操作してみれば、どういう機能か把握できると思います。なお、大量にプロットした場合、ブラウザが限界で表示できない場合があります。メモリなどに注意してください。
+
+## 地図タイルの変更
+leafletは標準地図タイルをOpenStreetMapにしていますが、他の地図タイルも利用可能です。以下では国土地理院の地図タイルを使用しています。
+
+```{r tiles_change}
+# special thanks to @yutannihilation!!
+atr <- "<a href='http://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+leaflet() %>% 
+	addTiles("http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png", attribution = atr) %>% 
+	setView(135, 35, zoom=9)
+```
+
+他にも公式ドキュメントに説明がありますので、そちらも見てみてください。また、`attribution=`は必ず適切な内容を提示すべきでしょう。
+
+## レイヤーのグループ化と切替
+leafletにはレイヤーをグループ化できる機能が組み込まれています。これを利用して、オプションボタンで地図タイル切替を実装してみます:
+
+```{r tiles_control}
+leaflet() %>% 
+	addTiles(group="OSM") %>% 
+	addTiles("http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png", attribution = atr, group="GSI") %>% 
+	addLayersControl(baseGroups=c("OSM","GSI"), options=layersControlOptions(collapsed = FALSE))
+```
+
+この例では、`addTiles`を2つ作成しています。通常であれば後者の要素で上書きされてしまうのですが、それぞれに`group=*`とグループを割り当てています。これにより、それぞれのレイヤーがグループ化されて同時に存在できるようになります。
+
+しかしこの2つは同時に描写することができません。そのため`addLayersControl()`により、レイヤーをコントロールするものを準備します。これの`baseGroups=*`でグループ名を与えると、オプションボタンが地図に表示され、グループ切替が地図上で行えるようになります。
+
+なお、`collapsed=*`はこのコントロールを縮小表示をするかどうかを指定するものです。`TRUE`にするとマウスオーバーした時だけ通常のコントロールとして表示されます。
+
+また、このレイヤーのグループ化はプロットのレイヤーにも使用可能です:
+
+```{r groups}
+df3 <- mutate(df2, atnd=sample(c("kosaki","chitoge"),1000,replace = TRUE))
+leaflet(df3) %>% addTiles() %>% 
+	addCircleMarkers(~lng, ~lat, group="kosaki", color="#f63", stroke=FALSE, data=filter(.data=df3, atnd=="kosaki")) %>% 
+	addCircleMarkers(~lng, ~lat, group="chitoge", color="#96f", stroke=FALSE, data=filter(.data=df3, atnd=="chitoge")) %>% 
+	addLayersControl(overlayGroups=c("kosaki","chitoge"))
+```
+
+マーカーにグループを割り当て、`addLayersControl()`の引数`overlayGroups=*`でグループ名を与えると、地図上にチェックボックスが表示されて、プロットのオーバーレイを変更できます。
+
+なお、上記例ではプロットのレイヤーで個別にデータを指定していますが、`dplyr::filter()`を用いています。leafletの場合、Tidyなデータセットにしておいて、このようにfilterでレコードを指定するとスムーズでした。
+
+# カラーパレット作成と凡例
+地図上に色々なデータをプロットする場合、カラーパレットを作る必要が出てきます。leafletではカラーパレットを簡単に作れるように関数が準備してあります。詳細は公式ドキュメントを参照してください。
+
+このカラーパレットを用いてプロットするならば、あわせて凡例を表示させる事になるかと思います。これらの例を紹介します。
+
+## 凡例の表示(Numeric)
+まず、連続する数値データからカラーパレットを作成し、凡例を含めて表示します:
+
+```{r legend_num}
+pal <- colorNumeric(palette="Blues", domain=df3$id)
+leaflet(df3) %>% addTiles() %>%
+	addCircleMarkers(~lng, ~lat, color=~pal(id), stroke=FALSE) %>% 
+	addLegend(position='topright', pal=pal, values=~id)
+```
+
+連続する数値からカラーパレットを作るには、`colorNumeric()`を用います。引数の`palette=*`で色を指定しますが、(1)RGBもしくは色名のベクトルで指定、(2)RColorBrewerのパレット名、などでできます。詳細については、`?ColorNumeric`を参照してください。
+
+また`domain=*`は、色と値とのマッピングで値の方を指定するものとなります。上記の場合、idは1:1000なので、パレットで指定した色を1000段階で区切って各値を対応させるようになります。これでカラーパレットができるのでpalというオブジェクトに放り込んで、マーカーの色で指定しています。
+
+凡例を表示させるには`addLegend()`です。引数の`pal=*`でカラーパレットを指定します。`position=*`はそのまんまです。なお、凡例にタイトルなども設定できます。詳しくは`?addLegend`を参照してください。思ったより多機能です。
+
+## 凡例の表示(Factor)
+Factor型(離散型)のカラーパレットを使った例です:
+
+```{r legend_fac}
+palfac <- colorFactor(palette=c("yellow","blue"), domain=df3$atnd)
+leaflet(df3) %>% addTiles() %>%
+	addCircleMarkers(~lng, ~lat, color=~palfac(atnd), stroke=FALSE) %>% 
+	addLegend(position='topright', pal=palfac, values=~atnd)
+```
+
+考え方は数値データの時と同様です。カラーパレットを作成する関数が`colorFactor()`となります。あとは違いはありません。
+
+## 凡例の表示(Quantile)
+分位による塗り分けにも対応しています:
+
+```{r legend_quan}
+palquan <- colorQuantile(palette="YlGnBu", domain=df3$id, n=3)
+leaflet(df3) %>% addTiles() %>% 
+	addCircleMarkers(~lng, ~lat, color=~palquan(id), stroke=FALSE) %>% 
+	addLegend(position='bottomright', pal=palquan, values=~id)
+```
+
+基本は上2つと同様なのですが、`colorQuantile()`の引数で`n=*`と、分位数を必ず指定してください。これさえ指定しておけば、あとは自動的にやってくれます。
+
+## 実践例
+### 台風をleafletで可視化
+
+https://rpubs.com/kazutan/typhoon5
+
+当時私の知ってる機能をフルに盛り込みました。ただ、今ならもっと改良できるのになぁと思ってます。強風域で円のサイズを変えたりとか…この辺りはまた台風のシーズンになったときにでも。
+
+### 飲食店マップ
+
+https://rpubs.com/kazutan/jssp2015_leaflet
+
+私のメイン学会に参加する際に欲しかったので作ってみました。個人的にはleafletとDTパッケージの相性はいいと思っています。マーカーのデータを一覧にすると比較的レコードが多くなり、検索しようとすると面倒になることが多いからです。
+
+
+# ワンポイント
+
+## 同一種のレイヤーは上書きされる
+基本、同一レイヤーに描けるのはひとつだけです。たとえばMarkersを2系列重ねてプロットしたいとしたとき、そのままレイヤーを複数かさねると**上書きされて前のが吹っ飛びます**。
+
+これを解決するには上述のレイヤーグループ化が必要で、別のグループにしてオーバーレイすると重ね書きが可能になります。
+
+## 初期値について
+初期値が結構丁寧に作られてます。
+
+- データセットが単一なら、leaflet()で放り込んでおきましょう
+- `addMarkers`や`addCircleMarkers`では**lngとlat**すら省略可能
+    - セットしたdfからそれっぽい変数名を探してきます
+- `setViews`も省略可能
+    - markerレイヤーあたりをセットすると、使用するlngとlatの値(たぶん平均値や範囲から)自動的にいい感じに設定します
+
+## 緯度経度の求め方
+実はこれが一番困るところで、leafletで遊ぶためには必須なのですが、提供されていない場合緯度経度を見つけるのが大変です。
+
+私はよく`ggmap::geocode()`を利用します。これはGoogleAPIで住所からlonlatを出してくれます。Google Mapの検索窓で特定できる地点であれば、緯度経度を取得してきます。ただし一日に2500のAPI制限がありますし、特定できなかった場合は`NA`を返します。この点には注意してください。
+
+# 開発版(Github版)の新機能
+leafletにはプラグイン機能があり、最近ではこれを積極的に取り込んで開発が進んでいます。執筆時ではGithub版でのみ確認できていますので、以下の機能を試したい場合は、Github版を使用してください。
+
+また、おそらく公式ドキュメントでもまだ記載がありませんので、これらに関する情報は各関数のヘルプを参照するようにしてください。
+
+## ミニマップ機能
+マップ上にミニマップを重ねて配置することができます:
+
+```{r minimap}
+leaflet(df) %>% addTiles() %>% addMarkers(~lng,~lat) %>% 
+	addMiniMap(position="bottomright")
+```
+
+細かいところは省略しますが、ミニマップをグリグリすると動かせます。また`addMiniMap()`の引数でミニマップのサイズやズームなども調整可能です。
+
+## スケールバー
+地図の拡大・縮小に対応して、実寸のスケールバーを表示してくれるようになります:
+
+```{r scalebar}
+leaflet(df) %>% addTiles() %>% addMarkers(~lng,~lat) %>% 
+	addScaleBar(position="bottomleft")
+```
+
+追加オプションで表示単位や大きさ(長さ)を指定できます。詳しくは`?addScaleBar`で確認してください。
+
+## メジャー(距離測定)
+地図上で距離を測定することができます:
+
+```{r add_measure}
+leaflet(df) %>% addTiles() %>% addMarkers(~lng,~lat) %>% 
+	addMeasure(position = "topright", primaryLengthUnit = "meters", 
+						 primaryAreaUnit = "sqmeters", activeColor = "#3D535D",
+						 completedColor = "#7D4479")
+```
+
+2点以上をクリックしていくと線分が表示されていき、実際の距離を測ることができます。実際に地図として利用するときには非常に有効な機能でしょう。
+
+## Awesomeなicons
+マーカーにアイコンを設定することも可能です:
+
+```{r aweicons}
+iconSet <- awesomeIconList(
+	beer = makeAwesomeIcon(icon='ion-beer', library = "ion"),
+	power = makeAwesomeIcon(icon='ion-power', library = "ion")
+)
+leaflet(df) %>% addTiles() %>% addMarkers(~lng,~lat) %>%
+	addAwesomeMarkers(lng=~lng,lat=~lat,icon=iconSet)
+```
+
+bootstrapのglyphiconなどを利用できます。まず`awesomeIconList()`でアイコンセットを作成します。詳細はコードを確認していただき、使用している関数のヘルプを参照してください。
+
+# さいごに
+
+この他にも、Rasterを重ねてコロプラスマッピングをすることもできますし、GIS系でよく使われるデータにも対応しています。このあたりは公式ドキュメントなどを参照してください。
+
+Enjoy!
+
+
+

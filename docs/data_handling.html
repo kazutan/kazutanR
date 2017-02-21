@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>データハンドリング</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="site_style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Kazutan.R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    データ操作
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="data_handling.html">dplyr, tidyr</a>
+    </li>
+    <li>
+      <a href="stringr-intro.html">stringr</a>
+    </li>
+    <li>
+      <a href="forcats_test.html">forcats</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    可視化
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="DT_demo.html">DT</a>
+    </li>
+    <li>
+      <a href="leaflet_d.html">leaflet</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">データハンドリング</h1>
+
+</div>
+
+
+<div class="section level1">
+<h1><span class="header-section-number">1</span> 今回の内容</h1>
+<div id="r" class="section level2">
+<h2><span class="header-section-number">1.1</span> Rのポイントはデータハンドリング</h2>
+<ul>
+<li>変数(列)の選択</li>
+<li>変数(列)を新規で作成、更新</li>
+<li>レコード(行)を条件により抽出、並べ替え</li>
+<li>データを集計(要約)</li>
+<li>データをグループ化</li>
+<li>複数のデータセットを結合</li>
+<li>wide型(横型)とlong型(縦型)を変換</li>
+<li>列の結合と分離</li>
+</ul>
+</div>
+<div class="section level2">
+<h2><span class="header-section-number">1.2</span> みなさんどうやってます?</h2>
+<ul>
+<li>これらは基本の関数などでも可能
+<ul>
+<li>丁寧な説明は、こちらをご覧ください</li>
+<li><a href="http://www.slideshare.net/sakaue/hiroshimar5intro">HiRoshima.R #5 入門者講習スライド sakaue 先生</a></li>
+</ul></li>
+<li>これらをdplyr + tidyrを活用してやってみます</li>
+<li>まずはどういう感じなのかみてみます</li>
+</ul>
+</div>
+</div>
+<div id="_1" class="section level1">
+<h1><span class="header-section-number">2</span> 具体例_1</h1>
+<div id="_1-" class="section level2">
+<h2><span class="header-section-number">2.1</span> 具体例_1: ほしいもの</h2>
+<p>このような結果がほしいとします:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Species</th>
+<th align="right">Sepal.Length</th>
+<th align="right">Sepal.Width</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">versicolor</td>
+<td align="right">5.936</td>
+<td align="right">2.770</td>
+</tr>
+<tr class="even">
+<td align="left">virginica</td>
+<td align="right">6.588</td>
+<td align="right">2.974</td>
+</tr>
+<tr class="odd">
+<td align="left">setosa</td>
+<td align="right">5.006</td>
+<td align="right">3.428</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="_1-" class="section level2">
+<h2><span class="header-section-number">2.2</span> 具体例_1: コード</h2>
+<pre class="r"><code>iris %&gt;% 
+  dplyr::select(starts_with(&quot;sepal&quot;),Species) %&gt;% 
+  dplyr::group_by(Species) %&gt;% 
+  dplyr::summarize_each(funs(mean)) %&gt;% 
+  dplyr::arrange(Sepal.Width) </code></pre>
+<pre><code>## # A tibble: 3 × 3
+##      Species Sepal.Length Sepal.Width
+##       &lt;fctr&gt;        &lt;dbl&gt;       &lt;dbl&gt;
+## 1 versicolor        5.936       2.770
+## 2  virginica        6.588       2.974
+## 3     setosa        5.006       3.428</code></pre>
+</div>
+<div id="_1-" class="section level2">
+<h2><span class="header-section-number">2.3</span> 具体例_1: 内容</h2>
+<pre class="r"><code>iris %&gt;% 
+  dplyr::select(starts_with(&quot;sepal&quot;),Species) %&gt;% 
+  dplyr::group_by(Species) %&gt;% 
+  dplyr::summarize_each(funs(mean)) %&gt;% 
+  dplyr::arrange(Sepal.Width) </code></pre>
+<pre><code>irisデータを…
+  &quot;sepal&quot;で始まる変数と&quot;Species&quot;を取り出して…
+  &quot;Species&quot;の値でグループ化して…
+  各列に対して&quot;平均&quot;で要約して…
+  &quot;Sepal.Width&quot;の昇順でソート</code></pre>
+</div>
+</div>
+<div id="_2" class="section level1">
+<h1><span class="header-section-number">3</span> 具体例_2</h1>
+<div id="_2-" class="section level2">
+<h2><span class="header-section-number">3.1</span> 具体例_2: ほしいもの</h2>
+<p>このような結果がほしいとします:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">var_name</th>
+<th align="right">value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Sepal.Length</td>
+<td align="right">5.1</td>
+</tr>
+<tr class="even">
+<td align="left">Sepal.Length</td>
+<td align="right">4.9</td>
+</tr>
+<tr class="odd">
+<td align="left">Sepal.Length</td>
+<td align="right">4.7</td>
+</tr>
+<tr class="even">
+<td align="left">Sepal.Length</td>
+<td align="right">4.6</td>
+</tr>
+<tr class="odd">
+<td align="left">Sepal.Length</td>
+<td align="right">5.0</td>
+</tr>
+<tr class="even">
+<td align="left">Sepal.Length</td>
+<td align="right">5.4</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="_2-" class="section level2">
+<h2><span class="header-section-number">3.2</span> 具体例_2: コード</h2>
+<pre class="r"><code>iris %&gt;% 
+  dplyr::select(-Species) %&gt;% 
+  tidyr::gather(key = var_name, value = value) %&gt;% 
+  head</code></pre>
+<pre><code>## # A tibble: 6 × 2
+##       var_name value
+## *        &lt;chr&gt; &lt;dbl&gt;
+## 1 Sepal.Length   5.1
+## 2 Sepal.Length   4.9
+## 3 Sepal.Length   4.7
+## 4 Sepal.Length   4.6
+## 5 Sepal.Length   5.0
+## 6 Sepal.Length   5.4</code></pre>
+</div>
+<div id="_2-" class="section level2">
+<h2><span class="header-section-number">3.3</span> 具体例_2: 内容</h2>
+<pre class="r"><code>iris %&gt;% 
+  dplyr::select(-Species) %&gt;% 
+  tidyr::gather(key = var_name, value = value) %&gt;% 
+  head</code></pre>
+<pre><code>irisデータを…
+  &quot;Species&quot;以外の変数を取り出して…
+  4つの変数を縦型のデータに整形して…
+  上6つのデータを表示</code></pre>
+</div>
+</div>
+<div id="-" class="section level1">
+<h1><span class="header-section-number">4</span> 補足: %&gt;% について</h1>
+<div id="pipe" class="section level2">
+<h2><span class="header-section-number">4.1</span> %&gt;% はpipe演算子</h2>
+<ul>
+<li>“%&gt;%”は、前のコマンドでのoutputを、<strong>次のコマンドの第一引数に放り込む</strong></li>
+<li>dplyrを読み込むと利用可能</li>
+</ul>
+<pre class="r"><code># 使わない書き方
+df &lt;- subset(iris, Species == &quot;setosa&quot;)
+df2 &lt;- subset(df, select = c(Sepal.Length, Sepal.Width))
+head(df2, 2)</code></pre>
+<pre><code>## # A tibble: 2 × 2
+##   Sepal.Length Sepal.Width
+## *        &lt;dbl&gt;       &lt;dbl&gt;
+## 1          5.1         3.5
+## 2          4.9         3.0</code></pre>
+<pre class="r"><code># 使った書き方
+(df &lt;- subset(iris, Species == &quot;setosa&quot;) %&gt;% 
+  subset(select = c(Sepal.Length, Sepal.Width)) %&gt;% 
+  head(2))</code></pre>
+<pre><code>## # A tibble: 2 × 2
+##   Sepal.Length Sepal.Width
+## *        &lt;dbl&gt;       &lt;dbl&gt;
+## 1          5.1         3.5
+## 2          4.9         3.0</code></pre>
+</div>
+<div class="section level2">
+<h2><span class="header-section-number">4.2</span> ポイント</h2>
+<div class="section level3">
+<h3><span class="header-section-number">4.2.1</span> メリット</h3>
+<ul>
+<li>流れるようにコードがかける</li>
+<li>引き渡しのためにわざわざオブジェクトを作る必要がない<br />
+混乱やメモリを抑制できる</li>
+<li>RStudioにショートカットがある(Ctrl/Cmd + Shift + M)</li>
+<li>dplyrやtidyrとの相性が非常にいい</li>
+</ul>
+</div>
+<div class="section level3">
+<h3><span class="header-section-number">4.2.2</span> デメリット</h3>
+<ul>
+<li>第一引数に投入されるため、使用できる関数に制限あり<br />
+明示的に放り込む方法はあるが割愛</li>
+<li>(人によっては)掴みづらい</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="section level1">
+<h1><span class="header-section-number">5</span> 前準備</h1>
+<div class="section level2">
+<h2><span class="header-section-number">5.1</span> パッケージインストール</h2>
+<p>必要なパッケージをインストール&amp;読み込み</p>
+<pre class="r"><code>install.packages(&quot;dplyr&quot;)
+install.packages(&quot;tidyr&quot;)
+library(dplyr)
+library(tidyr)</code></pre>
+<ul>
+<li>CRANにあります</li>
+<li>今回は以下のバージョンで説明します</li>
+<li>dplyr 0.5.0</li>
+<li>tidyr 0.6.0</li>
+</ul>
+</div>
+<div id="sessioninfo" class="section level2">
+<h2><span class="header-section-number">5.2</span> sessioninfo</h2>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>## R version 3.3.2 (2016-10-31)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Debian GNU/Linux 8 (jessie)
+## 
+## locale:
+##  [1] LC_CTYPE=ja_JP.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=ja_JP.UTF-8        LC_COLLATE=ja_JP.UTF-8    
+##  [5] LC_MONETARY=ja_JP.UTF-8    LC_MESSAGES=C             
+##  [7] LC_PAPER=ja_JP.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=ja_JP.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] knitr_1.15.1 tidyr_0.6.1  dplyr_0.5.0  DT_0.2      
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_0.12.9     digest_0.6.12   rprojroot_1.2   assertthat_0.1 
+##  [5] R6_2.2.0        DBI_0.5-1       jsonlite_1.2    backports_1.0.5
+##  [9] magrittr_1.5    evaluate_0.10   highr_0.6       stringi_1.1.2  
+## [13] lazyeval_0.2.0  rmarkdown_1.3   tools_3.3.2     stringr_1.2.0  
+## [17] htmlwidgets_0.8 yaml_2.1.14     htmltools_0.3.5 tibble_1.2</code></pre>
+</div>
+</div>
+<div class="section level1">
+<h1><span class="header-section-number">6</span> 変数(列)の選択</h1>
+<div id="dplyrselect" class="section level2">
+<h2><span class="header-section-number">6.1</span> dplyr::select</h2>
+<pre class="r"><code>df &lt;- dplyr::select(iris, c(Sepal.Width,Species))
+head(df, 3)</code></pre>
+<pre><code>## # A tibble: 3 × 2
+##   Sepal.Width Species
+## *       &lt;dbl&gt;  &lt;fctr&gt;
+## 1         3.5  setosa
+## 2         3.0  setosa
+## 3         3.2  setosa</code></pre>
+<ul>
+<li>dplyr::select(データフレーム, 列の指定, …)</li>
+<li>列の指定方法は、基本subsetと同様</li>
+<li>列の指定については、さらに特別な関数が利用可能</li>
+</ul>
+</div>
+<div id="-starts_with" class="section level2">
+<h2><span class="header-section-number">6.2</span> 列選択用関数: starts_with()</h2>
+<pre class="r"><code>df &lt;- dplyr::select(iris, starts_with(&quot;sepal&quot;))
+head(df, 3)</code></pre>
+<pre><code>## # A tibble: 3 × 2
+##   Sepal.Length Sepal.Width
+## *        &lt;dbl&gt;       &lt;dbl&gt;
+## 1          5.1         3.5
+## 2          4.9         3.0
+## 3          4.7         3.2</code></pre>
+<ul>
+<li>start_with(x, ignore.case = TRUE)</li>
+<li><strong>前方一致</strong>で変数を検索してもってくる</li>
+<li>なお<code>ignore.case = FALSE</code>にすると、大文字と小文字を区別してくれる</li>
+</ul>
+</div>
+<div id="-ends_with" class="section level2">
+<h2><span class="header-section-number">6.3</span> 列選択用関数: ends_with()</h2>
+<pre class="r"><code>df &lt;- dplyr::select(iris, ends_with(&quot;width&quot;))
+head(df, 3)</code></pre>
+<pre><code>## # A tibble: 3 × 2
+##   Sepal.Width Petal.Width
+## *       &lt;dbl&gt;       &lt;dbl&gt;
+## 1         3.5         0.2
+## 2         3.0         0.2
+## 3         3.2         0.2</code></pre>
+<ul>
+<li>ends_with(x, ignore.case = TRUE)</li>
+<li><strong>後方一致</strong>で変数を検索して持ってくる</li>
+</ul>
+</div>
+<div id="-contains" class="section level2">
+<h2><span class="header-section-number">6.4</span> 列選択用関数: contains()</h2>
+<pre class="r"><code>df &lt;- dplyr::select(iris, contains(&quot;pe&quot;))
+head(df, 3)</code></pre>
+<pre><code>## # A tibble: 3 × 3
+##   Petal.Length Petal.Width Species
+## *        &lt;dbl&gt;       &lt;dbl&gt;  &lt;fctr&gt;
+## 1          1.4         0.2  setosa
+## 2          1.4         0.2  setosa
+## 3          1.3         0.2  setosa</code></pre>
+<ul>
+<li>contains(x, ignore.case = TRUE)</li>
+<li><strong>部分一致</strong>で変数を検索して持ってくる</li>
+</ul>
+</div>
+<div id="-matches" class="section level2">
+<h2><span class="header-section-number">6.5</span> 列選択用関数: matches()</h2>
+<pre class="r"><code>df &lt;- dplyr::select(iris, matches(&quot;.t.&quot;))
+head(df, 3)</code></pre>
+<pre><code>## # A tibble: 3 × 4
+##   Sepal.Length Sepal.Width Petal.Length Petal.Width
+## *        &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;
+## 1          5.1         3.5          1.4         0.2
+## 2          4.9         3.0          1.4         0.2
+## 3          4.7         3.2          1.3         0.2</code></pre>
+<ul>
+<li>matches(x, ignore.case = TRUE)</li>
+<li><strong>正規表現で指定</strong>してマッチする変数を持ってくる</li>
+</ul>
+</div>
+<div id="-num_range" class="section level2">
+<h2><span class="header-section-number">6.6</span> 列選択用関数: num_range()</h2>
+<pre class="r"><code>df &lt;- as.data.frame(matrix(1:30, nrow = 3, ncol = 10))
+colnames(df) &lt;- c(paste0(&quot;beer&quot;, 1:5), paste0(&quot;sake0&quot;, 1:5))
+ls(df)</code></pre>
+<pre><code>##  [1] &quot;beer1&quot;  &quot;beer2&quot;  &quot;beer3&quot;  &quot;beer4&quot;  &quot;beer5&quot;  &quot;sake01&quot; &quot;sake02&quot;
+##  [8] &quot;sake03&quot; &quot;sake04&quot; &quot;sake05&quot;</code></pre>
+<pre class="r"><code>dplyr::select(df, num_range(&quot;beer&quot;, 1:3, 1))</code></pre>
+<pre><code>## # A tibble: 3 × 3
+##   beer1 beer2 beer3
+##   &lt;int&gt; &lt;int&gt; &lt;int&gt;
+## 1     1     4     7
+## 2     2     5     8
+## 3     3     6     9</code></pre>
+<pre class="r"><code>dplyr::select(df, num_range(&quot;sake&quot;, 2:4, 2))</code></pre>
+<pre><code>## # A tibble: 3 × 3
+##   sake02 sake03 sake04
+##    &lt;int&gt;  &lt;int&gt;  &lt;int&gt;
+## 1     19     22     25
+## 2     20     23     26
+## 3     21     24     27</code></pre>
+<ul>
+<li>num_range(“文字列”, 対象の数値, 桁数)</li>
+<li>“beer1からbeer3まで”といった指定方法。桁数があるのがGood!</li>
+</ul>
+</div>
+<div id="-one_of" class="section level2">
+<h2><span class="header-section-number">6.7</span> 列選択用関数: one_of()</h2>
+<pre class="r"><code>vname &lt;- c(&quot;Petal.Length&quot;, &quot;Sepal.Width&quot;)
+df &lt;- dplyr::select(iris, one_of(vname))
+head(df, 3)</code></pre>
+<pre><code>## # A tibble: 3 × 2
+##   Petal.Length Sepal.Width
+## *        &lt;dbl&gt;       &lt;dbl&gt;
+## 1          1.4         3.5
+## 2          1.4         3.0
+## 3          1.3         3.2</code></pre>
+<ul>
+<li>変数名を文字列ベクトルでまとめて渡す時に使用。</li>
+<li>これで挟み込まずにそのままベクトルを指定してもエラーが出る</li>
+</ul>
+</div>
+<div id="-everything" class="section level2">
+<h2><span class="header-section-number">6.8</span> 列選択用関数: everything()</h2>
+<pre class="r"><code>df &lt;- as.data.frame(matrix(1:15, nrow = 3, ncol = 5))
+colnames(df) &lt;- c(&quot;touyama&quot;, &quot;hanazawa&quot;, &quot;komatsu&quot;, &quot;asumi&quot;, &quot;sakura&quot;)
+dplyr::select(df, everything())</code></pre>
+<pre><code>## # A tibble: 3 × 5
+##   touyama hanazawa komatsu asumi sakura
+##     &lt;int&gt;    &lt;int&gt;   &lt;int&gt; &lt;int&gt;  &lt;int&gt;
+## 1       1        4       7    10     13
+## 2       2        5       8    11     14
+## 3       3        6       9    12     15</code></pre>
+<pre class="r"><code>dplyr::select(df, hanazawa, touyama, everything())</code></pre>
+<pre><code>## # A tibble: 3 × 5
+##   hanazawa touyama komatsu asumi sakura
+##      &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;int&gt;  &lt;int&gt;
+## 1        4       1       7    10     13
+## 2        5       2       8    11     14
+## 3        6       3       9    12     15</code></pre>
+<ul>
+<li>全部持ってくる</li>
+</ul>
+<hr />
+<p>こういう使い方も。</p>
+<pre class="r"><code>head(dplyr::select(iris, kosaki=starts_with(&quot;Petal&quot;), everything()))</code></pre>
+<pre><code>## # A tibble: 6 × 5
+##   kosaki1 kosaki2 Sepal.Length Sepal.Width Species
+## *   &lt;dbl&gt;   &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;  &lt;fctr&gt;
+## 1     1.4     0.2          5.1         3.5  setosa
+## 2     1.4     0.2          4.9         3.0  setosa
+## 3     1.3     0.2          4.7         3.2  setosa
+## 4     1.5     0.2          4.6         3.1  setosa
+## 5     1.4     0.2          5.0         3.6  setosa
+## 6     1.7     0.4          5.4         3.9  setosa</code></pre>
+</div>
+</div>
+<div class="section level1">
+<h1><span class="header-section-number">7</span> 変数(列)を新規で作成、更新</h1>
+<div id="dplyrmutate" class="section level2">
+<h2><span class="header-section-number">7.1</span> dplyr::mutate()</h2>
+<pre class="r"><code>df &lt;- dplyr::mutate(iris, beer=Sepal.Width*2)
+head(df, 2)</code></pre>
+<pre><code>## # A tibble: 2 × 6
+##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species  beer
+## *        &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;  &lt;fctr&gt; &lt;dbl&gt;
+## 1          5.1         3.5          1.4         0.2  setosa     7
+## 2          4.9         3.0          1.4         0.2  setosa     6</code></pre>
+<pre class="r"><code>df &lt;- dplyr::mutate(df, beer=Sepal.Width*3)
+head(df, 2)</code></pre>
+<pre><code>## # A tibble: 2 × 6
+##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species  beer
+## *        &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;  &lt;fctr&gt; &lt;dbl&gt;
+## 1          5.1         3.5          1.4         0.2  setosa  10.5
+## 2          4.9         3.0          1.4         0.2  setosa   9.0</code></pre>
+<ul>
+<li>dplyr::mutate(データフレーム、変数名=処理内容)</li>
+<li>データフレームに新たに列を追加します</li>
+<li>変数名に既存の変数を指定すると上書きします</li>
+</ul>
+</div>
+<div id="dplyrmutate_each" class="section level2">
+<h2><span class="header-section-number">7.2</span> dplyr::mutate_each()</h2>
+<pre class="r"><code>df &lt;- dplyr::mutate_each(iris, funs(. * 2), -Species)
+kable(head(df,2))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">Sepal.Length</th>
+<th align="right">Sepal.Width</th>
+<th align="right">Petal.Length</th>
+<th align="right">Petal.Width</th>
+<th align="left">Species</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">10.2</td>
+<td align="right">7</td>
+<td align="right">2.8</td>
+<td align="right">0.4</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="even">
+<td align="right">9.8</td>
+<td align="right">6</td>
+<td align="right">2.8</td>
+<td align="right">0.4</td>
+<td align="left">setosa</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>dplyr::mutate_each(データフレーム、関数, …)</li>
+<li>複数の列に、関数の内容を一気にあてます</li>
+<li>…のところで変数を指定します
+<ul>
+<li>select()と同様に指定可能</li>
+</ul></li>
+</ul>
+</div>
+<div id="mutate" class="section level2">
+<h2><span class="header-section-number">7.3</span> (参考)その他のmutate関連関数</h2>
+<ul>
+<li>mutate_if(), mutate_at(), mutate_all()が追加されています</li>
+<li>dplyrを最新にして，ヘルプで確認してみてください</li>
+</ul>
+</div>
+</div>
+<div class="section level1">
+<h1><span class="header-section-number">8</span> レコード(行)を条件により抽出、並べ替え</h1>
+<div id="dplyrfilter" class="section level2">
+<h2><span class="header-section-number">8.1</span> dplyr::filter()</h2>
+<pre class="r"><code>df &lt;- dplyr::filter(iris, Species==&#39;virginica&#39;)
+head(df, 3)</code></pre>
+<pre><code>## # A tibble: 3 × 5
+##   Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
+## *        &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;    &lt;fctr&gt;
+## 1          6.3         3.3          6.0         2.5 virginica
+## 2          5.8         2.7          5.1         1.9 virginica
+## 3          7.1         3.0          5.9         2.1 virginica</code></pre>
+<ul>
+<li>dplyr::filter(データフレーム, 条件式)</li>
+<li>使い方はsubset()と同様</li>
+</ul>
+</div>
+<div id="dplyrarrange" class="section level2">
+<h2><span class="header-section-number">8.2</span> dplyr::arrange()</h2>
+<pre class="r"><code>df &lt;- dplyr::arrange(iris, Sepal.Length)
+head(df, 3)</code></pre>
+<pre><code>## # A tibble: 3 × 5
+##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## *        &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;  &lt;fctr&gt;
+## 1          4.3         3.0          1.1         0.1  setosa
+## 2          4.4         2.9          1.4         0.2  setosa
+## 3          4.4         3.0          1.3         0.2  setosa</code></pre>
+<pre class="r"><code>df &lt;- dplyr::arrange(df, desc(Sepal.Length))
+head(df, 3)</code></pre>
+<pre><code>## # A tibble: 3 × 5
+##   Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
+## *        &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;    &lt;fctr&gt;
+## 1          7.9         3.8          6.4         2.0 virginica
+## 2          7.7         3.8          6.7         2.2 virginica
+## 3          7.7         2.6          6.9         2.3 virginica</code></pre>
+<ul>
+<li>dplyr::arrange(データフレーム, キー列)で昇順</li>
+<li>dplyr::arrange(データフレーム, desc(キー列))で降順</li>
+</ul>
+</div>
+</div>
+<div class="section level1">
+<h1><span class="header-section-number">9</span> データを集計(要約)</h1>
+<div id="dplyrsummarize" class="section level2">
+<h2><span class="header-section-number">9.1</span> dplyr::summarize()</h2>
+<pre class="r"><code>df &lt;- dplyr::summarize(iris, varmean=mean(Sepal.Length))
+df</code></pre>
+<pre><code>## # A tibble: 1 × 1
+##    varmean
+##      &lt;dbl&gt;
+## 1 5.843333</code></pre>
+<ul>
+<li>dplyr::summarize(データフレーム, 新変数名=関数(処理対象の変数名))</li>
+<li>列の集計を算出</li>
+<li>使える関数はsum,sd,meanなど</li>
+</ul>
+</div>
+<div id="dplyrsummarize_each" class="section level2">
+<h2><span class="header-section-number">9.2</span> dplyr::summarize_each()</h2>
+<pre class="r"><code>df &lt;- dplyr::summarize_each(iris, funs(min, mean, max, sd), ends_with(&quot;Length&quot;))
+df</code></pre>
+<pre><code>## # A tibble: 1 × 8
+##   Sepal.Length_min Petal.Length_min Sepal.Length_mean Petal.Length_mean
+##              &lt;dbl&gt;            &lt;dbl&gt;             &lt;dbl&gt;             &lt;dbl&gt;
+## 1              4.3                1          5.843333             3.758
+## # ... with 4 more variables: Sepal.Length_max &lt;dbl&gt;,
+## #   Petal.Length_max &lt;dbl&gt;, Sepal.Length_sd &lt;dbl&gt;, Petal.Length_sd &lt;dbl&gt;</code></pre>
+<ul>
+<li>dplyr::summarize_each(データフレーム, funs(関数), 変数)</li>
+<li>変数で指定した各変数に対して、関数で集計した結果を返します</li>
+<li>変数の指定には、dplyr::select()での方法がそのまま使えます</li>
+</ul>
+</div>
+<div id="summarize" class="section level2">
+<h2><span class="header-section-number">9.3</span> (参考)その他のsummarize関連関数</h2>
+<ul>
+<li>summarize_if(), summarize_at(), summarize_all()が追加されています</li>
+<li>dplyrを最新にして，ヘルプで確認してみてください</li>
+</ul>
+</div>
+</div>
+<div class="section level1">
+<h1><span class="header-section-number">10</span> データをグループ化</h1>
+<div id="dplyrgroup_by" class="section level2">
+<h2><span class="header-section-number">10.1</span> dplyr::group_by()</h2>
+<pre class="r"><code>df &lt;- dplyr::group_by(iris, Species) %&gt;% 
+  dplyr::summarize(cmean=mean(Sepal.Length))
+df</code></pre>
+<pre><code>## # A tibble: 3 × 2
+##      Species cmean
+##       &lt;fctr&gt; &lt;dbl&gt;
+## 1     setosa 5.006
+## 2 versicolor 5.936
+## 3  virginica 6.588</code></pre>
+<ul>
+<li>dplyr::group_by(データフレーム、グループ化に使う変数)</li>
+<li>これを当てると、データがグループ化されます</li>
+<li>この後にグループごとにやりたい処理を実行すると、このようになります</li>
+</ul>
+</div>
+</div>
+<div class="section level1">
+<h1><span class="header-section-number">11</span> 複数のデータセットを結合</h1>
+<div class="section level2">
+<h2><span class="header-section-number">11.1</span> データセットの準備</h2>
+<ul>
+<li>例として、以下のデータフレームを使います</li>
+</ul>
+<pre class="r"><code>a &lt;- data.frame(x1=c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;),x2=1:3)
+b &lt;- data.frame(x1=c(&quot;A&quot;,&quot;B&quot;,&quot;D&quot;),x3=c(TRUE, FALSE, TRUE))
+y &lt;- data.frame(x1=c(&quot;A&quot;,&quot;B&quot;,&quot;C&quot;),x2=1:3)
+z &lt;- data.frame(x1=c(&quot;B&quot;,&quot;C&quot;,&quot;D&quot;),x2=2:4)</code></pre>
+<ul>
+<li>aとbを結合する場合、共通する変数はx1<br />
+x1をキーにして、mergeします</li>
+<li>yとzを結合する場合、変数は共通です 行を追加してまとめる、あるいは列を追加してまとめます</li>
+</ul>
+</div>
+<div id="dplyrfull_join" class="section level2">
+<h2><span class="header-section-number">11.2</span> dplyr::full_join()</h2>
+<pre class="r"><code>df &lt;- dplyr::full_join(a,b,by=&quot;x1&quot;)</code></pre>
+<pre><code>## Warning in full_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining
+## factors with different levels, coercing to character vector</code></pre>
+<pre class="r"><code>kable(df)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">x1</th>
+<th align="right">x2</th>
+<th align="left">x3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">B</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+</tr>
+<tr class="odd">
+<td align="left">C</td>
+<td align="right">3</td>
+<td align="left">NA</td>
+</tr>
+<tr class="even">
+<td align="left">D</td>
+<td align="right">NA</td>
+<td align="left">TRUE</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>dplyr::full_join(データフレーム1, データフレーム2, by=キー変数)</li>
+<li>全ての行と列を結合します</li>
+<li>該当するものがない場合、<code>NA</code>がはいります</li>
+</ul>
+</div>
+<div id="dplyrinner_join" class="section level2">
+<h2><span class="header-section-number">11.3</span> dplyr::inner_join()</h2>
+<pre class="r"><code>df &lt;- dplyr::inner_join(a,b,by=&quot;x1&quot;)</code></pre>
+<pre><code>## Warning in inner_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining
+## factors with different levels, coercing to character vector</code></pre>
+<pre class="r"><code>kable(df)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">x1</th>
+<th align="right">x2</th>
+<th align="left">x3</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A</td>
+<td align="right">1</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">B</td>
+<td align="right">2</td>
+<td align="left">FALSE</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>dplyr::full_join(データフレーム1, データフレーム2, by=キー変数)</li>
+<li>両方のデータフレームに存在する行のみを残して結合します</li>
+</ul>
+</div>
+<div id="dplyrbind_cols" class="section level2">
+<h2><span class="header-section-number">11.4</span> dplyr::bind_cols()</h2>
+<pre class="r"><code>df &lt;- dplyr::bind_cols(y, z)
+kable(df)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">x1</th>
+<th align="right">x2</th>
+<th align="left">x1</th>
+<th align="right">x2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A</td>
+<td align="right">1</td>
+<td align="left">B</td>
+<td align="right">2</td>
+</tr>
+<tr class="even">
+<td align="left">B</td>
+<td align="right">2</td>
+<td align="left">C</td>
+<td align="right">3</td>
+</tr>
+<tr class="odd">
+<td align="left">C</td>
+<td align="right">3</td>
+<td align="left">D</td>
+<td align="right">4</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>左のデータフレームに右のデータフレームの<strong>列を追加</strong>します</li>
+<li>行数が一致してないとエラーになります</li>
+</ul>
+</div>
+<div id="dplyrbind_rows" class="section level2">
+<h2><span class="header-section-number">11.5</span> dplyr::bind_rows()</h2>
+<pre class="r"><code>df &lt;- dplyr::bind_rows(y, z)</code></pre>
+<pre><code>## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character</code></pre>
+<pre class="r"><code>kable(df)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">x1</th>
+<th align="right">x2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">A</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">B</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">C</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">B</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">C</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">D</td>
+<td align="right">4</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>左のデータフレームに右のデータフレームの<strong>行を追加</strong>します</li>
+<li>列数が一致してないとエラーになります</li>
+</ul>
+</div>
+<div id="dplyrbind_row-.id" class="section level2">
+<h2><span class="header-section-number">11.6</span> dplyr::bind_row(…, .id=)</h2>
+<pre class="r"><code>df &lt;- dplyr::bind_rows(y, z, .id = &quot;df_id&quot;)</code></pre>
+<pre><code>## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character</code></pre>
+<pre class="r"><code>kable(df)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">df_id</th>
+<th align="left">x1</th>
+<th align="right">x2</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">A</td>
+<td align="right">1</td>
+</tr>
+<tr class="even">
+<td align="left">1</td>
+<td align="left">B</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">1</td>
+<td align="left">C</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left">B</td>
+<td align="right">2</td>
+</tr>
+<tr class="odd">
+<td align="left">2</td>
+<td align="left">C</td>
+<td align="right">3</td>
+</tr>
+<tr class="even">
+<td align="left">2</td>
+<td align="left">D</td>
+<td align="right">4</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>引数として<code>.id=**</code>を指定すると、テーブルidを変数として作成してくれます</li>
+<li>これ、めっちゃ便利です</li>
+</ul>
+</div>
+</div>
+<div id="widelong" class="section level1">
+<h1><span class="header-section-number">12</span> wide型(横型)とlong型(縦型)を変換</h1>
+<div id="tidyrgather" class="section level2">
+<h2><span class="header-section-number">12.1</span> tidyr::gather()</h2>
+<pre class="r"><code>df &lt;- tidyr::gather(data=iris, key = keykey, value = valuevalue, -Species)
+kable(head(df, 4))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Species</th>
+<th align="left">keykey</th>
+<th align="right">valuevalue</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">setosa</td>
+<td align="left">Sepal.Length</td>
+<td align="right">5.1</td>
+</tr>
+<tr class="even">
+<td align="left">setosa</td>
+<td align="left">Sepal.Length</td>
+<td align="right">4.9</td>
+</tr>
+<tr class="odd">
+<td align="left">setosa</td>
+<td align="left">Sepal.Length</td>
+<td align="right">4.7</td>
+</tr>
+<tr class="even">
+<td align="left">setosa</td>
+<td align="left">Sepal.Length</td>
+<td align="right">4.6</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>data: 使用するデータフレーム</li>
+<li>key: まとめた時に、「この行の値はどの変数に入ってたものか」を示す変数。</li>
+<li>value: まとめた変数の値。</li>
+<li>…: まとめる変数を指定します。dplyr::select()のテクニックがそのまま使えます</li>
+</ul>
+</div>
+<div id="tidyrspread" class="section level2">
+<h2><span class="header-section-number">12.2</span> tidyr::spread()</h2>
+<pre class="r"><code># irisにID列を追加して、gatherでまとめている
+df &lt;- dplyr::mutate(iris, id=rownames(iris)) %&gt;% 
+  tidyr::gather(key = keykey, value = valuevalue, contains(&quot;l.&quot;))
+knitr::kable(head(df,2))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Species</th>
+<th align="left">id</th>
+<th align="left">keykey</th>
+<th align="right">valuevalue</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">setosa</td>
+<td align="left">1</td>
+<td align="left">Sepal.Length</td>
+<td align="right">5.1</td>
+</tr>
+<tr class="even">
+<td align="left">setosa</td>
+<td align="left">2</td>
+<td align="left">Sepal.Length</td>
+<td align="right">4.9</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># ひっつけたけどspreadでバラします
+df_2 &lt;- tidyr::spread(df, key = keykey, value = valuevalue)
+knitr::kable(head(df_2,2))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Species</th>
+<th align="left">id</th>
+<th align="right">Petal.Length</th>
+<th align="right">Petal.Width</th>
+<th align="right">Sepal.Length</th>
+<th align="right">Sepal.Width</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">setosa</td>
+<td align="left">1</td>
+<td align="right">1.4</td>
+<td align="right">0.2</td>
+<td align="right">5.1</td>
+<td align="right">3.5</td>
+</tr>
+<tr class="even">
+<td align="left">setosa</td>
+<td align="left">10</td>
+<td align="right">1.5</td>
+<td align="right">0.1</td>
+<td align="right">4.9</td>
+<td align="right">3.1</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>gatherと逆の動きをします</li>
+<li>ただし、<strong>spreadを実行した後に、主キーとなるような変数が存在する必要</strong>があります</li>
+<li>データベース的なものがあるんだと思います</li>
+</ul>
+</div>
+</div>
+<div class="section level1">
+<h1><span class="header-section-number">13</span> 列の結合・分離</h1>
+<div id="tidyrunite" class="section level2">
+<h2><span class="header-section-number">13.1</span> tidyr::unite</h2>
+<pre class="r"><code>df &lt;- tidyr::unite(data = iris, col = colll, starts_with(&quot;Sepal&quot;), sep = &quot;-&quot;)
+knitr::kable(head(df))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">colll</th>
+<th align="right">Petal.Length</th>
+<th align="right">Petal.Width</th>
+<th align="left">Species</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">5.1-3.5</td>
+<td align="right">1.4</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="even">
+<td align="left">4.9-3</td>
+<td align="right">1.4</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="odd">
+<td align="left">4.7-3.2</td>
+<td align="right">1.3</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="even">
+<td align="left">4.6-3.1</td>
+<td align="right">1.5</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="odd">
+<td align="left">5-3.6</td>
+<td align="right">1.4</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="even">
+<td align="left">5.4-3.9</td>
+<td align="right">1.7</td>
+<td align="right">0.4</td>
+<td align="left">setosa</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>複数の列をひっつけて一つの列にします</li>
+</ul>
+</div>
+<div id="tidyrseparate" class="section level2">
+<h2><span class="header-section-number">13.2</span> tidyr::separate</h2>
+<pre class="r"><code># 一旦ひっつけます(uniteのコードと同一)
+df &lt;- tidyr::unite(data = iris, col = colll, starts_with(&quot;Sepal&quot;), sep = &quot;-&quot;)
+
+# separateを実行
+df2 &lt;- tidyr::separate(data = df, col = colll, into = c(&quot;Sepal.Length&quot;,&quot;Sepal.Width&quot;), sep = &quot;-&quot;)
+knitr::kable(head(df2))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Sepal.Length</th>
+<th align="left">Sepal.Width</th>
+<th align="right">Petal.Length</th>
+<th align="right">Petal.Width</th>
+<th align="left">Species</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">5.1</td>
+<td align="left">3.5</td>
+<td align="right">1.4</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="even">
+<td align="left">4.9</td>
+<td align="left">3</td>
+<td align="right">1.4</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="odd">
+<td align="left">4.7</td>
+<td align="left">3.2</td>
+<td align="right">1.3</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="even">
+<td align="left">4.6</td>
+<td align="left">3.1</td>
+<td align="right">1.5</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="odd">
+<td align="left">5</td>
+<td align="left">3.6</td>
+<td align="right">1.4</td>
+<td align="right">0.2</td>
+<td align="left">setosa</td>
+</tr>
+<tr class="even">
+<td align="left">5.4</td>
+<td align="left">3.9</td>
+<td align="right">1.7</td>
+<td align="right">0.4</td>
+<td align="left">setosa</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>一つの列を、指定した文字で分割して別々の列にします</li>
+</ul>
+</div>
+</div>
+<div class="section level1">
+<h1><span class="header-section-number">14</span> 参考資料</h1>
+<div id="rstudio" class="section level2">
+<h2><span class="header-section-number">14.1</span> RStudio謹製チートシート</h2>
+<p><a href="https://www.rstudio.com/resources/cheatsheets/" class="uri">https://www.rstudio.com/resources/cheatsheets/</a></p>
+<ul>
+<li>「Data Wrangling Cheat Sheet」というのがdplyr&amp;tidyrのチートシート</li>
+<li>正直、これ1枚あれば今日の説明は不要です</li>
+<li>英語がいやなら、日本語もあります(Data Wranglingのみ, pdf)</li>
+</ul>
+<p><a href="https://www.rstudio.com/wp-content/uploads/2015/09/data-wrangling-japanese.pdf" class="uri">https://www.rstudio.com/wp-content/uploads/2015/09/data-wrangling-japanese.pdf</a></p>
+</div>
+<div id="web" class="section level2">
+<h2><span class="header-section-number">14.2</span> その他のWeb上にある資料</h2>
+<ul>
+<li><a href="https://rpubs.com/kazutan/dplyr_select_sf">dplyr::selectのSpecial Functionsについて</a><br />
+select()内で使える関数を、今回のスライドよりも少しだけ丁寧に説明しています</li>
+<li><a href="https://rpubs.com/kazutan/tidyr_memo">{tidyr}でよく使う関数のメモ</a><br />
+tidyrのよく使う関数を、今回のスライドよりも少しだけ丁寧に説明しています</li>
+</ul>
+</div>
+<div id="enjoy" class="section level2">
+<h2><span class="header-section-number">14.3</span> Enjoy!</h2>
+</div>
+</div>
+
+<p>Copyright &copy; 2017 Kazuhiro Maeda. </p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

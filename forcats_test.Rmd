@@ -1,0 +1,912 @@
+---
+title: "{forcats}パッケージでカテゴリカル変数(factor型データ)をいじってみる"
+---
+
+```{css}
+dt {
+  clear: left;
+  float: left;
+  width: 15%;
+  font-weight: bold;
+  text-align: right;
+  padding: 3px 15px 3px 0;
+}
+dd {
+  margin: 0 0 0 20%;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      collapse = TRUE,
+                      comment = "#>")
+```
+
+`tidyverse`パッケージ群のひとつで，カテゴリカル変数(Factor型データ)をいじるのに特化したものとして`forcats`パッケージがあります。開発の経緯や詳細はパッケージの公式サイト，および「R for Data Science」のFactorsの章をご覧ください:
+
+- [Tools for Working with Categorical Variables (Factors) &bull; forcats](http://forcats.tidyverse.org/)
+- [15 Factors - R for Data Science](http://r4ds.had.co.nz/factors.html)
+
+今回は，[公式サイトの関数リファレンス](http://forcats.tidyverse.org/reference/index.html)を参考に，自分向けのメモがてらテストします。
+
+## インストール
+
+CRANに登録済み。また，`tidyverse`パッケージ群なので`tidyverse`をインストールすることでも可能。
+
+```{r, eval=FALSE}
+# {tidyverse}をインストールすれば自動的にインストールされます:
+install.packages("tidyverse")
+
+# もちろん，単独でもOK:
+install.packages("forcats")
+
+# 開発版が欲しい時はGitHubから:
+# install.packages("devtools")
+devtools::install_github("tidyverse")
+
+# もちろん{githubinstall}でもOK
+# hadrey版とtidyverse版がありますが，たぶんtidyverse版の方がいいかと:
+# install.packages("githubinstall")
+githubinstall::githubinstall("forcats")
+```
+
+## パッケージの読み込み
+
+`tidyverse`パッケージ群ですが，`library(tidyverse)`だけでは読み込みません。でもおそらくはそれらを利用することでしょうから，あわせて読み込んでおくといいかと。
+
+```{r, message=FALSE}
+library(tidyverse)
+library(forcats)
+```
+
+## 関数一覧のチェック
+
+exportされている関数をチェック。
+
+```{r}
+ls("package:forcats")
+```
+
+関数のリファレンスは，[公式サイトのこちら](http://forcats.tidyverse.org/reference/index.html)に一覧と説明があります。
+
+## 使用するデータ
+簡単なものについては，その場でさくっと作ります。
+
+大きめのデータでやりたいときは，`forcats`パッケージに内包されている`gss_cat`データを使ってます。データの内容については`?gss_cat`で表示されるヘルプを確認してください。
+
+```{r}
+gss_cat
+names(gss_cat)
+```
+
+
+## factorのorderを変更 {#change_order}
+
+factorに設定してあるlevelsはそのままで，順序(order)を変更します。モデリングや表，可視化において効果を発揮します。
+
+
+### 登場順でfactorのlevelsを再整理(`fct_inorder`) {#fct_inorder}
+
+いわゆる"出てきた順"でlevelsのorderを設定するには，`fct_inorder()`関数を使用します
+
+#### 使い方
+
+```
+fct_inorder(f)
+```
+
+#### 引数
+
+f
+
+:  factor型のデータ。levelsを並べ替えたいデータを指定してください。
+
+#### 説明と具体例
+
+そのまんまで，引数に指定したfactor型データのレベルを，要素が出てきた順にします。
+
+```{r}
+f <- factor(c("b", "b", "a", "c", "c", "c"))
+f
+fct_inorder(f)
+```
+
+
+### 登場頻度順でfactorのlevelsを再整理(`fct_infreq`) {#fct_infreq}
+
+データ内で出てきた"頻度が多い順"でlevelsのorderを設定するには，`fct_infreq()`関数を使用します。
+
+#### 使い方
+
+```
+fct_infreq(f)
+```
+
+#### 引数
+
+f
+:  factor型のデータ。levelsを並べ替えたいデータを指定してください。
+
+#### 説明と具体例
+
+そのまんまで，引数に指定したfactor型データのレベルを，要素が出てきた順にします。
+
+```{r}
+f <- factor(c("b", "b", "a", "c", "c", "c"))
+f
+fct_infreq(f)
+```
+
+
+### 手作業でfactorのlevelsを再整理(`fct_relevel`) {#fct_relevel}
+
+levelsの順番を，手作業で並べ替えます。
+
+#### 使い方
+
+```
+fct_relevel(f, ...)
+```
+
+#### 引数
+
+f
+:  factor型のデータ。levelsを並べ替えたいベクトルを指定してください。
+
+...
+:  文字列ベクトルを指定。指定した値を，levelsの左側(先頭)へ持って行き，それ以外は後ろへシフトします。
+
+#### 説明と具体例
+
+要するに`base::relevel()`のラッパーで，`...`の部分で指定した値を前に持ってくるようになります。なお，全ての要素を準備してわざわざ指定しなくても，指定しなかった要素は自動的に後ろへそのままシフトします。
+
+```{r}
+f <- factor(c("a", "b", "c"))
+fct_relevel(f)
+fct_relevel(f, "c")
+fct_relevel(f, "b", "a")
+```
+
+また，存在しないlevelsの値を指定すると警告が出て，その要素は無視されます。
+
+```{r}
+fct_relevel(f, "d")
+fct_relevel(f, "b", "d")
+fct_relevel(f, "d", "b")
+```
+
+
+### 他の1変数に従ってソートするようlevelsを再整列(`fct_reorder`) {#fct_reorder}
+
+他の変数を使って，levelsをソートします。例えば「各カテゴリでのxの中央値を使い，その降順になるようにlevelsをソートしたい」という時に使います。
+
+#### 使い方
+
+```
+fct_reorder(f, x, fun = median, ..., .desc = FALSE)
+```
+
+#### 引数
+
+f
+:  factor型のベクトル。
+
+x
+:  並べ替えの基準に利用する変数。この変数を下の`fun`で指定する集計用関数にあてた結果をソートに利用します。
+
+fun
+:  集計用関数を指定。デフォルトでは`median`。なお返り値が単一ベクトルになるものでなければいけません。
+
+...
+:  `fun`に送る他の引数をここで指定します。よくあるのは`na.rm = TRUE`などです。
+
+.desc
+:  論理値を指定。降順/昇順を指定します。デフォルトは`FALSE`で**昇順**。
+
+#### 説明と具体例
+
+1次元データでのグラフを描くときや，集計表を作成するときに効果を発揮するでしょう。例えば，以下のようなパターンを想定します:
+
+```{r}
+boxplot(Sepal.Width ~ Species, data = iris)
+```
+
+ここで，「`Sepal.Width`の大きさの順番でX軸を並べ替えたい」時に，以下のように使います:
+
+```{r}
+boxplot(Sepal.Width ~ fct_reorder(Species, Sepal.Width), data = iris)
+```
+
+また，デフォルトでは中央値を使っていますが，変更も可能です:
+
+```{r}
+boxplot(Sepal.Width ~ fct_reorder(Species, Sepal.Width, fun = sample, size = 1), data = iris)
+```
+
+もし，降順にしたい場合は，以下のように当ててください:
+
+```{r}
+boxplot(Sepal.Width ~ fct_reorder(Species, Sepal.Width, .desc = TRUE), data = iris)
+```
+
+これらはもちろん`ggplot2`でも有効です。以下のようなパターンを想定します:
+
+```{r}
+library(ggplot2)
+ggplot(iris, aes(Species, Sepal.Width)) +
+  geom_boxplot()
+```
+
+先ほどと同様に変更します:
+
+```{r}
+ggplot(iris, aes(fct_reorder(Species, Sepal.Width), Sepal.Width)) +
+  geom_boxplot() +
+  labs(x = "Species")
+```
+
+なお，2変数をキーとする場合は，[`fct_reorder2`](#fct_reorder2)を使います。
+
+
+### 他の2変数に従ってソートするようlevelsを再整列(`fct_reorder2`) {#fct_reorder2}
+
+他の変数を使って，levelsをソートします。[`fct_reorder`](#fct_reorder)との違いは，ソートに利用する変数が2つだという点です。
+
+#### 使い方
+
+```
+fct_reorder2(f, x, y, fun = last2, ..., .desc = FALSE)
+```
+
+#### 引数
+
+f
+:  factor型のベクトル。
+
+x, y
+:  並べ替えの基準に利用する変数。この変数を下の`fun`で指定する集計用関数にあてた結果をソートに利用します。
+
+fun
+:  集計用関数を指定。デフォルトに設定してある`last2`はこのパッケージ内にある関数(後述)。
+
+...
+:  `fun`に送る他の引数をここで指定します。よくあるのは`na.rm = TRUE`などです。
+
+.desc
+:  論理値を指定。降順/昇順を指定します。デフォルトは`FALSE`で**降順**。
+
+#### 説明と具体例
+
+基本的な考え方は[`fct_reorder`](#fct_reorder)と同様です。
+
+なお，引数`fun`のデフォルトに設定している`last2`という関数は，[以下のように定義してあります](https://github.com/tidyverse/forcats/blob/master/R/reorder.R#L65-L67):
+
+```
+last2 <- function(x, y) {
+  y[order(x, na.last = FALSE)][length(y)]
+}
+```
+
+つまり**xの昇順に従ってyをソートし，それの一番下の要素を返す**という関数です[^1]。これを各factorの要素ごとに`tapply`して求めた値を使い，levelsの値を並べ替えています。もちろん`median`や`mean`などの関数を当てることも可能です。
+
+[^1]: たぶん「2変数での一番大きい値」というニュアンスで`last2`とつけているんでしょうけど…それでいいのかという思いがあります。
+
+これが最も効果を発揮するのは，凡例に当てているカテゴリカル変数をソートしたい時などでしょう。例えば，以下のようなパターンを想定します:
+
+```{r}
+chks <- subset(ChickWeight, as.integer(Chick) < 10)
+chks <- transform(chks, Chick = fct_shuffle(Chick))
+
+ggplot(chks, aes(Time, weight, colour = Chick)) +
+  geom_point() +
+  geom_line()
+```
+
+凡例のところを見ると，データのlevels設定そのままに順序が決定されており，グラフに描かれているのとマッチングがしにくくなります。
+
+そこで，Times(x軸)とweight(y軸)の大きい要素に対応するようChick(color要素，凡例のこと)のlevelsを設定します:
+
+```{r}
+ggplot(chks, aes(Time, weight, colour = fct_reorder2(Chick, Time, weight))) +
+  geom_point() +
+  geom_line() +
+  labs(colour = "Chick")
+```
+
+各系列(factorの各levels)の一番右の要素を用いて，降順になるようlevelsが並べ替えられます。
+
+
+### levelsの順序を反転(`fct_rev`) {#fct_rev}
+
+順序を反転させます。
+
+#### 使い方
+
+```
+fct_rev(f)
+```
+
+#### 引数
+
+f
+:  factor型のベクトル。
+
+#### 説明と具体例
+
+タイトルのとおりです。factor型データを利用したプロットで使えるでしょう。
+
+```{r}
+f <- factor(c("a", "b", "c"))
+fct_rev(f)
+```
+
+
+### 順序付きfactorデータのlevelsの順序をずらす(`fct_shift`) {#fct_shift}
+
+順序付きfactorデータで，そのlevelsをずらしていきます。回転するイメージです。
+
+#### 使い方
+
+```
+fct_shift(f, n = 1L)
+
+```
+
+#### 引数
+
+f
+:  factor型のベクトル。
+
+n
+:  ずらす(回転させる)数。正の値なら左へシフトし，負の値なら右へシフトします。
+
+#### 説明と具体例
+
+例えば曜日名や月名など，循環するような場合に効果を発揮します。たとえば，以下のようなデータを想定します:
+
+```{r}
+x <- factor(
+  c("Mon", "Tue", "Wed"),
+  levels = c("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"),
+  ordered = TRUE
+)
+x
+```
+
+これを，一つ左へずらしてみます:
+
+```{r}
+fct_shift(x)
+```
+
+ずらしたい数を指定することも可能です:
+
+```{r}
+fct_shift(x, n = 2)
+```
+
+左ではなく右へずらす場合は，負の値にします:
+
+```{r}
+fct_shift(x, n = -2)
+```
+
+
+### 順番をシャッフル(`fct_shuffle`) {#fct_shuffle}
+
+シャッフルします。
+
+#### 使い方
+
+```
+fct_shuffle(f)
+```
+
+#### 引数
+
+f
+:  factor型のベクトル
+
+#### 説明と具体例
+
+levelsの値をシャッフルします。元のデータ値はシャッフルされません。
+
+```{r}
+f <- factor(c("a", "b", "c"))
+fct_shuffle(f)
+fct_shuffle(f)
+```
+
+
+## factorのlevelsの値を変更 {#change_levels}
+
+順番を(可能な限り)保持したまま，levelsの値を変更させます。
+
+
+### factorのlevelsの値を匿名化(`fct_anon`) {#fct_anon}
+
+levelsの値を適当な連番に**ランダムに**置換して，元のがlevelsの値をわからないようにします。
+
+#### 使い方
+
+```
+fct_anon(f, prefix = "")
+```
+
+#### 引数
+
+f
+: factor型のベクトル。
+
+prefix
+: ランダムなラベルの前に付与する文字列。
+
+#### 説明と具体例
+
+上記のとおりです。なおlevelsの値も元々のlevelsのorderも保持されません。「factorのlevelsをちょっとそのままでは出せないなぁ」という時に活用できます。
+
+たとえば，以下のようなデータを想定します:
+
+```{r}
+gss_cat$relig %>% fct_count()
+```
+
+これに対し，`fct_anon()`を挟むとこうなります:
+
+```{r}
+gss_cat$relig %>% fct_anon() %>% fct_count()
+```
+
+このように，levelsの値が連番の数値に書き換えられたというのが解ると思います。また，カウント数を比較してもらえばわかるように，その連番の与え方はランダムになっています。
+
+なお，連番の前に好きな文字列をつけることが可能です:
+
+```{r}
+gss_cat$relig %>% fct_anon("kosaki") %>% fct_count()
+```
+
+
+### factorのlevelsを手動で落とし込み(`fct_collapse`) {#fct_collapse}
+
+自分で定義したlevelsのグループへ，factorの値を落とし込みします。
+
+#### 使い方
+
+```
+fct_collapse(f, ...)
+```
+
+#### 引数
+
+f
+:  factor型のベクトル
+
+...
+:  名前付きベクトルのシリーズ。それぞれのベクトル内にあるlevelsの値が，指定したものへと置換されます。
+
+#### 説明と具体例
+
+要するに，「複数のlevelsをまとめて一つのlevelsになるようにまとめていく」ことをしてくれます。たとえば，以下のようなデータを想定します:
+
+```{r}
+fct_count(gss_cat$partyid)
+```
+
+現在10のlevelsがあります。これを5つにまとめていきます:
+
+```{r}
+partyid2 <- fct_collapse(gss_cat$partyid,
+  missing = c("No answer", "Don't know"),
+  other = "Other party",
+  rep = c("Strong republican", "Not str republican"),
+  ind = c("Ind,near rep", "Independent", "Ind,near dem"),
+  dem = c("Not str democrat", "Strong democrat")
+)
+fct_count(partyid2)
+```
+
+このようになります。なお，もちろんこの処理により**新たに振り分けたlevelsの値へと実際の値も変換されます**ので注意してください。
+
+```{r}
+head(partyid2)
+```
+
+
+### 小さい/大きいlevels項目をotherに固める(`fct_lump`) {#fct_lump}
+
+上位あるいは下位の要素を，「other(その他)」と塊(lump)にくくります。
+
+#### 使い方
+
+```
+fct_lump(f, n, prop, other_level = "Other", ties.method = c("min","average", "first", "last", "random", "max"))
+```
+
+#### 引数
+
+f
+: factor型のベクトル
+
+n, prop
+: `n`は，その他(other)にしない残すlevels数を指定します。正の値であれば，メジャーなlevelsを`abs(n)`だけ残し，負の値であれば，マイナーなlevelsを`abs(n)`だけ残します。  
+`prop`は，その他(other)にするlevelsのカットポイント比率を指定します。各levelsの発生数/全発生数を算出し，それと`prop`で指定した比率とを比較していきます。  
+正の値であれば，構成比率がカットポイント(`prop`)より低いlevelsを全て"Other"にし，負の値であれば，カットポイントを反転させた正の値(`-prep`)より構成比率が大きいlevelsを全て"Other"にします。
+
+other_level
+: その他(Other)に設定するlevelsの値。
+
+ties.method
+: 頻度が同値のlevelsについてどのようなmethodを用いてランク付けするかを文字列で指定します。詳しくは`?base::rank`を参照。
+
+#### 説明と具体例
+
+要するに，「細かいのは全て"その他"にしてしまおう」というのを実現するものです。以下のようなデータを想定します:
+
+```{r}
+
+x <- factor(letters[rpois(100, 5)])
+x
+table(x)
+```
+
+この`x`に，`fct_lump()`をあてると以下のようになります:
+
+```{r}
+fct_lump(x)
+table(fct_lump(x))
+```
+
+このように，少数の発生数しかないlevelsは`Other`へとまとめられます。なお，まとめられた`Other`はlevelsで一番後ろになります。
+
+まとめる基準についてですが，デフォルトでは，**Otherにまとめた際に，Otherが各レベルで最小となる**ように，自動でカットポイントが設定されます。上のパターンの場合，Otherの次に大きいのを取り込んでしまうと，Otherが一番小さくならないためにここでストップしています。
+
+引数にある`n`を指定することで，残すlevels数を指定することができます。正の値を指定すると，頻度順で大きい方から`n`個残して，残りを`Other`にまとめます:
+
+```{r}
+fct_lump(x, n = 3)
+table(fct_lump(x, n = 3))
+```
+
+ここで`n`に負の値を指定すると，頻度順で小さい方から`n`個残して，残りを`Other`にまとめます:
+
+```{r}
+fct_lump(x, n = -3)
+table(fct_lump(x, n = -3))
+```
+
+このように個数でカットポイントを指定するのではなく，発生確率でカットポイントを指定するには引数`prop`を利用します。まず，各levelsの発生数/全発生数でlevelsごとの発生確率が算出され，それと`prop`で指定した確率とを比較してジャッジします:
+
+```{r}
+# 参考までに発生確率を算出
+kosaki <- table(x)
+kosaki/sum(kosaki)
+```
+
+ここで，カットポイントとして`prop = 0.1`を指定すると，発生確率が`0.1`以下のlevelsを全てOtherにまとめます:
+
+```{r}
+# propを使ってまとめる
+fct_lump(x, prop = 0.1)
+table(fct_lump(x, prop = 0.1))
+```
+
+また，この`prep`に負の値を指定すると，(正の値へ変換した)カットポイントの確率より大きいものを全てOtherにまとめます:
+
+```{r}
+fct_lump(x, prop = -0.1)
+table(fct_lump(x, prop = -0.1))
+```
+
+`n`と`prop`の両方を指定した場合，[ソースコード](https://github.com/tidyverse/forcats/blob/master/R/lump.R#L53-L72)を見る限り`n`を優先して処理するようです(2017/01/13現在)。
+
+もし発生頻度が同一のlevelsがある場合，`ties.method`にてランク付けmethodを指定できます。これは`base::rank()`に従いますので，そちらを参照してください。
+
+なお，"Other"のlevelsの値は`other_levels`にて指定できます。
+
+### factorのlevelsの値を手動で変更(`fct_recode`) {#fct_recode}
+
+levelsの各値を手動で変更します。
+
+#### 使い方
+
+```
+fct_recode(f, ...)
+```
+
+#### 引数
+
+f
+: factor型のベクトル
+
+...
+: 新しく設定するlevels値を名前付き文字列ベクトルで指定。
+
+#### 説明と具体例
+
+そのままです:
+
+```{r}
+x <- factor(c("apple", "bear", "banana", "dear"))
+fct_recode(x, fruit = "apple", fruit = "banana")
+```
+
+なお存在しないlevels値を使用すると警告が出て，その部分は無視されます:
+
+```{r}
+fct_recode(x, fruit = "apple", fruit = "bananana")
+```
+
+また，新しいlevels値に`NULL`を指定すると，そのレベルが削除されて値も削除されます:
+
+```{r}
+fct_recode(x, NULL = "apple", fruit = "banana")
+```
+
+
+## 新しいlevelsを追加 {#add_levels}
+
+新しいlevelsの値を追加します。
+
+### factorにlevelsを追加(`fct_expand`) {#fct_expand}
+
+そのまんまです。
+
+#### 使い方
+
+```
+fct_expand(f, ...)
+
+```
+
+#### 引数
+
+f
+: factor型のベクトル。
+
+...
+: 追加したいlevels値を文字列で指定。
+
+#### 説明と具体例
+
+そのまんまです。
+
+```{r}
+f <- factor(sample(letters[1:3], 20, replace = TRUE))
+f
+fct_expand(f, "d", "e", "f")
+fct_expand(f, letters[1:6])
+```
+
+
+### NAに"欠損値"というlevelsを付与(`fct_explicit_na`) {#fct_explicit_na}
+
+factor型データ内に`NA`が存在する場合，その値に"(Missing)"というlevels値をつけます。
+
+#### 使い方
+
+```
+fct_explicit_na(f, na_level = "(Missing)")
+```
+
+#### 引数
+
+f
+: factor型のベクトル。
+
+na_level
+: `NA`に設定するlevels値
+
+#### 説明と具体例
+
+`NA`は通常levelsがうまく付与することができなかったりします:
+
+```{r}
+f1 <- factor(c("a", "a", NA, NA, "a", "b", NA, "c", "a", "c", "b"))
+f1
+table(f1)
+```
+
+この関数は，そんな`NA`に明示的にlevelsの値を振れるようにするものです:
+
+```{r}
+f2 <- fct_explicit_na(f1)
+f2
+table(f2)
+```
+
+要するに，「`NA`を別の文字列に置換して，そのままlevelsの値に設定する」という処理を行ってくれます。
+
+
+## その他
+
+
+### 複数のfactorデータを連結してlevelsを結合(`fct_c`) {#fct_c}
+
+複数のfactor型データをまとめたlistデータの内部を参照し，それを連結させてlevelsも結合させます。
+
+#### 使い方
+
+```
+fct_c(fs)
+```
+
+#### 引数
+
+fs
+: factor型ベクトルを束ねたlist型データ
+
+#### 説明と具体例
+
+タイトルのとおりで，自動的にいい感じにまとめてくれます:
+
+```{r}
+fs <- list(factor("a"), factor("b"), factor(c("a", "b")))
+fct_c(fs)
+```
+
+
+### factorの各要素の出現数をカウント(`fct_count`) {#fct_count}
+
+タイトルのとおりで，factor型に特化したcount関数です。
+
+#### 使い方
+
+```
+fct_count(f, sort = FALSE)
+
+```
+
+#### 引数
+
+f
+: factor型のベクトル
+
+sort
+: `TRUE`を指定すると，頻度の降順でソートします。
+
+#### 説明と具体例
+
+タイトルのとおりですが，返り値が`tibble`classなのが特徴です。`table`と違い，tidyverseな他の関数との相性がよく，使いやすいでしょう。
+
+```{r}
+f <- factor(sample(letters)[rpois(1000, 10)])
+table(f)
+fct_count(f)
+fct_count(f, sort = TRUE)
+```
+
+
+### 使われていないlevelsをドロップ(`fct_drop`) {#fct_drop}
+
+そのままです。
+
+#### 使い方
+
+```
+fct_drop(f)
+```
+
+#### 引数
+
+f
+: factor型のベクトル
+
+#### 説明と具体例
+
+タイトルの通りで`droplevels()`と同じなのですが，こちらは問答無用で使ってないものを削除します。
+
+```{r}
+f <- factor(c("a", "b"), levels = c("a", "b", "c"))
+f
+fct_drop(f)
+```
+
+
+### factorデータのリスト内でlevelsを統一(`fct_unify`) {#fct_unify}
+
+リスト内のfactorデータ内のlevelsを全て参照し，統一させます。
+
+#### 使い方
+
+```
+fct_unify(fs, levels = lvls_union(fs))
+```
+
+#### 引数
+
+fs
+: ファクター型ベクトルを束ねたlist型データ。
+
+levels
+: 参照して統合させるlevelsのリスト。
+
+#### 説明と具体例
+
+複数のfactor型ベクトルを参照して，その中でlevelsが異なっている場合には共通となるようにlevelsを統合して全てに同じlevelsを付与します。
+
+```{r}
+fs <- list(factor("a"), factor("b"), factor(c("a", "b")))
+fct_unify(fs)
+```
+
+これを元に，ベクトルにまとめたものを返すのが[`fct_c()`](#fct_c)となります。
+
+### unique()の出力をfactorのlevels順で出力(`fct_unique`) {#fct_unique}
+
+factor型データからユニークな値を返します。
+
+#### 使い方
+
+```
+fct_unique(f)
+```
+
+#### 引数
+
+f
+: ファクター型ベクトル
+
+#### 説明と具体例
+
+上記のとおりで，`unique()`とほぼ一緒なのですが，返り値が多少変わります:
+
+```{r}
+f <- factor(letters[rpois(100, 10)])
+
+unique(f)
+fct_unique(f)
+```
+
+このように`unique()`だと返り値は出現順になりますが，`fct_unique()`では返り値はlevelsの順序となります。
+
+### factorデータのリスト内にある全てのlevelsを探す(`lvls_union`)
+
+factor型を束ねたリスト内を参照し，全てのlevelsを探してピックアップします。
+
+#### 使い方
+
+```
+lvls_union(fs)
+```
+
+#### 引数
+
+fs
+: factor型ベクトルのリスト
+
+#### 説明と具体例
+
+上記のとおりです:
+
+```{r}
+fs <- list(factor("a"), factor("b"), factor(c("a", "b")))
+lvls_union(fs)
+```
+
+このようにして全て拾いだしたlevelsを使って，それぞれのfactor型ベクトルへ付与して統一させるのが[`fct_unify`](#fct_unify)となります。
+
+### levels操作用の低水準関数(`lvls_reorder`, `lvls_revalue`, `lvls_expand`)
+
+これらの関数は，これまで紹介してきた関数(`fct_*`)よりも低水準な機能を持ちますが，より個別的な事例では役に立つこともあるかと。ただ引数には注意してほしいとのことです。
+
+詳細については省略します。[公式サイトの情報](http://forcats.tidyverse.org/reference/lvls.html)を参照してください。
+
+
+## 雑感
+
+これまで苦労していたfactor型のlevelsをいじるにあたって，かゆいところに手が届く感じです。Rでfactor型は面倒だと感じることが多かったですが，これらの関数があればずっと楽になるのは間違いないでしょう。
+
+あと，**今回の検証では日本語を一切試していません**。たぶん大丈夫だとは思うのですが…だれか検証してください。
+
+このドキュメントに関する問い合わせはTwitterの[kazutan](https://twitter.com/kazutan)までおねがいします。わからない点についてはSlackの[r-wakalang](https://r-wakalang.slack.com/messages/general/)などで質問してみるといいかとおもいます。
+
+**Enjoy!**
+
+## 実行環境
+
+```{r}
+sessionInfo()
+```
+

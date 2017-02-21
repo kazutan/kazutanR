@@ -1,0 +1,237 @@
+---
+title: "DTでインタラクティブな表作り"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(DT)
+```
+
+## 導入
+
+### こんなこと、ありませんか?
+- Rでデータ整形して表を作成
+     - 上司は「一覧でよこせ」
+     - csvで出力→Excelで提出
+     - **屈☆辱!!**
+
+### さらにこんなことも?
+- 上司「◯◯に該当するデータを調べろ」
+    - Rで編集して(屈辱のxlsxで)提出
+    - 「これやって。あとこれやって。」
+    - またRで編集して(ry
+    - **いちいち面☆倒!!**
+    - これくらいそっちでやってくれ!!
+
+### そんなあなたに`DT`
+- **DataTables**というインタラクティブな表を作ってくれるJavaScriptライブラリを、Rで使えるようにしたパッケージ
+    - `{htmlwidgets}`を利用
+    - Rのmatrixやdata frameからさくっとHTML形式の表を作成
+    - なんとその場でフィルタリング・ページネーション、ソート、他にも表に入ってたら便利な機能が盛りだくさん!
+    - RStudio謹製でRmdとの相性抜群!!
+
+## Hello, DT!
+
+### インストール
+CRANからインストール
+```{r install, eval=FALSE}
+install.packages("DT")
+```
+
+あとはパッケージを読み込みましょう
+```{r loadDT, eval=FALSE}
+library(DT)
+```
+
+### はじめてのDT
+さくっと作ってみましょう
+```{r hello_code, eval=FALSE}
+library(DT)
+datatable(iris)
+```
+
+実行すると、以下の様な感じになります
+
+```{r hello_output, echo=FALSE}
+datatable(iris)
+```
+
+標準機能はそのまま説明なく使えるほど、わかりやすいです
+
+## DTの基本
+
+### メイン関数は datatable()
+
+```
+datatable(data, options = list(), class = "display", callback = JS("return table;"), 
+    rownames, colnames, container, caption = NULL, filter = c("none", "bottom", 
+        "top"), escape = TRUE, style = "default", width = "100%", selection = c("multiple", 
+        "single", "none"), extensions = list(), plugins = NULL)
+```
+
+dataにmatrixやdata frameを指定します。あとは各種引数で指定したり、オプションやエクステンションで指定します。
+
+### Tableの書式設定について
+- この表はhtmlで出力
+    - CSSで書式設定可能!うれしい!
+    - いやいちいち面倒だろ…
+- classを活用
+    - 予め大体のスタイルは準備されている
+    - あとはこれで当てたい書式を指定すればOK
+- こんな感じです
+```{r classtest1}
+datatable(head(iris), class = 'cell-border stripe')
+```
+
+### styleの当て方
+- DTのdefault styling optionは、以下のアドレスにあります
+    - http://datatables.net/manual/styling/classes
+- Bootstrapも利用可能
+    - `style='bootstrap'`でBootstrapモードになります
+    - 詳細は以下のリンク先を御覧ください
+    - https://rstudio.github.io/DT/005-bootstrap.html
+
+### 行名の表示・非表示
+- **デフォルトでは表示**されます
+    - 引数で`rownames=FALSE`とすると非表示に
+
+```{r rownames}
+datatable(head(mtcars),rownames = FALSE)
+```
+
+### 行名の上書き
+- もちろんここで書き換えられます
+
+```{r rownames2}
+datatable(head(mtcars), rownames = head(LETTERS))
+```
+
+### 列名(変数名)の書き換え
+- 列名も変更できます
+```{r colnames1}
+datatable(head(iris),colnames = c('kosaki','chitoge','tsugumi','marika','koharu'))
+```
+- ピンポイントで変更も可能です
+```{r colnames2}
+datatable(head(iris),colnames = c('kosaki'='Sepal.Length'))
+```
+- 列番号で指定可能です
+    - ただし、列番号で指定する時は、行名の列からカウントしてください
+```{r colnames3}
+datatable(head(iris),colnames = c('kosaki'=4))
+```
+- 行名の列にも名前をつけることができます
+```{r colnames4}
+datatable(head(iris),colnames = c('ID'=1))
+```
+
+### 表名の挿入
+- `caption`で表名を入れることができます
+    - 細く設定できますが、詳細は省略。以下を参照
+    - http://datatables.net/blog/2014-11-07
+```{r caption1}
+datatable(head(iris), caption = 'はよビール飲みたい')
+```
+
+
+### 列のフィルター機能
+- なんと列ごとにフィルター機能をつけることができます
+```{r filter1}
+datatable(iris,filter = 'top')
+```
+- フィルターにfactor型があると、選択することが可能
+    - ただし、この場合はオプションでちょっと指定が必要
+```{r filter2}
+datatable(iris, filter = 'top',options = list(autoWidth=TRUE))
+```
+
+## オプションの設定
+
+### 初期値設定
+- 初期値設定もいろいろできます
+    - 表示させる行数、幅など…
+    - これらは、`option=list(...)`で指定していきます
+    - オプションに引き渡すのはリスト型オブジェクト
+
+### 表示させる行数の指定
+- `options=list(pageLength=4)`で4行表示を指定
+```{r pageLength}
+datatable(iris, options = list(pageLength=4))
+```
+
+### (初期値としての)並べ替え
+- `options=list(order=...)`で指定可能
+```{r order}
+datatable(iris, options = list(
+  order=list(list(2,'asc'))
+))
+```
+
+## その他
+
+### extention
+- `extention=...`で拡張機能を使用可能
+    - でも出来ること多すぎ…
+    - いくつかわかりやすいものを紹介
+- 列を(あとから)並べ替えれるようにすることが可能
+```{r extention1}
+datatable(head(iris), extensions = 'ColReorder', options = list(dom = 'Rlfrtip'))
+```
+- 列移動をリアルタイムで出せます
+```{r extention2}
+datatable(head(iris,4), extensions = 'ColReorder', options = list(
+  dom = 'Rlfrtip', colReorder = list(realtime = TRUE)
+))
+```
+
+
+### 列の表示・非表示機能
+- こんなこともできます
+```{r extention3}
+datatable(
+  head(iris), rownames = FALSE,
+  extensions = 'Buttons', options = list(dom = 'Bfrtip', buttons = I('colvis'))
+)
+```
+
+### 横にスライドできるように
+- 列数が多い時に便利です
+```{r extentino4}
+m = as.data.frame(round(matrix(rnorm(100), 5), 5))
+datatable(
+  m, extensions = 'FixedColumns',
+  options = list(
+    dom = 't',
+    scrollX = TRUE,
+    scrollCollapse = TRUE
+  )
+)
+```
+
+### セルをハイライト
+- クリックしたりカーソルで枠が表示(評価させてません)
+```{r extention5, eval=FALSE}
+datatable(iris, extensions = 'KeyTable')
+```
+
+
+### スクローラー
+- スクロール機能も可能
+```{r extention6}
+m = matrix(runif(1000 * 4), ncol = 4, dimnames = list(NULL, letters[1:4]))
+m = cbind(id = seq_len(nrow(m)), round(m, 2))
+datatable(m, extensions = 'Scroller', options = list(
+  deferRender = TRUE,
+  dom = "frtiS",
+  scrollY = 200,
+  scrollCollapse = TRUE
+))
+```
+
+## もっと!!もっと!!
+- すみません、実はこれ**まだホンの一部**です
+- 今回の内容は、公式サイトを編集しています
+  - [DT: An R interface to the DataTables library](https://rstudio.github.io/DT/)
+- さあみなさんもインタラクティブなTableで!!
+
+**Enjoy!!**

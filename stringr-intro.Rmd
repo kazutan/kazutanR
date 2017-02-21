@@ -1,0 +1,254 @@
+---
+title: "stringrを使って文字列処理をやってみる"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(stringr)
+
+```
+
+# stringr
+
+## 文字列を操作するパッケージ
+
+- stringiパッケージのwrapper
+    - 元は違ったけど"i"の性能がよかったから
+    - Hadley Wickham謹製
+- 特徴
+    - baseの関数群より処理が速い
+    - 関数名が"str_"で始まってる
+    - 主な文字列処理はこれひとつでOK
+    - "%>%"で連鎖しやすい!
+
+## インストール
+
+CRANからインストール
+
+```{r, eval=FALSE}
+install.packages("stringr")
+```
+
+GitHubからインストール
+
+```{r, eval=FALSE}
+devtools::install_github("hadley/stringr")
+```
+
+githubinstallでもOK
+
+```{r, eval=FALSE}
+githubinstall::githubinstall("stringr")
+```
+
+## 参考資料
+
+- [stringr - RDocumentation](https://www.rdocumentation.org/packages/stringr/versions/1.1.0?)
+    - R Documentationというサイトにあるパッケージ紹介サイト
+    - Helpの内容をベースに,**サイト内で実際にコードが試せます**
+- [{stringr}/{stringi}とbaseの文字列処理について](http://rpubs.com/yamano357/92478)
+    - タイトルの通りで,**Rの文字列処理について知りたければこれひとつでOK**
+    - 今日の発表は,ここの説明をベースに準備しました
+
+# 加工
+
+## 文字列の連結 str_c()
+
+```{r}
+str_c("kosaki", "love", sep = " ")
+```
+
+- 文字列を連結させる
+- `paste()`と同じように使える
+
+***
+
+```{r}
+x <- c("kosaki", "chitoge", "marika")
+str_c(x, collapse = ", ")
+```
+
+- 文字列ベクトルの要素をひとつに連結させるには`collapse=`オプションを使用
+- このあたりも`paste()`と同様
+
+***
+
+```{r}
+y <- c("love", "like", "like")
+(ni <- str_c(x, y, sep="-"))
+```
+
+- 文字列ベクトル同士を引っ付けることも可能
+
+## 文字列の分割: str_split()
+
+```{r}
+str_split(ni, pattern = "-")
+```
+
+- パターンに一致したところで分割
+- 返り値はリスト型がデフォルト
+
+***
+
+```{r}
+str_split(ni, pattern = "-", simplify = TRUE)
+```
+
+- `simplify=TRUE`で行列型で返す
+
+***
+
+```{r}
+str_split("k-o-s-a-k=i", pattern = "-", n=3)
+```
+
+- `n=`オプションで,分割数を指定することも可能
+- この時どこで区切られるかは,先頭優先となります
+
+## 文字列の分割: str_split_fixed()
+
+```{r}
+a <- c("kosaki-love","chitoge-like","tugumi")
+str_split_fixed(a, pattern="-", n=2)
+```
+
+- `str_split()`同様,文字列を分割
+- ただし区切る場所がない場合,長さ0の文字列が入ります
+
+# 検索
+
+## 文字を含むかどうか(論理値): str_detect()
+
+```{r}
+x <- c("kosaki", "chitoge", "marika")
+str_detect(x, pattern="ko")
+```
+
+- ベクトル内で,パターンにマッチした文字があるかどうかを判定
+- 返り値は論理ベクトル
+
+***
+
+```{r}
+str_detect(x,pattern="a$")
+```
+
+- パターンに正規表現を使用することも可能
+
+
+## 文字を含むかどうか(要素): str_subset()
+
+```{r}
+str_subset(x, pattern="o")
+```
+
+- ベクトル内で,パターンにマッチした文字があるかどうかを判定
+- 返り値は,マッチした要素のみの文字列ベクトル
+
+# 置換
+
+## 文字列の置換(先頭一致): str_replase()
+
+```{r}
+str_replace(x, pattern="k", replacement="*")
+```
+
+- パターンにマッチした文字列を置換
+- 要素内に複数マッチした場合,**先頭のみを置換**
+
+## 文字列の置換(全部): str_replase_all()
+
+```{r}
+str_replace_all(x, pattern="k", replacement="*")
+```
+
+- パターンにマッチした文字列を置換
+- 要素内に複数マッチした場合,**すべて置換**
+
+# 抽出
+
+## マッチした要素を抽出: str_extract()
+
+```{r}
+str_extract(x, pattern="ko")
+```
+
+- パターンにマッチした箇所**だけ**を取り出す
+- 返り値はベクトル
+- 先頭一致（要素内で他にも該当する場所があっても無視）
+
+## マッチした要素をすべて抽出: str_extract_all()
+
+```{r}
+str_extract_all(x, pattern="k|s", simplify=TRUE)
+```
+
+- パターンにマッチした箇所**すべて**を取り出す
+- 返り値はデフォルトでリスト
+    - `simplify=TRUE`で行列に
+
+## 数値で指定して抽出: str_sub()
+
+```{r}
+str_sub(x, start=1, end=4)
+str_sub(x, start=4, end=-1)
+```
+
+- startで開始位置、endで終了位置を指定
+- マイナスを指定すると**後ろからの位置**を指定
+
+# その他
+
+## 文字のエンコーディング: str_conv()
+
+```{r, eval=FALSE}
+str_conv(x, encoding="UTF-8")
+```
+
+- 文字コードを変換させる
+- `iconv()`と同じようなもの
+
+## 正規表現のViewer: str_view()
+
+```{r}
+str_view(x, "a$")
+```
+
+- 正規表現でのマッチ結果をRStudioのViewerに出してくれる
+- 最近組み込まれた
+- 正規表現の練習にも使えるし便利
+
+## 以下省略
+
+- 文字列の抽出(グループ): `str_match()`
+- 条件を含んだ箇所のカウント: `str_count()`
+- パターンの位置: `str_locate()`
+- 文字列の長さ: `str_length()`
+- 文字列の繰り返し: `str_dup()`
+- などなど
+
+# 実用例
+
+## Webスクレイピング
+
+- スクレイピングする対象を絞るとき
+- スクレイピングして取得したデータを前処理するとき
+
+- [台風22号と23号](https://rpubs.com/kazutan/typhoon5)
+    - スクレイピングして取得したデータを整形
+    - パイプ演算子使えるの超助かった
+
+## レコードの抽出
+
+- データセットで,正規表現による部分一致でレコードを抽出するときなど
+
+```{r}
+tibble::rownames_to_column(mtcars, var = "name") %>% 
+  dplyr::filter(str_detect(.$name, "Mazda"))
+```
+
+## Enjoy!
+
+今日の資料置き場
+- https://kazutan.github.io/SappoRoR7

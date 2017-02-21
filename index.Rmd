@@ -1,0 +1,29 @@
+---
+title: "Kazutan.R"
+output:
+  html_document:
+    toc: false
+---
+
+このサイトは、私がこれまで書いてきたR関連の資料をまとめています。随時更新していく予定です。
+
+## Contents
+
+### データ操作(data)
+
+- dplyr, tidyr
+- stringr
+- forcats
+
+### 可視化(visualize)
+
+- DT
+- leaflet
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+
+

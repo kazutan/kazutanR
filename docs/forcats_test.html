@@ -1,0 +1,1423 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>{forcats}パッケージでカテゴリカル変数(factor型データ)をいじってみる</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="site_style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Kazutan.R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    データ操作
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="data_handling.html">dplyr, tidyr</a>
+    </li>
+    <li>
+      <a href="stringr-intro.html">stringr</a>
+    </li>
+    <li>
+      <a href="forcats_test.html">forcats</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    可視化
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="DT_demo.html">DT</a>
+    </li>
+    <li>
+      <a href="leaflet_d.html">leaflet</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">{forcats}パッケージでカテゴリカル変数(factor型データ)をいじってみる</h1>
+
+</div>
+
+
+<style type="text/css">
+dt {
+  clear: left;
+  float: left;
+  width: 15%;
+  font-weight: bold;
+  text-align: right;
+  padding: 3px 15px 3px 0;
+}
+dd {
+  margin: 0 0 0 20%;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+</style>
+<p><code>tidyverse</code>パッケージ群のひとつで，カテゴリカル変数(Factor型データ)をいじるのに特化したものとして<code>forcats</code>パッケージがあります。開発の経緯や詳細はパッケージの公式サイト，および「R for Data Science」のFactorsの章をご覧ください:</p>
+<ul>
+<li><a href="http://forcats.tidyverse.org/">Tools for Working with Categorical Variables (Factors) • forcats</a></li>
+<li><a href="http://r4ds.had.co.nz/factors.html">15 Factors - R for Data Science</a></li>
+</ul>
+<p>今回は，<a href="http://forcats.tidyverse.org/reference/index.html">公式サイトの関数リファレンス</a>を参考に，自分向けのメモがてらテストします。</p>
+<div class="section level2">
+<h2>インストール</h2>
+<p>CRANに登録済み。また，<code>tidyverse</code>パッケージ群なので<code>tidyverse</code>をインストールすることでも可能。</p>
+<pre class="r"><code># {tidyverse}をインストールすれば自動的にインストールされます:
+install.packages(&quot;tidyverse&quot;)
+
+# もちろん，単独でもOK:
+install.packages(&quot;forcats&quot;)
+
+# 開発版が欲しい時はGitHubから:
+# install.packages(&quot;devtools&quot;)
+devtools::install_github(&quot;tidyverse&quot;)
+
+# もちろん{githubinstall}でもOK
+# hadrey版とtidyverse版がありますが，たぶんtidyverse版の方がいいかと:
+# install.packages(&quot;githubinstall&quot;)
+githubinstall::githubinstall(&quot;forcats&quot;)</code></pre>
+</div>
+<div class="section level2">
+<h2>パッケージの読み込み</h2>
+<p><code>tidyverse</code>パッケージ群ですが，<code>library(tidyverse)</code>だけでは読み込みません。でもおそらくはそれらを利用することでしょうから，あわせて読み込んでおくといいかと。</p>
+<pre class="r"><code>library(tidyverse)
+library(forcats)</code></pre>
+</div>
+<div class="section level2">
+<h2>関数一覧のチェック</h2>
+<p>exportされている関数をチェック。</p>
+<pre class="r"><code>ls(&quot;package:forcats&quot;)
+#&gt;  [1] &quot;%&gt;%&quot;             &quot;as_factor&quot;       &quot;fct_anon&quot;       
+#&gt;  [4] &quot;fct_c&quot;           &quot;fct_collapse&quot;    &quot;fct_count&quot;      
+#&gt;  [7] &quot;fct_drop&quot;        &quot;fct_expand&quot;      &quot;fct_explicit_na&quot;
+#&gt; [10] &quot;fct_infreq&quot;      &quot;fct_inorder&quot;     &quot;fct_lump&quot;       
+#&gt; [13] &quot;fct_other&quot;       &quot;fct_recode&quot;      &quot;fct_relabel&quot;    
+#&gt; [16] &quot;fct_relevel&quot;     &quot;fct_reorder&quot;     &quot;fct_reorder2&quot;   
+#&gt; [19] &quot;fct_rev&quot;         &quot;fct_shift&quot;       &quot;fct_shuffle&quot;    
+#&gt; [22] &quot;fct_unify&quot;       &quot;fct_unique&quot;      &quot;gss_cat&quot;        
+#&gt; [25] &quot;lvls_expand&quot;     &quot;lvls_reorder&quot;    &quot;lvls_revalue&quot;   
+#&gt; [28] &quot;lvls_union&quot;</code></pre>
+<p>関数のリファレンスは，<a href="http://forcats.tidyverse.org/reference/index.html">公式サイトのこちら</a>に一覧と説明があります。</p>
+</div>
+<div class="section level2">
+<h2>使用するデータ</h2>
+<p>簡単なものについては，その場でさくっと作ります。</p>
+<p>大きめのデータでやりたいときは，<code>forcats</code>パッケージに内包されている<code>gss_cat</code>データを使ってます。データの内容については<code>?gss_cat</code>で表示されるヘルプを確認してください。</p>
+<pre class="r"><code>gss_cat
+#&gt; # A tibble: 21,483 × 9
+#&gt;     year       marital   age   race        rincome            partyid
+#&gt;    &lt;int&gt;        &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt;         &lt;fctr&gt;             &lt;fctr&gt;
+#&gt; 1   2000 Never married    26  White  $8000 to 9999       Ind,near rep
+#&gt; 2   2000      Divorced    48  White  $8000 to 9999 Not str republican
+#&gt; 3   2000       Widowed    67  White Not applicable        Independent
+#&gt; 4   2000 Never married    39  White Not applicable       Ind,near rep
+#&gt; 5   2000      Divorced    25  White Not applicable   Not str democrat
+#&gt; 6   2000       Married    25  White $20000 - 24999    Strong democrat
+#&gt; 7   2000 Never married    36  White $25000 or more Not str republican
+#&gt; 8   2000      Divorced    44  White  $7000 to 7999       Ind,near dem
+#&gt; 9   2000       Married    44  White $25000 or more   Not str democrat
+#&gt; 10  2000       Married    47  White $25000 or more  Strong republican
+#&gt; # ... with 21,473 more rows, and 3 more variables: relig &lt;fctr&gt;,
+#&gt; #   denom &lt;fctr&gt;, tvhours &lt;int&gt;
+names(gss_cat)
+#&gt; [1] &quot;year&quot;    &quot;marital&quot; &quot;age&quot;     &quot;race&quot;    &quot;rincome&quot; &quot;partyid&quot; &quot;relig&quot;  
+#&gt; [8] &quot;denom&quot;   &quot;tvhours&quot;</code></pre>
+</div>
+<div id="change_order" class="section level2">
+<h2>factorのorderを変更</h2>
+<p>factorに設定してあるlevelsはそのままで，順序(order)を変更します。モデリングや表，可視化において効果を発揮します。</p>
+<div id="fct_inorder" class="section level3">
+<h3>登場順でfactorのlevelsを再整理(<code>fct_inorder</code>)</h3>
+<p>いわゆる“出てきた順”でlevelsのorderを設定するには，<code>fct_inorder()</code>関数を使用します</p>
+<div class="section level4">
+<h4>使い方</h4>
+<pre><code>fct_inorder(f)</code></pre>
+</div>
+<div class="section level4">
+<h4>引数</h4>
+<dl>
+<dt>f</dt>
+<dd><p>factor型のデータ。levelsを並べ替えたいデータを指定してください。</p>
+</dd>
+</dl>
+</div>
+<div class="section level4">
+<h4>説明と具体例</h4>
+<p>そのまんまで，引数に指定したfactor型データのレベルを，要素が出てきた順にします。</p>
+<pre class="r"><code>f &lt;- factor(c(&quot;b&quot;, &quot;b&quot;, &quot;a&quot;, &quot;c&quot;, &quot;c&quot;, &quot;c&quot;))
+f
+#&gt; [1] b b a c c c
+#&gt; Levels: a b c
+fct_inorder(f)
+#&gt; [1] b b a c c c
+#&gt; Levels: b a c</code></pre>
+</div>
+</div>
+<div id="fct_infreq" class="section level3">
+<h3>登場頻度順でfactorのlevelsを再整理(<code>fct_infreq</code>)</h3>
+<p>データ内で出てきた“頻度が多い順”でlevelsのorderを設定するには，<code>fct_infreq()</code>関数を使用します。</p>
+<div id="-1" class="section level4">
+<h4>使い方</h4>
+<pre><code>fct_infreq(f)</code></pre>
+</div>
+<div id="-1" class="section level4">
+<h4>引数</h4>
+<dl>
+<dt>f</dt>
+<dd>factor型のデータ。levelsを並べ替えたいデータを指定してください。
+</dd>
+</dl>
+</div>
+<div id="-1" class="section level4">
+<h4>説明と具体例</h4>
+<p>そのまんまで，引数に指定したfactor型データのレベルを，要素が出てきた順にします。</p>
+<pre class="r"><code>f &lt;- factor(c(&quot;b&quot;, &quot;b&quot;, &quot;a&quot;, &quot;c&quot;, &quot;c&quot;, &quot;c&quot;))
+f
+#&gt; [1] b b a c c c
+#&gt; Levels: a b c
+fct_infreq(f)
+#&gt; [1] b b a c c c
+#&gt; Levels: c b a</code></pre>
+</div>
+</div>
+<div id="fct_relevel" class="section level3">
+<h3>手作業でfactorのlevelsを再整理(<code>fct_relevel</code>)</h3>
+<p>levelsの順番を，手作業で並べ替えます。</p>
+<div id="-2" class="section level4">
+<h4>使い方</h4>
+<pre><code>fct_relevel(f, ...)</code></pre>
+</div>
+<div id="-2" class="section level4">
+<h4>引数</h4>
+<dl>
+<dt>f</dt>
+<dd>factor型のデータ。levelsを並べ替えたいベクトルを指定してください。
+</dd>
+<dt>…</dt>
+<dd>文字列ベクトルを指定。指定した値を，levelsの左側(先頭)へ持って行き，それ以外は後ろへシフトします。
+</dd>
+</dl>
+</div>
+<div id="-2" class="section level4">
+<h4>説明と具体例</h4>
+<p>要するに<code>base::relevel()</code>のラッパーで，<code>...</code>の部分で指定した値を前に持ってくるようになります。なお，全ての要素を準備してわざわざ指定しなくても，指定しなかった要素は自動的に後ろへそのままシフトします。</p>
+<pre class="r"><code>f &lt;- factor(c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;))
+fct_relevel(f)
+#&gt; [1] a b c
+#&gt; Levels: a b c
+fct_relevel(f, &quot;c&quot;)
+#&gt; [1] a b c
+#&gt; Levels: c a b
+fct_relevel(f, &quot;b&quot;, &quot;a&quot;)
+#&gt; [1] a b c
+#&gt; Levels: b a c</code></pre>
+<p>また，存在しないlevelsの値を指定すると警告が出て，その要素は無視されます。</p>
+<pre class="r"><code>fct_relevel(f, &quot;d&quot;)
+#&gt; Warning: Unknown levels in `f`: d
+#&gt; [1] a b c
+#&gt; Levels: a b c
+fct_relevel(f, &quot;b&quot;, &quot;d&quot;)
+#&gt; Warning: Unknown levels in `f`: d
+#&gt; [1] a b c
+#&gt; Levels: b a c
+fct_relevel(f, &quot;d&quot;, &quot;b&quot;)
+#&gt; Warning: Unknown levels in `f`: d
+#&gt; [1] a b c
+#&gt; Levels: b a c</code></pre>
+</div>
+</div>
+<div id="fct_reorder" class="section level3">
+<h3>他の1変数に従ってソートするようlevelsを再整列(<code>fct_reorder</code>)</h3>
+<p>他の変数を使って，levelsをソートします。例えば「各カテゴリでのxの中央値を使い，その降順になるようにlevelsをソートしたい」という時に使います。</p>
+<div id="-3" class="section level4">
+<h4>使い方</h4>
+<pre><code>fct_reorder(f, x, fun = median, ..., .desc = FALSE)</code></pre>
+</div>
+<div id="-3" class="section level4">
+<h4>引数</h4>
+<dl>
+<dt>f</dt>
+<dd>factor型のベクトル。
+</dd>
+<dt>x</dt>
+<dd>並べ替えの基準に利用する変数。この変数を下の<code>fun</code>で指定する集計用関数にあてた結果をソートに利用します。
+</dd>
+<dt>fun</dt>
+<dd>集計用関数を指定。デフォルトでは<code>median</code>。なお返り値が単一ベクトルになるものでなければいけません。
+</dd>
+<dt>…</dt>
+<dd><code>fun</code>に送る他の引数をここで指定します。よくあるのは<code>na.rm = TRUE</code>などです。
+</dd>
+<dt>.desc</dt>
+<dd>論理値を指定。降順/昇順を指定します。デフォルトは<code>FALSE</code>で<strong>昇順</strong>。
+</dd>
+</dl>
+</div>
+<div id="-3" class="section level4">
+<h4>説明と具体例</h4>
+<p>1次元データでのグラフを描くときや，集計表を作成するときに効果を発揮するでしょう。例えば，以下のようなパターンを想定します:</p>
+<pre class="r"><code>boxplot(Sepal.Width ~ Species, data = iris)</code></pre>
+<p><img src="forcats_test_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>ここで，「<code>Sepal.Width</code>の大きさの順番でX軸を並べ替えたい」時に，以下のように使います:</p>
+<pre class="r"><code>boxplot(Sepal.Width ~ fct_reorder(Species, Sepal.Width), data = iris)</code></pre>
+<p><img src="forcats_test_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>また，デフォルトでは中央値を使っていますが，変更も可能です:</p>
+<pre class="r"><code>boxplot(Sepal.Width ~ fct_reorder(Species, Sepal.Width, fun = sample, size = 1), data = iris)</code></pre>
+<p><img src="forcats_test_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>もし，降順にしたい場合は，以下のように当ててください:</p>
+<pre class="r"><code>boxplot(Sepal.Width ~ fct_reorder(Species, Sepal.Width, .desc = TRUE), data = iris)</code></pre>
+<p><img src="forcats_test_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>これらはもちろん<code>ggplot2</code>でも有効です。以下のようなパターンを想定します:</p>
+<pre class="r"><code>library(ggplot2)
+ggplot(iris, aes(Species, Sepal.Width)) +
+  geom_boxplot()</code></pre>
+<p><img src="forcats_test_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>先ほどと同様に変更します:</p>
+<pre class="r"><code>ggplot(iris, aes(fct_reorder(Species, Sepal.Width), Sepal.Width)) +
+  geom_boxplot() +
+  labs(x = &quot;Species&quot;)</code></pre>
+<p><img src="forcats_test_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<p>なお，2変数をキーとする場合は，<a href="#fct_reorder2"><code>fct_reorder2</code></a>を使います。</p>
+</div>
+</div>
+<div id="fct_reorder2" class="section level3">
+<h3>他の2変数に従ってソートするようlevelsを再整列(<code>fct_reorder2</code>)</h3>
+<p>他の変数を使って，levelsをソートします。<a href="#fct_reorder"><code>fct_reorder</code></a>との違いは，ソートに利用する変数が2つだという点です。</p>
+<div id="-4" class="section level4">
+<h4>使い方</h4>
+<pre><code>fct_reorder2(f, x, y, fun = last2, ..., .desc = FALSE)</code></pre>
+</div>
+<div id="-4" class="section level4">
+<h4>引数</h4>
+<dl>
+<dt>f</dt>
+<dd>factor型のベクトル。
+</dd>
+<dt>x, y</dt>
+<dd>並べ替えの基準に利用する変数。この変数を下の<code>fun</code>で指定する集計用関数にあてた結果をソートに利用します。
+</dd>
+<dt>fun</dt>
+<dd>集計用関数を指定。デフォルトに設定してある<code>last2</code>はこのパッケージ内にある関数(後述)。
+</dd>
+<dt>…</dt>
+<dd><code>fun</code>に送る他の引数をここで指定します。よくあるのは<code>na.rm = TRUE</code>などです。
+</dd>
+<dt>.desc</dt>
+<dd>論理値を指定。降順/昇順を指定します。デフォルトは<code>FALSE</code>で<strong>降順</strong>。
+</dd>
+</dl>
+</div>
+<div id="-4" class="section level4">
+<h4>説明と具体例</h4>
+<p>基本的な考え方は<a href="#fct_reorder"><code>fct_reorder</code></a>と同様です。</p>
+<p>なお，引数<code>fun</code>のデフォルトに設定している<code>last2</code>という関数は，<a href="https://github.com/tidyverse/forcats/blob/master/R/reorder.R#L65-L67">以下のように定義してあります</a>:</p>
+<pre><code>last2 &lt;- function(x, y) {
+  y[order(x, na.last = FALSE)][length(y)]
+}</code></pre>
+<p>つまり<strong>xの昇順に従ってyをソートし，それの一番下の要素を返す</strong>という関数です<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>。これを各factorの要素ごとに<code>tapply</code>して求めた値を使い，levelsの値を並べ替えています。もちろん<code>median</code>や<code>mean</code>などの関数を当てることも可能です。</p>
+<p>これが最も効果を発揮するのは，凡例に当てているカテゴリカル変数をソートしたい時などでしょう。例えば，以下のようなパターンを想定します:</p>
+<pre class="r"><code>chks &lt;- subset(ChickWeight, as.integer(Chick) &lt; 10)
+chks &lt;- transform(chks, Chick = fct_shuffle(Chick))
+
+ggplot(chks, aes(Time, weight, colour = Chick)) +
+  geom_point() +
+  geom_line()</code></pre>
+<p><img src="forcats_test_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
+<p>凡例のところを見ると，データのlevels設定そのままに順序が決定されており，グラフに描かれているのとマッチングがしにくくなります。</p>
+<p>そこで，Times(x軸)とweight(y軸)の大きい要素に対応するようChick(color要素，凡例のこと)のlevelsを設定します:</p>
+<pre class="r"><code>ggplot(chks, aes(Time, weight, colour = fct_reorder2(Chick, Time, weight))) +
+  geom_point() +
+  geom_line() +
+  labs(colour = &quot;Chick&quot;)</code></pre>
+<p><img src="forcats_test_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p>各系列(factorの各levels)の一番右の要素を用いて，降順になるようlevelsが並べ替えられます。</p>
+</div>
+</div>
+<div id="fct_rev" class="section level3">
+<h3>levelsの順序を反転(<code>fct_rev</code>)</h3>
+<p>順序を反転させます。</p>
+<div id="-5" class="section level4">
+<h4>使い方</h4>
+<pre><code>fct_rev(f)</code></pre>
+</div>
+<div id="-5" class="section level4">
+<h4>引数</h4>
+<dl>
+<dt>f</dt>
+<dd>factor型のベクトル。
+</dd>
+</dl>
+</div>
+<div id="-5" class="section level4">
+<h4>説明と具体例</h4>
+<p>タイトルのとおりです。factor型データを利用したプロットで使えるでしょう。</p>
+<pre class="r"><code>f &lt;- factor(c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;))
+fct_rev(f)
+#&gt; [1] a b c
+#&gt; Levels: c b a</code></pre>
+</div>
+</div>
+<div id="fct_shift" class="section level3">
+<h3>順序付きfactorデータのlevelsの順序をずらす(<code>fct_shift</code>)</h3>
+<p>順序付きfactorデータで，そのlevelsをずらしていきます。回転するイメージです。</p>
+<div id="-6" class="section level4">
+<h4>使い方</h4>
+<pre><code>fct_shift(f, n = 1L)
+</code></pre>
+</div>
+<div id="-6" class="section level4">
+<h4>引数</h4>
+<dl>
+<dt>f</dt>
+<dd>factor型のベクトル。
+</dd>
+<dt>n</dt>
+<dd>ずらす(回転させる)数。正の値なら左へシフトし，負の値なら右へシフトします。
+</dd>
+</dl>
+</div>
+<div id="-6" class="section level4">
+<h4>説明と具体例</h4>
+<p>例えば曜日名や月名など，循環するような場合に効果を発揮します。たとえば，以下のようなデータを想定します:</p>
+<pre class="r"><code>x &lt;- factor(
+  c(&quot;Mon&quot;, &quot;Tue&quot;, &quot;Wed&quot;),
+  levels = c(&quot;Sun&quot;, &quot;Mon&quot;, &quot;Tue&quot;, &quot;Wed&quot;, &quot;Thu&quot;, &quot;Fri&quot;, &quot;Sat&quot;),
+  ordered = TRUE
+)
+x
+#&gt; [1] Mon Tue Wed
+#&gt; Levels: Sun &lt; Mon &lt; Tue &lt; Wed &lt; Thu &lt; Fri &lt; Sat</code></pre>
+<p>これを，一つ左へずらしてみます:</p>
+<pre class="r"><code>fct_shift(x)
+#&gt; [1] Mon Tue Wed
+#&gt; Levels: Mon &lt; Tue &lt; Wed &lt; Thu &lt; Fri &lt; Sat &lt; Sun</code></pre>
+<p>ずらしたい数を指定することも可能です:</p>
+<pre class="r"><code>fct_shift(x, n = 2)
+#&gt; [1] Mon Tue Wed
+#&gt; Levels: Tue &lt; Wed &lt; Thu &lt; Fri &lt; Sat &lt; Sun &lt; Mon</code></pre>
+<p>左ではなく右へずらす場合は，負の値にします:</p>
+<pre class="r"><code>fct_shift(x, n = -2)
+#&gt; [1] Mon Tue Wed
+#&gt; Levels: Fri &lt; Sat &lt; Sun &lt; Mon &lt; Tue &lt; Wed &lt; Thu</code></pre>
+</div>
+</div>
+<div id="fct_shuffle" class="section level3">
+<h3>順番をシャッフル(<code>fct_shuffle</code>)</h3>
+<p>シャッフルします。</p>
+<div id="-7" class="section level4">
+<h4>使い方</h4>
+<pre><code>fct_shuffle(f)</code></pre>
+</div>
+<div id="-7" class="section level4">
+<h4>引数</h4>
+<dl>
+<dt>f</dt>
+<dd>factor型のベクトル
+</dd>
+</dl>
+</div>
+<div id="-7" class="section level4">
+<h4>説明と具体例</h4>
+<p>levelsの値をシャッフルします。元のデータ値はシャッフルされません。</p>
+<pre class="r"><code>f &lt;- factor(c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;))
+fct_shuffle(f)
+#&gt; [1] a b c
+#&gt; Levels: c b a
+fct_shuffle(f)
+#&gt; [1] a b c
+#&gt; Levels: c b a</code></pre>
+</div>
+</div>
+</div>
+<div id="change_levels" class="section level2">
+<h2>factorのlevelsの値を変更</h2>
+<p>順番を(可能な限り)保持したまま，levelsの値を変更させます。</p>
+<div id="fct_anon" class="section level3">
+<h3>factorのlevelsの値を匿名化(<code>fct_anon</code>)</h3>
+<p>levelsの値を適当な連番に<strong>ランダムに</strong>置換して，元のがlevelsの値をわからないようにします。</p>
+<div id="-8" class="section level4">
+<h4>使い方</h4>
+<pre><code>fct_anon(f, prefix = &quot;&quot;)</code></pre>
+</div>
+<div id="-8" class="section level4">
+<h4>引数</h4>
+<dl>
+<dt>f</dt>
+<dd>factor型のベクトル。
+</dd>
+<dt>prefix</dt>
+<dd>ランダムなラベルの前に付与する文字列。
+</dd>
+</dl>
+</div>
+<div id="-8" class="section level4">
+<h4>説明と具体例</h4>
+<p>上記のとおりです。なおlevelsの値も元々のlevelsのorderも保持されません。「factorのlevelsをちょっとそのままでは出せないなぁ」という時に活用できます。</p>
+<p>たとえば，以下のようなデータを想定します:</p>
+<pre class="r"><code>gss_cat$relig %&gt;% fct_count()
+#&gt; # A tibble: 16 × 2
+#&gt;                          f     n
+#&gt;                     &lt;fctr&gt; &lt;int&gt;
+#&gt; 1                No answer    93
+#&gt; 2               Don&#39;t know    15
+#&gt; 3  Inter-nondenominational   109
+#&gt; 4          Native american    23
+#&gt; 5                Christian   689
+#&gt; 6       Orthodox-christian    95
+#&gt; 7             Moslem/islam   104
+#&gt; 8            Other eastern    32
+#&gt; 9                 Hinduism    71
+#&gt; 10                Buddhism   147
+#&gt; 11                   Other   224
+#&gt; 12                    None  3523
+#&gt; 13                  Jewish   388
+#&gt; 14                Catholic  5124
+#&gt; 15              Protestant 10846
+#&gt; 16          Not applicable     0</code></pre>
+<p>これに対し，<code>fct_anon()</code>を挟むとこうなります:</p>
+<pre class="r"><code>gss_cat$relig %&gt;% fct_anon() %&gt;% fct_count()
+#&gt; # A tibble: 16 × 2
+#&gt;         f     n
+#&gt;    &lt;fctr&gt; &lt;int&gt;
+#&gt; 1      01    32
+#&gt; 2      02    71
+#&gt; 3      03    15
+#&gt; 4      04   689
+#&gt; 5      05   104
+#&gt; 6      06    23
+#&gt; 7      07   109
+#&gt; 8      08   224
+#&gt; 9      09   147
+#&gt; 10     10    95
+#&gt; 11     11    93
+#&gt; 12     12 10846
+#&gt; 13     13     0
+#&gt; 14     14   388
+#&gt; 15     15  5124
+#&gt; 16     16  3523</code></pre>
+<p>このように，levelsの値が連番の数値に書き換えられたというのが解ると思います。また，カウント数を比較してもらえばわかるように，その連番の与え方はランダムになっています。</p>
+<p>なお，連番の前に好きな文字列をつけることが可能です:</p>
+<pre class="r"><code>gss_cat$relig %&gt;% fct_anon(&quot;kosaki&quot;) %&gt;% fct_count()
+#&gt; # A tibble: 16 × 2
+#&gt;           f     n
+#&gt;      &lt;fctr&gt; &lt;int&gt;
+#&gt; 1  kosaki01   147
+#&gt; 2  kosaki02    15
+#&gt; 3  kosaki03    32
+#&gt; 4  kosaki04    71
+#&gt; 5  kosaki05  5124
+#&gt; 6  kosaki06   224
+#&gt; 7  kosaki07    23
+#&gt; 8  kosaki08    95
+#&gt; 9  kosaki09   689
+#&gt; 10 kosaki10  3523
+#&gt; 11 kosaki11     0
+#&gt; 12 kosaki12 10846
+#&gt; 13 kosaki13   109
+#&gt; 14 kosaki14   388
+#&gt; 15 kosaki15   104
+#&gt; 16 kosaki16    93</code></pre>
+</div>
+</div>
+<div id="fct_collapse" class="section level3">
+<h3>factorのlevelsを手動で落とし込み(<code>fct_collapse</code>)</h3>
+<p>自分で定義したlevelsのグループへ，factorの値を落とし込みします。</p>
+<div id="-9" class="section level4">
+<h4>使い方</h4>
+<pre><code>fct_collapse(f, ...)</code></pre>
+</div>
+<div id="-9" class="section level4">
+<h4>引数</h4>
+<dl>
+<dt>f</dt>
+<dd>factor型のベクトル
+</dd>
+<dt>…</dt>
+<dd>名前付きベクトルのシリーズ。それぞれのベクトル内にあるlevelsの値が，指定したものへと置換されます。
+</dd>
+</dl>
+</div>
+<div id="-9" class="section level4">
+<h4>説明と具体例</h4>
+<p>要するに，「複数のlevelsをまとめて一つのlevelsになるようにまとめていく」ことをしてくれます。たとえば，以下のようなデータを想定します:</p>
+<pre class="r"><code>fct_count(gss_cat$partyid)
+#&gt; # A tibble: 10 × 2
+#&gt;                     f     n
+#&gt;                &lt;fctr&gt; &lt;int&gt;
+#&gt; 1           No answer   154
+#&gt; 2          Don&#39;t know     1
+#&gt; 3         Other party   393
+#&gt; 4   Strong republican  2314
+#&gt; 5  Not str republican  3032
+#&gt; 6        Ind,near rep  1791
+#&gt; 7         Independent  4119
+#&gt; 8        Ind,near dem  2499
+#&gt; 9    Not str democrat  3690
+#&gt; 10    Strong democrat  3490</code></pre>
+<p>現在10のlevelsがあります。これを5つにまとめていきます:</p>
+<pre class="r"><code>partyid2 &lt;- fct_collapse(gss_cat$partyid,
+  missing = c(&quot;No answer&quot;, &quot;Don&#39;t know&quot;),
+  other = &quot;Other party&quot;,
+  rep = c(&quot;Strong republican&quot;, &quot;Not str republican&quot;),
+  ind = c(&quot;Ind,near rep&quot;, &quot;Independent&quot;, &quot;Ind,near dem&quot;),
+  dem = c(&quot;Not str democrat&quot;, &quot;Strong democrat&quot;)
+)
+fct_count(partyid2)
+#&gt; # A tibble: 5 × 2
+#&gt;         f     n
+#&gt;    &lt;fctr&gt; &lt;int&gt;
+#&gt; 1 missing   155
+#&gt; 2   other   393
+#&gt; 3     rep  5346
+#&gt; 4     ind  8409
+#&gt; 5     dem  7180</code></pre>
+<p>このようになります。なお，もちろんこの処理により<strong>新たに振り分けたlevelsの値へと実際の値も変換されます</strong>ので注意してください。</p>
+<pre class="r"><code>head(partyid2)
+#&gt; [1] ind rep ind ind dem dem
+#&gt; Levels: missing other rep ind dem</code></pre>
+</div>
+</div>
+<div id="fct_lump" class="section level3">
+<h3>小さい/大きいlevels項目をotherに固める(<code>fct_lump</code>)</h3>
+<p>上位あるいは下位の要素を，「other(その他)」と塊(lump)にくくります。</p>
+<div id="-10" class="section level4">
+<h4>使い方</h4>
+<pre><code>fct_lump(f, n, prop, other_level = &quot;Other&quot;, ties.method = c(&quot;min&quot;,&quot;average&quot;, &quot;first&quot;, &quot;last&quot;, &quot;random&quot;, &quot;max&quot;))</code></pre>
+</div>
+<div id="-10" class="section level4">
+<h4>引数</h4>
+<dl>
+<dt>f</dt>
+<dd>factor型のベクトル
+</dd>
+<dt>n, prop</dt>
+<dd><code>n</code>は，その他(other)にしない残すlevels数を指定します。正の値であれば，メジャーなlevelsを<code>abs(n)</code>だけ残し，負の値であれば，マイナーなlevelsを<code>abs(n)</code>だけ残します。<br />
+<code>prop</code>は，その他(other)にするlevelsのカットポイント比率を指定します。各levelsの発生数/全発生数を算出し，それと<code>prop</code>で指定した比率とを比較していきます。<br />
+正の値であれば，構成比率がカットポイント(<code>prop</code>)より低いlevelsを全て“Other”にし，負の値であれば，カットポイントを反転させた正の値(<code>-prep</code>)より構成比率が大きいlevelsを全て“Other”にします。
+</dd>
+<dt>other_level</dt>
+<dd>その他(Other)に設定するlevelsの値。
+</dd>
+<dt>ties.method</dt>
+<dd>頻度が同値のlevelsについてどのようなmethodを用いてランク付けするかを文字列で指定します。詳しくは<code>?base::rank</code>を参照。
+</dd>
+</dl>
+</div>
+<div id="-10" class="section level4">
+<h4>説明と具体例</h4>
+<p>要するに，「細かいのは全て“その他”にしてしまおう」というのを実現するものです。以下のようなデータを想定します:</p>
+<pre class="r"><code>
+x &lt;- factor(letters[rpois(100, 5)])
+x
+#&gt;  [1] c g c i l c i d g d b g c f h a c h e d f b l d d h e f e c a c b d e
+#&gt; [36] d f f d e g b d b g a b h d c e c k e g g b d i a c f c e e i k c d d
+#&gt; [71] a d b d b d c b c e b j a j d e b g d d e f c e e d d d d
+#&gt; Levels: a b c d e f g h i j k l
+table(x)
+#&gt; x
+#&gt;  a  b  c  d  e  f  g  h  i  j  k  l 
+#&gt;  6 12 15 23 14  7  8  4  4  2  2  2</code></pre>
+<p>この<code>x</code>に，<code>fct_lump()</code>をあてると以下のようになります:</p>
+<pre class="r"><code>fct_lump(x)
+#&gt;  [1] c g c i l c i d g d b g c f h a c h e d f b l d d h e f e c a c b d e
+#&gt; [36] d f f d e g b d b g a b h d c e c k e g g b d i a c f c e e i k c d d
+#&gt; [71] a d b d b d c b c e b j a j d e b g d d e f c e e d d d d
+#&gt; Levels: a b c d e f g h i j k l
+table(fct_lump(x))
+#&gt; 
+#&gt;  a  b  c  d  e  f  g  h  i  j  k  l 
+#&gt;  6 12 15 23 14  7  8  4  4  2  2  2</code></pre>
+<p>このように，少数の発生数しかないlevelsは<code>Other</code>へとまとめられます。なお，まとめられた<code>Other</code>はlevelsで一番後ろになります。</p>
+<p>まとめる基準についてですが，デフォルトでは，<strong>Otherにまとめた際に，Otherが各レベルで最小となる</strong>ように，自動でカットポイントが設定されます。上のパターンの場合，Otherの次に大きいのを取り込んでしまうと，Otherが一番小さくならないためにここでストップしています。</p>
+<p>引数にある<code>n</code>を指定することで，残すlevels数を指定することができます。正の値を指定すると，頻度順で大きい方から<code>n</code>個残して，残りを<code>Other</code>にまとめます:</p>
+<pre class="r"><code>fct_lump(x, n = 3)
+#&gt;  [1] c     Other c     Other Other c     Other d     Other d     Other
+#&gt; [12] Other c     Other Other Other c     Other e     d     Other Other
+#&gt; [23] Other d     d     Other e     Other e     c     Other c     Other
+#&gt; [34] d     e     d     Other Other d     e     Other Other d     Other
+#&gt; [45] Other Other Other Other d     c     e     c     Other e     Other
+#&gt; [56] Other Other d     Other Other c     Other c     e     e     Other
+#&gt; [67] Other c     d     d     Other d     Other d     Other d     c    
+#&gt; [78] Other c     e     Other Other Other Other d     e     Other Other
+#&gt; [89] d     d     e     Other c     e     e     d     d     d     d    
+#&gt; Levels: c d e Other
+table(fct_lump(x, n = 3))
+#&gt; 
+#&gt;     c     d     e Other 
+#&gt;    15    23    14    47</code></pre>
+<p>ここで<code>n</code>に負の値を指定すると，頻度順で小さい方から<code>n</code>個残して，残りを<code>Other</code>にまとめます:</p>
+<pre class="r"><code>fct_lump(x, n = -3)
+#&gt;  [1] Other Other Other Other l     Other Other Other Other Other Other
+#&gt; [12] Other Other Other Other Other Other Other Other Other Other Other
+#&gt; [23] l     Other Other Other Other Other Other Other Other Other Other
+#&gt; [34] Other Other Other Other Other Other Other Other Other Other Other
+#&gt; [45] Other Other Other Other Other Other Other Other k     Other Other
+#&gt; [56] Other Other Other Other Other Other Other Other Other Other Other
+#&gt; [67] k     Other Other Other Other Other Other Other Other Other Other
+#&gt; [78] Other Other Other Other j     Other j     Other Other Other Other
+#&gt; [89] Other Other Other Other Other Other Other Other Other Other Other
+#&gt; Levels: j k l Other
+table(fct_lump(x, n = -3))
+#&gt; 
+#&gt;     j     k     l Other 
+#&gt;     2     2     2    93</code></pre>
+<p>このように個数でカットポイントを指定するのではなく，発生確率でカットポイントを指定するには引数<code>prop</code>を利用します。まず，各levelsの発生数/全発生数でlevelsごとの発生確率が算出され，それと<code>prop</code>で指定した確率とを比較してジャッジします:</p>
+<pre class="r"><code># 参考までに発生確率を算出
+kosaki &lt;- table(x)
+kosaki/sum(kosaki)
+#&gt; x
+#&gt;          a          b          c          d          e          f 
+#&gt; 0.06060606 0.12121212 0.15151515 0.23232323 0.14141414 0.07070707 
+#&gt;          g          h          i          j          k          l 
+#&gt; 0.08080808 0.04040404 0.04040404 0.02020202 0.02020202 0.02020202</code></pre>
+<p>ここで，カットポイントとして<code>prop = 0.1</code>を指定すると，発生確率が<code>0.1</code>以下のlevelsを全てOtherにまとめます:</p>
+<pre class="r"><code># propを使ってまとめる
+fct_lump(x, prop = 0.1)
+#&gt;  [1] c     Other c     Other Other c     Other d     Other d     b    
+#&gt; [12] Other c     Other Other Other c     Other e     d     Other b    
+#&gt; [23] Other d     d     Other e     Other e     c     Other c     b    
+#&gt; [34] d     e     d     Other Other d     e     Other b     d     b    
+#&gt; [45] Other Other b     Other d     c     e     c     Other e     Other
+#&gt; [56] Other b     d     Other Other c     Other c     e     e     Other
+#&gt; [67] Other c     d     d     Other d     b     d     b     d     c    
+#&gt; [78] b     c     e     b     Other Other Other d     e     b     Other
+#&gt; [89] d     d     e     Other c     e     e     d     d     d     d    
+#&gt; Levels: b c d e Other
+table(fct_lump(x, prop = 0.1))
+#&gt; 
+#&gt;     b     c     d     e Other 
+#&gt;    12    15    23    14    35</code></pre>
+<p>また，この<code>prep</code>に負の値を指定すると，(正の値へ変換した)カットポイントの確率より大きいものを全てOtherにまとめます:</p>
+<pre class="r"><code>fct_lump(x, prop = -0.1)
+#&gt;  [1] Other g     Other i     l     Other i     Other g     Other Other
+#&gt; [12] g     Other f     h     a     Other h     Other Other f     Other
+#&gt; [23] l     Other Other h     Other f     Other Other a     Other Other
+#&gt; [34] Other Other Other f     f     Other Other g     Other Other Other
+#&gt; [45] g     a     Other h     Other Other Other Other k     Other g    
+#&gt; [56] g     Other Other i     a     Other f     Other Other Other i    
+#&gt; [67] k     Other Other Other a     Other Other Other Other Other Other
+#&gt; [78] Other Other Other Other j     a     j     Other Other Other g    
+#&gt; [89] Other Other Other f     Other Other Other Other Other Other Other
+#&gt; Levels: a f g h i j k l Other
+table(fct_lump(x, prop = -0.1))
+#&gt; 
+#&gt;     a     f     g     h     i     j     k     l Other 
+#&gt;     6     7     8     4     4     2     2     2    64</code></pre>
+<p><code>n</code>と<code>prop</code>の両方を指定した場合，<a href="https://github.com/tidyverse/forcats/blob/master/R/lump.R#L53-L72">ソースコード</a>を見る限り<code>n</code>を優先して処理するようです(2017/01/13現在)。</p>
+<p>もし発生頻度が同一のlevelsがある場合，<code>ties.method</code>にてランク付けmethodを指定できます。これは<code>base::rank()</code>に従いますので，そちらを参照してください。</p>
+<p>なお，“Other”のlevelsの値は<code>other_levels</code>にて指定できます。</p>
+</div>
+</div>
+<div id="fct_recode" class="section level3">
+<h3>factorのlevelsの値を手動で変更(<code>fct_recode</code>)</h3>
+<p>levelsの各値を手動で変更します。</p>
+<div id="-11" class="section level4">
+<h4>使い方</h4>
+<pre><code>fct_recode(f, ...)</code></pre>
+</div>
+<div id="-11" class="section level4">
+<h4>引数</h4>
+<dl>
+<dt>f</dt>
+<dd>factor型のベクトル
+</dd>
+<dt>…</dt>
+<dd>新しく設定するlevels値を名前付き文字列ベクトルで指定。
+</dd>
+</dl>
+</div>
+<div id="-11" class="section level4">
+<h4>説明と具体例</h4>
+<p>そのままです:</p>
+<pre class="r"><code>x &lt;- factor(c(&quot;apple&quot;, &quot;bear&quot;, &quot;banana&quot;, &quot;dear&quot;))
+fct_recode(x, fruit = &quot;apple&quot;, fruit = &quot;banana&quot;)
+#&gt; [1] fruit bear  fruit dear 
+#&gt; Levels: fruit bear dear</code></pre>
+<p>なお存在しないlevels値を使用すると警告が出て，その部分は無視されます:</p>
+<pre class="r"><code>fct_recode(x, fruit = &quot;apple&quot;, fruit = &quot;bananana&quot;)
+#&gt; Warning: Unknown levels in `f`: bananana
+#&gt; [1] fruit  bear   banana dear  
+#&gt; Levels: fruit banana bear dear</code></pre>
+<p>また，新しいlevels値に<code>NULL</code>を指定すると，そのレベルが削除されて値も削除されます:</p>
+<pre class="r"><code>fct_recode(x, NULL = &quot;apple&quot;, fruit = &quot;banana&quot;)
+#&gt; [1] &lt;NA&gt;  bear  fruit dear 
+#&gt; Levels: fruit bear dear</code></pre>
+</div>
+</div>
+</div>
+<div id="add_levels" class="section level2">
+<h2>新しいlevelsを追加</h2>
+<p>新しいlevelsの値を追加します。</p>
+<div id="fct_expand" class="section level3">
+<h3>factorにlevelsを追加(<code>fct_expand</code>)</h3>
+<p>そのまんまです。</p>
+<div id="-12" class="section level4">
+<h4>使い方</h4>
+<pre><code>fct_expand(f, ...)
+</code></pre>
+</div>
+<div id="-12" class="section level4">
+<h4>引数</h4>
+<dl>
+<dt>f</dt>
+<dd>factor型のベクトル。
+</dd>
+<dt>…</dt>
+<dd>追加したいlevels値を文字列で指定。
+</dd>
+</dl>
+</div>
+<div id="-12" class="section level4">
+<h4>説明と具体例</h4>
+<p>そのまんまです。</p>
+<pre class="r"><code>f &lt;- factor(sample(letters[1:3], 20, replace = TRUE))
+f
+#&gt;  [1] c b b c a a b a b c c c a a c c a c c b
+#&gt; Levels: a b c
+fct_expand(f, &quot;d&quot;, &quot;e&quot;, &quot;f&quot;)
+#&gt;  [1] c b b c a a b a b c c c a a c c a c c b
+#&gt; Levels: a b c d e f
+fct_expand(f, letters[1:6])
+#&gt;  [1] c b b c a a b a b c c c a a c c a c c b
+#&gt; Levels: a b c d e f</code></pre>
+</div>
+</div>
+<div id="fct_explicit_na" class="section level3">
+<h3>NAに“欠損値”というlevelsを付与(<code>fct_explicit_na</code>)</h3>
+<p>factor型データ内に<code>NA</code>が存在する場合，その値に“(Missing)”というlevels値をつけます。</p>
+<div id="-13" class="section level4">
+<h4>使い方</h4>
+<pre><code>fct_explicit_na(f, na_level = &quot;(Missing)&quot;)</code></pre>
+</div>
+<div id="-13" class="section level4">
+<h4>引数</h4>
+<dl>
+<dt>f</dt>
+<dd>factor型のベクトル。
+</dd>
+<dt>na_level</dt>
+<dd><code>NA</code>に設定するlevels値
+</dd>
+</dl>
+</div>
+<div id="-13" class="section level4">
+<h4>説明と具体例</h4>
+<p><code>NA</code>は通常levelsがうまく付与することができなかったりします:</p>
+<pre class="r"><code>f1 &lt;- factor(c(&quot;a&quot;, &quot;a&quot;, NA, NA, &quot;a&quot;, &quot;b&quot;, NA, &quot;c&quot;, &quot;a&quot;, &quot;c&quot;, &quot;b&quot;))
+f1
+#&gt;  [1] a    a    &lt;NA&gt; &lt;NA&gt; a    b    &lt;NA&gt; c    a    c    b   
+#&gt; Levels: a b c
+table(f1)
+#&gt; f1
+#&gt; a b c 
+#&gt; 4 2 2</code></pre>
+<p>この関数は，そんな<code>NA</code>に明示的にlevelsの値を振れるようにするものです:</p>
+<pre class="r"><code>f2 &lt;- fct_explicit_na(f1)
+f2
+#&gt;  [1] a         a         (Missing) (Missing) a         b         (Missing)
+#&gt;  [8] c         a         c         b        
+#&gt; Levels: a b c (Missing)
+table(f2)
+#&gt; f2
+#&gt;         a         b         c (Missing) 
+#&gt;         4         2         2         3</code></pre>
+<p>要するに，「<code>NA</code>を別の文字列に置換して，そのままlevelsの値に設定する」という処理を行ってくれます。</p>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2>その他</h2>
+<div id="fct_c" class="section level3">
+<h3>複数のfactorデータを連結してlevelsを結合(<code>fct_c</code>)</h3>
+<p>複数のfactor型データをまとめたlistデータの内部を参照し，それを連結させてlevelsも結合させます。</p>
+<div id="-14" class="section level4">
+<h4>使い方</h4>
+<pre><code>fct_c(fs)</code></pre>
+</div>
+<div id="-14" class="section level4">
+<h4>引数</h4>
+<dl>
+<dt>fs</dt>
+<dd>factor型ベクトルを束ねたlist型データ
+</dd>
+</dl>
+</div>
+<div id="-14" class="section level4">
+<h4>説明と具体例</h4>
+<p>タイトルのとおりで，自動的にいい感じにまとめてくれます:</p>
+<pre class="r"><code>fs &lt;- list(factor(&quot;a&quot;), factor(&quot;b&quot;), factor(c(&quot;a&quot;, &quot;b&quot;)))
+fct_c(fs)
+#&gt; [1] a b a b
+#&gt; Levels: a b</code></pre>
+</div>
+</div>
+<div id="fct_count" class="section level3">
+<h3>factorの各要素の出現数をカウント(<code>fct_count</code>)</h3>
+<p>タイトルのとおりで，factor型に特化したcount関数です。</p>
+<div id="-15" class="section level4">
+<h4>使い方</h4>
+<pre><code>fct_count(f, sort = FALSE)
+</code></pre>
+</div>
+<div id="-15" class="section level4">
+<h4>引数</h4>
+<dl>
+<dt>f</dt>
+<dd>factor型のベクトル
+</dd>
+<dt>sort</dt>
+<dd><code>TRUE</code>を指定すると，頻度の降順でソートします。
+</dd>
+</dl>
+</div>
+<div id="-15" class="section level4">
+<h4>説明と具体例</h4>
+<p>タイトルのとおりですが，返り値が<code>tibble</code>classなのが特徴です。<code>table</code>と違い，tidyverseな他の関数との相性がよく，使いやすいでしょう。</p>
+<pre class="r"><code>f &lt;- factor(sample(letters)[rpois(1000, 10)])
+table(f)
+#&gt; f
+#&gt;   a   b   c   d   f   g   i   k   l   m   o   q   r   s   t   u   v   w 
+#&gt;   2 126   1  46  96  75   1  46   1   8  97  92 133  17  17  15  67   8 
+#&gt;   x   y 
+#&gt; 117  35
+fct_count(f)
+#&gt; # A tibble: 20 × 2
+#&gt;         f     n
+#&gt;    &lt;fctr&gt; &lt;int&gt;
+#&gt; 1       a     2
+#&gt; 2       b   126
+#&gt; 3       c     1
+#&gt; 4       d    46
+#&gt; 5       f    96
+#&gt; 6       g    75
+#&gt; 7       i     1
+#&gt; 8       k    46
+#&gt; 9       l     1
+#&gt; 10      m     8
+#&gt; 11      o    97
+#&gt; 12      q    92
+#&gt; 13      r   133
+#&gt; 14      s    17
+#&gt; 15      t    17
+#&gt; 16      u    15
+#&gt; 17      v    67
+#&gt; 18      w     8
+#&gt; 19      x   117
+#&gt; 20      y    35
+fct_count(f, sort = TRUE)
+#&gt; # A tibble: 20 × 2
+#&gt;         f     n
+#&gt;    &lt;fctr&gt; &lt;int&gt;
+#&gt; 1       r   133
+#&gt; 2       b   126
+#&gt; 3       x   117
+#&gt; 4       o    97
+#&gt; 5       f    96
+#&gt; 6       q    92
+#&gt; 7       g    75
+#&gt; 8       v    67
+#&gt; 9       d    46
+#&gt; 10      k    46
+#&gt; 11      y    35
+#&gt; 12      s    17
+#&gt; 13      t    17
+#&gt; 14      u    15
+#&gt; 15      m     8
+#&gt; 16      w     8
+#&gt; 17      a     2
+#&gt; 18      c     1
+#&gt; 19      i     1
+#&gt; 20      l     1</code></pre>
+</div>
+</div>
+<div id="fct_drop" class="section level3">
+<h3>使われていないlevelsをドロップ(<code>fct_drop</code>)</h3>
+<p>そのままです。</p>
+<div id="-16" class="section level4">
+<h4>使い方</h4>
+<pre><code>fct_drop(f)</code></pre>
+</div>
+<div id="-16" class="section level4">
+<h4>引数</h4>
+<dl>
+<dt>f</dt>
+<dd>factor型のベクトル
+</dd>
+</dl>
+</div>
+<div id="-16" class="section level4">
+<h4>説明と具体例</h4>
+<p>タイトルの通りで<code>droplevels()</code>と同じなのですが，こちらは問答無用で使ってないものを削除します。</p>
+<pre class="r"><code>f &lt;- factor(c(&quot;a&quot;, &quot;b&quot;), levels = c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;))
+f
+#&gt; [1] a b
+#&gt; Levels: a b c
+fct_drop(f)
+#&gt; [1] a b
+#&gt; Levels: a b</code></pre>
+</div>
+</div>
+<div id="fct_unify" class="section level3">
+<h3>factorデータのリスト内でlevelsを統一(<code>fct_unify</code>)</h3>
+<p>リスト内のfactorデータ内のlevelsを全て参照し，統一させます。</p>
+<div id="-17" class="section level4">
+<h4>使い方</h4>
+<pre><code>fct_unify(fs, levels = lvls_union(fs))</code></pre>
+</div>
+<div id="-17" class="section level4">
+<h4>引数</h4>
+<dl>
+<dt>fs</dt>
+<dd>ファクター型ベクトルを束ねたlist型データ。
+</dd>
+<dt>levels</dt>
+<dd>参照して統合させるlevelsのリスト。
+</dd>
+</dl>
+</div>
+<div id="-17" class="section level4">
+<h4>説明と具体例</h4>
+<p>複数のfactor型ベクトルを参照して，その中でlevelsが異なっている場合には共通となるようにlevelsを統合して全てに同じlevelsを付与します。</p>
+<pre class="r"><code>fs &lt;- list(factor(&quot;a&quot;), factor(&quot;b&quot;), factor(c(&quot;a&quot;, &quot;b&quot;)))
+fct_unify(fs)
+#&gt; [[1]]
+#&gt; [1] a
+#&gt; Levels: a b
+#&gt; 
+#&gt; [[2]]
+#&gt; [1] b
+#&gt; Levels: a b
+#&gt; 
+#&gt; [[3]]
+#&gt; [1] a b
+#&gt; Levels: a b</code></pre>
+<p>これを元に，ベクトルにまとめたものを返すのが<a href="#fct_c"><code>fct_c()</code></a>となります。</p>
+</div>
+</div>
+<div id="fct_unique" class="section level3">
+<h3>unique()の出力をfactorのlevels順で出力(<code>fct_unique</code>)</h3>
+<p>factor型データからユニークな値を返します。</p>
+<div id="-18" class="section level4">
+<h4>使い方</h4>
+<pre><code>fct_unique(f)</code></pre>
+</div>
+<div id="-18" class="section level4">
+<h4>引数</h4>
+<dl>
+<dt>f</dt>
+<dd>ファクター型ベクトル
+</dd>
+</dl>
+</div>
+<div id="-18" class="section level4">
+<h4>説明と具体例</h4>
+<p>上記のとおりで，<code>unique()</code>とほぼ一緒なのですが，返り値が多少変わります:</p>
+<pre class="r"><code>f &lt;- factor(letters[rpois(100, 10)])
+
+unique(f)
+#&gt;  [1] h l o g j p i f k c n m e d s
+#&gt; Levels: c d e f g h i j k l m n o p s
+fct_unique(f)
+#&gt;  [1] c d e f g h i j k l m n o p s
+#&gt; Levels: c d e f g h i j k l m n o p s</code></pre>
+<p>このように<code>unique()</code>だと返り値は出現順になりますが，<code>fct_unique()</code>では返り値はlevelsの順序となります。</p>
+</div>
+</div>
+<div id="factorlevelslvls_union" class="section level3">
+<h3>factorデータのリスト内にある全てのlevelsを探す(<code>lvls_union</code>)</h3>
+<p>factor型を束ねたリスト内を参照し，全てのlevelsを探してピックアップします。</p>
+<div id="-19" class="section level4">
+<h4>使い方</h4>
+<pre><code>lvls_union(fs)</code></pre>
+</div>
+<div id="-19" class="section level4">
+<h4>引数</h4>
+<dl>
+<dt>fs</dt>
+<dd>factor型ベクトルのリスト
+</dd>
+</dl>
+</div>
+<div id="-19" class="section level4">
+<h4>説明と具体例</h4>
+<p>上記のとおりです:</p>
+<pre class="r"><code>fs &lt;- list(factor(&quot;a&quot;), factor(&quot;b&quot;), factor(c(&quot;a&quot;, &quot;b&quot;)))
+lvls_union(fs)
+#&gt; [1] &quot;a&quot; &quot;b&quot;</code></pre>
+<p>このようにして全て拾いだしたlevelsを使って，それぞれのfactor型ベクトルへ付与して統一させるのが<a href="#fct_unify"><code>fct_unify</code></a>となります。</p>
+</div>
+</div>
+<div id="levelslvls_reorder-lvls_revalue-lvls_expand" class="section level3">
+<h3>levels操作用の低水準関数(<code>lvls_reorder</code>, <code>lvls_revalue</code>, <code>lvls_expand</code>)</h3>
+<p>これらの関数は，これまで紹介してきた関数(<code>fct_*</code>)よりも低水準な機能を持ちますが，より個別的な事例では役に立つこともあるかと。ただ引数には注意してほしいとのことです。</p>
+<p>詳細については省略します。<a href="http://forcats.tidyverse.org/reference/lvls.html">公式サイトの情報</a>を参照してください。</p>
+</div>
+</div>
+<div class="section level2">
+<h2>雑感</h2>
+<p>これまで苦労していたfactor型のlevelsをいじるにあたって，かゆいところに手が届く感じです。Rでfactor型は面倒だと感じることが多かったですが，これらの関数があればずっと楽になるのは間違いないでしょう。</p>
+<p>あと，<strong>今回の検証では日本語を一切試していません</strong>。たぶん大丈夫だとは思うのですが…だれか検証してください。</p>
+<p>このドキュメントに関する問い合わせはTwitterの<a href="https://twitter.com/kazutan">kazutan</a>までおねがいします。わからない点についてはSlackの<a href="https://r-wakalang.slack.com/messages/general/">r-wakalang</a>などで質問してみるといいかとおもいます。</p>
+<p><strong>Enjoy!</strong></p>
+</div>
+<div class="section level2">
+<h2>実行環境</h2>
+<pre class="r"><code>sessionInfo()
+#&gt; R version 3.3.2 (2016-10-31)
+#&gt; Platform: x86_64-pc-linux-gnu (64-bit)
+#&gt; Running under: Debian GNU/Linux 8 (jessie)
+#&gt; 
+#&gt; locale:
+#&gt;  [1] LC_CTYPE=ja_JP.UTF-8       LC_NUMERIC=C              
+#&gt;  [3] LC_TIME=ja_JP.UTF-8        LC_COLLATE=ja_JP.UTF-8    
+#&gt;  [5] LC_MONETARY=ja_JP.UTF-8    LC_MESSAGES=C             
+#&gt;  [7] LC_PAPER=ja_JP.UTF-8       LC_NAME=C                 
+#&gt;  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+#&gt; [11] LC_MEASUREMENT=ja_JP.UTF-8 LC_IDENTIFICATION=C       
+#&gt; 
+#&gt; attached base packages:
+#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     
+#&gt; 
+#&gt; other attached packages:
+#&gt;  [1] forcats_0.2.0   purrr_0.2.2     readr_1.0.0     tibble_1.2     
+#&gt;  [5] ggplot2_2.2.1   tidyverse_1.0.0 knitr_1.15.1    tidyr_0.6.1    
+#&gt;  [9] dplyr_0.5.0     DT_0.2         
+#&gt; 
+#&gt; loaded via a namespace (and not attached):
+#&gt;  [1] Rcpp_0.12.9      magrittr_1.5     munsell_0.4.3    colorspace_1.3-2
+#&gt;  [5] R6_2.2.0         plyr_1.8.4       stringr_1.2.0    highr_0.6       
+#&gt;  [9] tools_3.3.2      grid_3.3.2       gtable_0.2.0     DBI_0.5-1       
+#&gt; [13] htmltools_0.3.5  yaml_2.1.14      lazyeval_0.2.0   assertthat_0.1  
+#&gt; [17] rprojroot_1.2    digest_0.6.12    htmlwidgets_0.8  evaluate_0.10   
+#&gt; [21] rmarkdown_1.3    labeling_0.3     stringi_1.1.2    scales_0.4.1    
+#&gt; [25] backports_1.0.5  jsonlite_1.2</code></pre>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>たぶん「2変数での一番大きい値」というニュアンスで<code>last2</code>とつけているんでしょうけど…それでいいのかという思いがあります。<a href="#fnref1">↩</a></p></li>
+</ol>
+</div>
+
+<p>Copyright &copy; 2017 Kazuhiro Maeda. </p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

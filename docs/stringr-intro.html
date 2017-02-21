@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>stringrを使って文字列処理をやってみる</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<script src="site_libs/htmlwidgets-0.8/htmlwidgets.js"></script>
+<link href="site_libs/str_view-0.1.0/str_view.css" rel="stylesheet" />
+<script src="site_libs/str_view-binding-1.2.0/str_view.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="site_style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Kazutan.R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    データ操作
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="data_handling.html">dplyr, tidyr</a>
+    </li>
+    <li>
+      <a href="stringr-intro.html">stringr</a>
+    </li>
+    <li>
+      <a href="forcats_test.html">forcats</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    可視化
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="DT_demo.html">DT</a>
+    </li>
+    <li>
+      <a href="leaflet_d.html">leaflet</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">stringrを使って文字列処理をやってみる</h1>
+
+</div>
+
+
+<div id="stringr" class="section level1">
+<h1>stringr</h1>
+<div class="section level2">
+<h2>文字列を操作するパッケージ</h2>
+<ul>
+<li>stringiパッケージのwrapper
+<ul>
+<li>元は違ったけど“i”の性能がよかったから</li>
+<li>Hadley Wickham謹製</li>
+</ul></li>
+<li>特徴
+<ul>
+<li>baseの関数群より処理が速い</li>
+<li>関数名が“str_”で始まってる</li>
+<li>主な文字列処理はこれひとつでOK</li>
+<li>“%&gt;%”で連鎖しやすい!</li>
+</ul></li>
+</ul>
+</div>
+<div class="section level2">
+<h2>インストール</h2>
+<p>CRANからインストール</p>
+<pre class="r"><code>install.packages(&quot;stringr&quot;)</code></pre>
+<p>GitHubからインストール</p>
+<pre class="r"><code>devtools::install_github(&quot;hadley/stringr&quot;)</code></pre>
+<p>githubinstallでもOK</p>
+<pre class="r"><code>githubinstall::githubinstall(&quot;stringr&quot;)</code></pre>
+</div>
+<div class="section level2">
+<h2>参考資料</h2>
+<ul>
+<li><a href="https://www.rdocumentation.org/packages/stringr/versions/1.1.0?">stringr - RDocumentation</a>
+<ul>
+<li>R Documentationというサイトにあるパッケージ紹介サイト</li>
+<li>Helpの内容をベースに,<strong>サイト内で実際にコードが試せます</strong></li>
+</ul></li>
+<li><a href="http://rpubs.com/yamano357/92478">{stringr}/{stringi}とbaseの文字列処理について</a>
+<ul>
+<li>タイトルの通りで,<strong>Rの文字列処理について知りたければこれひとつでOK</strong></li>
+<li>今日の発表は,ここの説明をベースに準備しました</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div class="section level1">
+<h1>加工</h1>
+<div id="-str_c" class="section level2">
+<h2>文字列の連結 str_c()</h2>
+<pre class="r"><code>str_c(&quot;kosaki&quot;, &quot;love&quot;, sep = &quot; &quot;)</code></pre>
+<pre><code>## [1] &quot;kosaki love&quot;</code></pre>
+<ul>
+<li>文字列を連結させる</li>
+<li><code>paste()</code>と同じように使える</li>
+</ul>
+<hr />
+<pre class="r"><code>x &lt;- c(&quot;kosaki&quot;, &quot;chitoge&quot;, &quot;marika&quot;)
+str_c(x, collapse = &quot;, &quot;)</code></pre>
+<pre><code>## [1] &quot;kosaki, chitoge, marika&quot;</code></pre>
+<ul>
+<li>文字列ベクトルの要素をひとつに連結させるには<code>collapse=</code>オプションを使用</li>
+<li>このあたりも<code>paste()</code>と同様</li>
+</ul>
+<hr />
+<pre class="r"><code>y &lt;- c(&quot;love&quot;, &quot;like&quot;, &quot;like&quot;)
+(ni &lt;- str_c(x, y, sep=&quot;-&quot;))</code></pre>
+<pre><code>## [1] &quot;kosaki-love&quot;  &quot;chitoge-like&quot; &quot;marika-like&quot;</code></pre>
+<ul>
+<li>文字列ベクトル同士を引っ付けることも可能</li>
+</ul>
+</div>
+<div id="-str_split" class="section level2">
+<h2>文字列の分割: str_split()</h2>
+<pre class="r"><code>str_split(ni, pattern = &quot;-&quot;)</code></pre>
+<pre><code>## [[1]]
+## [1] &quot;kosaki&quot; &quot;love&quot;  
+## 
+## [[2]]
+## [1] &quot;chitoge&quot; &quot;like&quot;   
+## 
+## [[3]]
+## [1] &quot;marika&quot; &quot;like&quot;</code></pre>
+<ul>
+<li>パターンに一致したところで分割</li>
+<li>返り値はリスト型がデフォルト</li>
+</ul>
+<hr />
+<pre class="r"><code>str_split(ni, pattern = &quot;-&quot;, simplify = TRUE)</code></pre>
+<pre><code>##      [,1]      [,2]  
+## [1,] &quot;kosaki&quot;  &quot;love&quot;
+## [2,] &quot;chitoge&quot; &quot;like&quot;
+## [3,] &quot;marika&quot;  &quot;like&quot;</code></pre>
+<ul>
+<li><code>simplify=TRUE</code>で行列型で返す</li>
+</ul>
+<hr />
+<pre class="r"><code>str_split(&quot;k-o-s-a-k=i&quot;, pattern = &quot;-&quot;, n=3)</code></pre>
+<pre><code>## [[1]]
+## [1] &quot;k&quot;       &quot;o&quot;       &quot;s-a-k=i&quot;</code></pre>
+<ul>
+<li><code>n=</code>オプションで,分割数を指定することも可能</li>
+<li>この時どこで区切られるかは,先頭優先となります</li>
+</ul>
+</div>
+<div id="-str_split_fixed" class="section level2">
+<h2>文字列の分割: str_split_fixed()</h2>
+<pre class="r"><code>a &lt;- c(&quot;kosaki-love&quot;,&quot;chitoge-like&quot;,&quot;tugumi&quot;)
+str_split_fixed(a, pattern=&quot;-&quot;, n=2)</code></pre>
+<pre><code>##      [,1]      [,2]  
+## [1,] &quot;kosaki&quot;  &quot;love&quot;
+## [2,] &quot;chitoge&quot; &quot;like&quot;
+## [3,] &quot;tugumi&quot;  &quot;&quot;</code></pre>
+<ul>
+<li><code>str_split()</code>同様,文字列を分割</li>
+<li>ただし区切る場所がない場合,長さ0の文字列が入ります</li>
+</ul>
+</div>
+</div>
+<div class="section level1">
+<h1>検索</h1>
+<div id="-str_detect" class="section level2">
+<h2>文字を含むかどうか(論理値): str_detect()</h2>
+<pre class="r"><code>x &lt;- c(&quot;kosaki&quot;, &quot;chitoge&quot;, &quot;marika&quot;)
+str_detect(x, pattern=&quot;ko&quot;)</code></pre>
+<pre><code>## [1]  TRUE FALSE FALSE</code></pre>
+<ul>
+<li>ベクトル内で,パターンにマッチした文字があるかどうかを判定</li>
+<li>返り値は論理ベクトル</li>
+</ul>
+<hr />
+<pre class="r"><code>str_detect(x,pattern=&quot;a$&quot;)</code></pre>
+<pre><code>## [1] FALSE FALSE  TRUE</code></pre>
+<ul>
+<li>パターンに正規表現を使用することも可能</li>
+</ul>
+</div>
+<div id="-str_subset" class="section level2">
+<h2>文字を含むかどうか(要素): str_subset()</h2>
+<pre class="r"><code>str_subset(x, pattern=&quot;o&quot;)</code></pre>
+<pre><code>## [1] &quot;kosaki&quot;  &quot;chitoge&quot;</code></pre>
+<ul>
+<li>ベクトル内で,パターンにマッチした文字があるかどうかを判定</li>
+<li>返り値は,マッチした要素のみの文字列ベクトル</li>
+</ul>
+</div>
+</div>
+<div class="section level1">
+<h1>置換</h1>
+<div id="-str_replase" class="section level2">
+<h2>文字列の置換(先頭一致): str_replase()</h2>
+<pre class="r"><code>str_replace(x, pattern=&quot;k&quot;, replacement=&quot;*&quot;)</code></pre>
+<pre><code>## [1] &quot;*osaki&quot;  &quot;chitoge&quot; &quot;mari*a&quot;</code></pre>
+<ul>
+<li>パターンにマッチした文字列を置換</li>
+<li>要素内に複数マッチした場合,<strong>先頭のみを置換</strong></li>
+</ul>
+</div>
+<div id="-str_replase_all" class="section level2">
+<h2>文字列の置換(全部): str_replase_all()</h2>
+<pre class="r"><code>str_replace_all(x, pattern=&quot;k&quot;, replacement=&quot;*&quot;)</code></pre>
+<pre><code>## [1] &quot;*osa*i&quot;  &quot;chitoge&quot; &quot;mari*a&quot;</code></pre>
+<ul>
+<li>パターンにマッチした文字列を置換</li>
+<li>要素内に複数マッチした場合,<strong>すべて置換</strong></li>
+</ul>
+</div>
+</div>
+<div class="section level1">
+<h1>抽出</h1>
+<div id="-str_extract" class="section level2">
+<h2>マッチした要素を抽出: str_extract()</h2>
+<pre class="r"><code>str_extract(x, pattern=&quot;ko&quot;)</code></pre>
+<pre><code>## [1] &quot;ko&quot; NA   NA</code></pre>
+<ul>
+<li>パターンにマッチした箇所<strong>だけ</strong>を取り出す</li>
+<li>返り値はベクトル</li>
+<li>先頭一致（要素内で他にも該当する場所があっても無視）</li>
+</ul>
+</div>
+<div id="-str_extract_all" class="section level2">
+<h2>マッチした要素をすべて抽出: str_extract_all()</h2>
+<pre class="r"><code>str_extract_all(x, pattern=&quot;k|s&quot;, simplify=TRUE)</code></pre>
+<pre><code>##      [,1] [,2] [,3]
+## [1,] &quot;k&quot;  &quot;s&quot;  &quot;k&quot; 
+## [2,] &quot;&quot;   &quot;&quot;   &quot;&quot;  
+## [3,] &quot;k&quot;  &quot;&quot;   &quot;&quot;</code></pre>
+<ul>
+<li>パターンにマッチした箇所<strong>すべて</strong>を取り出す</li>
+<li>返り値はデフォルトでリスト
+<ul>
+<li><code>simplify=TRUE</code>で行列に</li>
+</ul></li>
+</ul>
+</div>
+<div id="-str_sub" class="section level2">
+<h2>数値で指定して抽出: str_sub()</h2>
+<pre class="r"><code>str_sub(x, start=1, end=4)</code></pre>
+<pre><code>## [1] &quot;kosa&quot; &quot;chit&quot; &quot;mari&quot;</code></pre>
+<pre class="r"><code>str_sub(x, start=4, end=-1)</code></pre>
+<pre><code>## [1] &quot;aki&quot;  &quot;toge&quot; &quot;ika&quot;</code></pre>
+<ul>
+<li>startで開始位置、endで終了位置を指定</li>
+<li>マイナスを指定すると<strong>後ろからの位置</strong>を指定</li>
+</ul>
+</div>
+</div>
+<div class="section level1">
+<h1>その他</h1>
+<div id="-str_conv" class="section level2">
+<h2>文字のエンコーディング: str_conv()</h2>
+<pre class="r"><code>str_conv(x, encoding=&quot;UTF-8&quot;)</code></pre>
+<ul>
+<li>文字コードを変換させる</li>
+<li><code>iconv()</code>と同じようなもの</li>
+</ul>
+</div>
+<div id="viewer-str_view" class="section level2">
+<h2>正規表現のViewer: str_view()</h2>
+<pre class="r"><code>str_view(x, &quot;a$&quot;)</code></pre>
+<div id="htmlwidget-80404abbb4d3dfe2c457" style="width:960px;height:auto;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-80404abbb4d3dfe2c457">{"x":{"html":"<ul>\n  <li>kosaki\u003c/li>\n  <li>chitoge\u003c/li>\n  <li>marik<span class='match'>a\u003c/span>\u003c/li>\n\u003c/ul>"},"evals":[],"jsHooks":[]}</script>
+<ul>
+<li>正規表現でのマッチ結果をRStudioのViewerに出してくれる</li>
+<li>最近組み込まれた</li>
+<li>正規表現の練習にも使えるし便利</li>
+</ul>
+</div>
+<div class="section level2">
+<h2>以下省略</h2>
+<ul>
+<li>文字列の抽出(グループ): <code>str_match()</code></li>
+<li>条件を含んだ箇所のカウント: <code>str_count()</code></li>
+<li>パターンの位置: <code>str_locate()</code></li>
+<li>文字列の長さ: <code>str_length()</code></li>
+<li>文字列の繰り返し: <code>str_dup()</code></li>
+<li>などなど</li>
+</ul>
+</div>
+</div>
+<div class="section level1">
+<h1>実用例</h1>
+<div id="web" class="section level2">
+<h2>Webスクレイピング</h2>
+<ul>
+<li>スクレイピングする対象を絞るとき</li>
+<li><p>スクレイピングして取得したデータを前処理するとき</p></li>
+<li><a href="https://rpubs.com/kazutan/typhoon5">台風22号と23号</a>
+<ul>
+<li>スクレイピングして取得したデータを整形</li>
+<li>パイプ演算子使えるの超助かった</li>
+</ul></li>
+</ul>
+</div>
+<div class="section level2">
+<h2>レコードの抽出</h2>
+<ul>
+<li>データセットで,正規表現による部分一致でレコードを抽出するときなど</li>
+</ul>
+<pre class="r"><code>tibble::rownames_to_column(mtcars, var = &quot;name&quot;) %&gt;% 
+  dplyr::filter(str_detect(.$name, &quot;Mazda&quot;))</code></pre>
+<pre><code>## # A tibble: 2 × 12
+##            name   mpg   cyl  disp    hp  drat    wt  qsec    vs    am
+##           &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1     Mazda RX4    21     6   160   110   3.9 2.620 16.46     0     1
+## 2 Mazda RX4 Wag    21     6   160   110   3.9 2.875 17.02     0     1
+## # ... with 2 more variables: gear &lt;dbl&gt;, carb &lt;dbl&gt;</code></pre>
+</div>
+<div id="enjoy" class="section level2">
+<h2>Enjoy!</h2>
+<p>今日の資料置き場 - <a href="https://kazutan.github.io/SappoRoR7" class="uri">https://kazutan.github.io/SappoRoR7</a></p>
+</div>
+</div>
+
+<p>Copyright &copy; 2017 Kazuhiro Maeda. </p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
