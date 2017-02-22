@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>ggplot2に関する資料</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="site_style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Kazutan.R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    データ操作
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="data_handling.html">dplyr, tidyr</a>
+    </li>
+    <li>
+      <a href="stringr-intro.html">stringr</a>
+    </li>
+    <li>
+      <a href="forcats_test.html">forcats</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    可視化
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="ggplot2_links.html">ggplot2</a>
+    </li>
+    <li>
+      <a href="DT_demo.html">DT</a>
+    </li>
+    <li>
+      <a href="leaflet_d.html">leaflet</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">ggplot2に関する資料</h1>
+
+</div>
+
+
+<p>ggplot2に関しては個人で作ったものはほとんどないので，<a href="http://qiita.com/kazutan/items/c42031ec54be283efd4f">昔Qiitaに書いた記事</a>をベースに，他の方々が作成した資料のリンクを置くことにします。</p>
+<div class="section level2">
+<h2>公式資料</h2>
+<p>ggplot2はtidyverseパッケージ群に含まれており，githubのリポジトリの場所およびドキュメントの場所が移っています。</p>
+<ul>
+<li>GitHubリポジトリ
+<ul>
+<li><a href="https://github.com/tidyverse/ggplot2" class="uri">https://github.com/tidyverse/ggplot2</a></li>
+<li>開発版をインストールする際は，“tidyverse/ggplot2”となります。</li>
+</ul></li>
+<li>公式サイト
+<ul>
+<li><a href="http://ggplot2.tidyverse.org/" class="uri">http://ggplot2.tidyverse.org/</a></li>
+<li>画面上端のメニューで<a href="http://ggplot2.tidyverse.org/reference/index.html">Reference</a>をクリックすると，関数レファレンスにいくことができます</li>
+</ul></li>
+</ul>
+</div>
+<div id="ggplot2" class="section level2">
+<h2>ggplot2のイメージをつかむ</h2>
+<p>まずはggplot2がどういうものなのかをつかみましょう。</p>
+<div class="section level3">
+<h3>完全な初心者向け</h3>
+<p>ggplot2に初めて触れるという方は，まずこのスライドを一読されるのをおすすめします:</p>
+<iframe src="https://www.slideshare.net/slideshow/embed_code/key/41AuyD0IYdcpMn" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="https://www.slideshare.net/nocchi_airport/ggplot2-kazutan-rver2" title="ggplot2によるグラフ化@HijiyamaR#2" target="_blank">ggplot2によるグラフ化@HijiyamaR#2</a> </strong> from <strong><a target="_blank" href="http://www.slideshare.net/nocchi_airport">nocchi_airport</a></strong> </div>
+<p>ggplot2を理解するためには，その文法をイメージできるようになることが近道です。このスライドは従来のplotとggplot2との違いをわかりやすく解説してあります。まずはレイヤーの感覚をつかむためにも，提示してあるサンプルをひたすら打ちましょう。<strong>手を動かす，大事</strong>。</p>
+<iframe src="https://www.slideshare.net/slideshow/embed_code/key/NqpW3K8fWvI1ty" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="https://www.slideshare.net/nocchi_airport/ggplot2-62471507" title="ggplot2用例集　入門編" target="_blank">ggplot2用例集　入門編</a> </strong> from <strong><a target="_blank" href="http://www.slideshare.net/nocchi_airport">nocchi_airport</a></strong> </div>
+<p>先ほどのスライドの続きの位置づけで，ggplot2を実際に使った用例集として，主に心理系領域での場面を想定して用意してあります。ここにあるサンプルコードをひたすら打ちましょう。<strong>手を動かす，大事</strong>。</p>
+</div>
+<div id="ggplot2" class="section level3">
+<h3>もう少しggplot2の中身を知りたい方向け</h3>
+<p>Rにもある程度慣れてて，上述のスライドにあるテストコードを打ち終わったら，こちらのスライドにチャレンジしましょう:</p>
+<iframe src="https://www.slideshare.net/slideshow/embed_code/key/Aq6cXqzEhpZK5z" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="https://www.slideshare.net/yutannihilation/ggplot2-53851875" title="ggplot2再入門" target="_blank">ggplot2再入門</a> </strong> from <strong><a target="_blank" href="http://www.slideshare.net/yutannihilation">yutannihilation</a></strong> </div>
+<p>ちょっと難しく感じるところがあるかも知れませんが、諦めず最後まで読み通しましょう。このスライドはggplot2の基礎、そして今後自分で使いこなすために必要な知識が過不足なくつめ込まれているからです。このスライドで“Grammar of Graphics”の感覚をつかむためにも、サンプルコードをひたすら打ちましょう。<strong>手を動かす、大事</strong>。</p>
+</div>
+</div>
+<div id="ggplot2" class="section level2">
+<h2>ggplot2の機能一覧的な資料を手元に</h2>
+<p>ある程度イメージがつかめたら、コード写経ではなく自分でggplot2を描いてみましょう。R組み込みのデータから適当に見繕っていろんなplotをつくってみるといいでしょう。</p>
+<p>しかし、いざ自分で一からggplot2を作っていこうにも、使用する関数や引数などわからないことがたくさんです。そこで、基本的な関数一覧などがまとまった資料を手元に置いておき、その都度確認しながら作業しましょう。</p>
+<div id="ggplot2" class="section level3">
+<h3>ggplot2チートシート</h3>
+<p>日常使いなら、できるだけコンパクトにまとまっていたほうが何かと楽ですね。RStudioが作成して公開しているチートシートが便利です:</p>
+<iframe src="https://www.rstudio.com/wp-content/uploads/2016/11/ggplot2-cheatsheet-2.1.pdf" width="672" height="400px">
+</iframe>
+<p>pdfリンクを埋め込んでいます。ブラウザによっては表示されないかも知れません。リンク先は<a href="https://www.rstudio.com/wp-content/uploads/2016/11/ggplot2-cheatsheet-2.1.pdf">こちら</a>です。</p>
+<p>非常にコンパクトにまとまっていて、使い勝手が非常に高いです。これを印刷して手元に置いてもいいのですが、RStudioの最新版ならメニューの“Help - Cheatsheet”から開くことができます。</p>
+</div>
+<div id="ggplot2-function-reference" class="section level3">
+<h3>ggplot2 function reference</h3>
+<p><a href="https://kazutan.github.io/kazutanR/ggplot2_links.html#公式資料">上述した</a>公式サイト内にある関数レファレンスが非常に便利です:</p>
+<a href="http://ggplot2.tidyverse.org/reference/index.html">
+<img src="pics/ggplot_ref.png" alt=""/>
+</a>
+</div>
+<div id="r-for-data-science---3-data-visualisation" class="section level3">
+<h3>R for Data Science - 3 Data visualisation</h3>
+<p>最近注目を集めている書籍<a href="http://r4ds.had.co.nz/">R for Data Sciense</a>のWebドキュメント版に，ggplot2に関する記述があります:</p>
+<ul>
+<li><a href="http://r4ds.had.co.nz/data-visualisation.html" class="uri">http://r4ds.had.co.nz/data-visualisation.html</a></li>
+</ul>
+<p>こちらをみながら，実際に試してみるといいかと思います。</p>
+</div>
+</div>
+<div class="section level2">
+<h2>困った時には</h2>
+<p>自分で色々plotしていくと、「いろいろ調べたけれどわからない」と行き詰まってしまうことがよくあります。そんな時は以下を参考にしてください。</p>
+<div id="ggplot2" class="section level3">
+<h3>#ggplot2逆引き</h3>
+<p>「あなたが躓くところはきっと誰かも躓いている」ということで、現在Qiitaで上記タグをつけたプロジェクトが進行中です:</p>
+<ul>
+<li><a href="http://qiita.com/tags/ggplot2%E9%80%86%E5%BC%95%E3%81%8D">ggplot2逆引き- Qiita</a></li>
+</ul>
+<p>これがどういうプロジェクトなのかについては，以下のスライドを参照してください:</p>
+<iframe src="https://www.slideshare.net/slideshow/embed_code/key/8UOlwlFb3e3C5Z" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="https://www.slideshare.net/yutannihilation/ggplot2-52447195" title="押してダメなら引いてみろ！ ggplot2逆引きプロジェクト" target="_blank">押してダメなら引いてみろ！ ggplot2逆引きプロジェクト</a> </strong> from <strong><a target="_blank" href="http://www.slideshare.net/yutannihilation">yutannihilation</a></strong> </div>
+<p>だいぶ記事がストックしてあるのですが，きっとまだまだあるはずです。小さなことでも大歓迎です。<strong>ぜひ投稿しましょう!</strong>。</p>
+</div>
+<div id="r-wakalang" class="section level3">
+<h3>r-wakalang</h3>
+<p>Tokyo.Rの有志が中心となって運用している、Rお悩み相談チャットルームです3。利用方法はとても簡単で、メールアドレスを登録するだけです。詳しくは以下の記事をご覧ください:</p>
+<ul>
+<li><a href="http://qiita.com/uri/items/5583e91bb5301ed5a4ba">r-wakalangへようこそ - Qiita</a></li>
+</ul>
+<p>ここには初心者用の部屋(#r_begginers)もありますし、ggplot2専用の部屋(#ggplot2)もあります。さらに上のスライドにある通り、質問が投下されると本当にスゴい方々があっという間に答えてくれます。わからなかったら、ぜひここで聞いてみましょう。<strong>コワクナイヨ!</strong></p>
+</div>
+</div>
+<div id="ggplot2" class="section level2">
+<h2>ggplot2の拡張</h2>
+<p>ggplot2の特徴のひとつに，ggplot2に色んな物を追加する拡張パッケージが豊富であることが挙げられます。これらを利用すると，もっと便利にggplot2を使えますし，やりたいことができるようになったりします。</p>
+<p>ただその数は膨大で，それを探していくのは大変です。そこで有志がそれを取りまとめたサイトを作成しています:</p>
+<a href="https://www.ggplot2-exts.org/">
+<img src="pics/ggplot_extention.png" alt=""/>
+</a>
+<p><strong>Gallery</strong>もしくは<strong>Extention</strong>に進んでいくと一目瞭然かと思います。ぜひ一度チェックすることをおすすめします。</p>
+</div>
+<div id="ggplot2" class="section level2">
+<h2>自分でggplot2を拡張する</h2>
+<p>もちろん自分でggplot2を拡張することは可能です。これについてはggplot2のVignetteに<code>Extending ggplot2</code>としてドキュメントが存在します:</p>
+<ul>
+<li><a href="https://cran.r-project.org/web/packages/ggplot2/vignettes/extending-ggplot2.html" class="uri">https://cran.r-project.org/web/packages/ggplot2/vignettes/extending-ggplot2.html</a></li>
+</ul>
+<p>ただしこれは全て英語であり，読むのが大変です。v2.0.0であれば，<code>@yutannihilation</code>さんによる日本語訳されたドキュメントが公開されています:</p>
+<ul>
+<li><a href="http://yutannihilation.github.io/ggplot2-vignette-ja/extending-ggplot2.html">ggplot2を拡張する（原題：Extending ggplot2）</a></li>
+</ul>
+<p>多少異なる点はあるかと思いますが，イメージをつかむのにはいいかと思います。</p>
+</div>
+<div class="section level2">
+<h2>さいごに</h2>
+<p>これら全ての資料を作成して公開していただいている多くの方々に感謝します。</p>
+<p><strong>Enjoy!</strong></p>
+</div>
+
+<p>Copyright &copy; 2017 Kazuhiro Maeda. </p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

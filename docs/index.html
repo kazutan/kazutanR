@@ -205,6 +205,9 @@ $(document).ready(function () {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
+      <a href="ggplot2_links.html">ggplot2</a>
+    </li>
+    <li>
       <a href="DT_demo.html">DT</a>
     </li>
     <li>
@@ -230,6 +233,14 @@ $(document).ready(function () {
 
 
 <p>このサイトは、私がこれまで書いてきたR関連の資料をまとめています。随時更新していく予定です。</p>
+<div class="section level2">
+<h2>更新履歴</h2>
+<ul>
+<li>可視化にggplot2を追加(2017/02/22)</li>
+<li>可視化にDT, leafletを追加(2017/02/21)</li>
+<li>データ操作にdplyr&amp;tidyr，stringr, forcatsを追加(2017/02/21)</li>
+</ul>
+</div>
 <div id="contents" class="section level2">
 <h2>Contents</h2>
 <div id="data" class="section level3">
@@ -240,9 +251,10 @@ $(document).ready(function () {
 <li>forcats</li>
 </ul>
 </div>
-<div id="visualize" class="section level3">
-<h3>可視化(visualize)</h3>
+<div id="visualisation" class="section level3">
+<h3>可視化(visualisation)</h3>
 <ul>
+<li>ggplot2</li>
 <li>DT</li>
 <li>leaflet</li>
 </ul>
@@ -253,12 +265,12 @@ $(document).ready(function () {
 <pre class="r"><code>sessionInfo()</code></pre>
 <pre><code>## R version 3.3.2 (2016-10-31)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Debian GNU/Linux 8 (jessie)
+## Running under: Ubuntu 16.04.2 LTS
 ## 
 ## locale:
 ##  [1] LC_CTYPE=ja_JP.UTF-8       LC_NUMERIC=C              
 ##  [3] LC_TIME=ja_JP.UTF-8        LC_COLLATE=ja_JP.UTF-8    
-##  [5] LC_MONETARY=ja_JP.UTF-8    LC_MESSAGES=C             
+##  [5] LC_MONETARY=ja_JP.UTF-8    LC_MESSAGES=ja_JP.UTF-8   
 ##  [7] LC_PAPER=ja_JP.UTF-8       LC_NAME=C                 
 ##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
 ## [11] LC_MEASUREMENT=ja_JP.UTF-8 LC_IDENTIFICATION=C       
@@ -267,18 +279,29 @@ $(document).ready(function () {
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] forcats_0.2.0   purrr_0.2.2     readr_1.0.0     tibble_1.2     
-##  [5] ggplot2_2.2.1   tidyverse_1.0.0 knitr_1.15.1    tidyr_0.6.1    
-##  [9] dplyr_0.5.0     DT_0.2         
+##  [1] webshot_0.4.0       htmltools_0.3.6     zousan_0.0.0.170128
+##  [4] forcats_0.2.0       purrr_0.2.2         readr_1.0.0        
+##  [7] tibble_1.2          ggplot2_2.2.1       tidyverse_1.1.1    
+## [10] knitr_1.15.8        tidyr_0.6.1         dplyr_0.5.0        
+## [13] DT_0.2.11          
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_0.12.9      magrittr_1.5     munsell_0.4.3    colorspace_1.3-2
-##  [5] R6_2.2.0         plyr_1.8.4       stringr_1.2.0    highr_0.6       
-##  [9] tools_3.3.2      grid_3.3.2       gtable_0.2.0     DBI_0.5-1       
-## [13] htmltools_0.3.5  yaml_2.1.14      lazyeval_0.2.0   assertthat_0.1  
-## [17] rprojroot_1.2    digest_0.6.12    htmlwidgets_0.8  evaluate_0.10   
-## [21] rmarkdown_1.3    labeling_0.3     stringi_1.1.2    scales_0.4.1    
-## [25] backports_1.0.5  jsonlite_1.2</code></pre>
+##  [1] reshape2_1.4.2      haven_1.0.0         lattice_0.20-34    
+##  [4] colorspace_1.3-2    yaml_2.1.14         foreign_0.8-67     
+##  [7] DBI_0.5-1           modelr_0.1.0        readxl_0.1.1       
+## [10] plyr_1.8.4          stringr_1.1.0       munsell_0.4.3      
+## [13] gtable_0.2.0        rvest_0.3.2         htmlwidgets_0.8    
+## [16] psych_1.6.12        evaluate_0.10       labeling_0.3       
+## [19] httpuv_1.3.3        crosstalk_1.0.1     parallel_3.3.2     
+## [22] highr_0.6           broom_0.4.2         Rcpp_0.12.9        
+## [25] xtable_1.8-2        backports_1.0.5     scales_0.4.1       
+## [28] jsonlite_1.2        mime_0.5            mnormt_1.5-5       
+## [31] hms_0.3             digest_0.6.12       stringi_1.1.2      
+## [34] shiny_1.0.0.9000    grid_3.3.2          rprojroot_1.2      
+## [37] bitops_1.0-6        tools_3.3.2         magrittr_1.5       
+## [40] lazyeval_0.2.0.9000 RCurl_1.95-4.8      xml2_1.1.1         
+## [43] lubridate_1.6.0     assertthat_0.1      rmarkdown_1.3.9002 
+## [46] httr_1.2.1          R6_2.2.0            nlme_3.1-129</code></pre>
 </div>
 
 <p>Copyright &copy; 2017 Kazuhiro Maeda. </p>

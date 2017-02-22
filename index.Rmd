@@ -7,6 +7,12 @@ output:
 
 このサイトは、私がこれまで書いてきたR関連の資料をまとめています。随時更新していく予定です。
 
+## 更新履歴
+
+- 可視化にggplot2を追加(2017/02/22)
+- 可視化にDT, leafletを追加(2017/02/21)
+- データ操作にdplyr&tidyr，stringr, forcatsを追加(2017/02/21)
+
 ## Contents
 
 ### データ操作(data)
@@ -15,8 +21,9 @@ output:
 - stringr
 - forcats
 
-### 可視化(visualize)
+### 可視化(visualisation)
 
+- ggplot2
 - DT
 - leaflet
 

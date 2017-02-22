@@ -14,6 +14,8 @@ navbar:
           href: forcats_test.html
     - text: "可視化"
       menu:
+        - text: "ggplot2"
+          href: ggplot2_links.html
         - text: "DT"
           href: DT_demo.html
         - text: "leaflet"
