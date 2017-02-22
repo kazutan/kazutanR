@@ -25,6 +25,7 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -315,7 +316,12 @@ div.tocify {
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/kazutan/kazutanR/">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -714,7 +720,7 @@ x
 <pre class="r"><code>f &lt;- factor(c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;))
 fct_shuffle(f)
 #&gt; [1] a b c
-#&gt; Levels: c a b
+#&gt; Levels: b a c
 fct_shuffle(f)
 #&gt; [1] a b c
 #&gt; Levels: b c a</code></pre>
@@ -771,44 +777,44 @@ fct_shuffle(f)
 #&gt; # A tibble: 16 × 2
 #&gt;         f     n
 #&gt;    &lt;fctr&gt; &lt;int&gt;
-#&gt; 1      01    95
-#&gt; 2      02  5124
-#&gt; 3      03    32
-#&gt; 4      04   109
-#&gt; 5      05    23
-#&gt; 6      06  3523
-#&gt; 7      07   104
-#&gt; 8      08   689
-#&gt; 9      09   224
-#&gt; 10     10 10846
+#&gt; 1      01 10846
+#&gt; 2      02     0
+#&gt; 3      03    93
+#&gt; 4      04   224
+#&gt; 5      05  3523
+#&gt; 6      06    15
+#&gt; 7      07   689
+#&gt; 8      08    23
+#&gt; 9      09    71
+#&gt; 10     10  5124
 #&gt; 11     11   147
-#&gt; 12     12   388
-#&gt; 13     13    93
-#&gt; 14     14     0
-#&gt; 15     15    71
-#&gt; 16     16    15</code></pre>
+#&gt; 12     12   104
+#&gt; 13     13    95
+#&gt; 14     14   388
+#&gt; 15     15    32
+#&gt; 16     16   109</code></pre>
 <p>このように，levelsの値が連番の数値に書き換えられたというのが解ると思います。また，カウント数を比較してもらえばわかるように，その連番の与え方はランダムになっています。</p>
 <p>なお，連番の前に好きな文字列をつけることが可能です:</p>
 <pre class="r"><code>gss_cat$relig %&gt;% fct_anon(&quot;kosaki&quot;) %&gt;% fct_count()
 #&gt; # A tibble: 16 × 2
 #&gt;           f     n
 #&gt;      &lt;fctr&gt; &lt;int&gt;
-#&gt; 1  kosaki01   104
-#&gt; 2  kosaki02     0
+#&gt; 1  kosaki01  3523
+#&gt; 2  kosaki02   147
 #&gt; 3  kosaki03    93
-#&gt; 4  kosaki04    32
-#&gt; 5  kosaki05   224
-#&gt; 6  kosaki06  5124
-#&gt; 7  kosaki07   109
-#&gt; 8  kosaki08  3523
-#&gt; 9  kosaki09   689
-#&gt; 10 kosaki10    71
-#&gt; 11 kosaki11   147
-#&gt; 12 kosaki12    23
-#&gt; 13 kosaki13 10846
-#&gt; 14 kosaki14   388
-#&gt; 15 kosaki15    15
-#&gt; 16 kosaki16    95</code></pre>
+#&gt; 4  kosaki04   388
+#&gt; 5  kosaki05    32
+#&gt; 6  kosaki06    15
+#&gt; 7  kosaki07    95
+#&gt; 8  kosaki08   689
+#&gt; 9  kosaki09  5124
+#&gt; 10 kosaki10    23
+#&gt; 11 kosaki11   109
+#&gt; 12 kosaki12 10846
+#&gt; 13 kosaki13   104
+#&gt; 14 kosaki14    71
+#&gt; 15 kosaki15     0
+#&gt; 16 kosaki16   224</code></pre>
 </div>
 </div>
 <div id="fct_collapse" class="section level3">
@@ -901,102 +907,109 @@ fct_count(partyid2)
 <pre class="r"><code>
 x &lt;- factor(letters[rpois(100, 5)])
 x
-#&gt;   [1] c c b g e h b i f b c d e b f j e e e e c f f e d a e e f h f d e e f
-#&gt;  [36] g c c b e e b f e d g f h g d e d f d g g f b d e h e h e f e b d h f
-#&gt;  [71] f a c g g c g g d c d a c e c f g d a g h g j e f c d i f d
+#&gt;   [1] j i f g d f f h c f d g d g e h d c e d d g b d h d a e g d c f a e h
+#&gt;  [36] b h c f g d f d d c e g d a d f d f d d a e d g h d f d b d e d e c e
+#&gt;  [71] e c c g d c f f i c f h f e h a c d c f e g i b b e b e d b
 #&gt; Levels: a b c d e f g h i j
 table(x)
 #&gt; x
 #&gt;  a  b  c  d  e  f  g  h  i  j 
-#&gt;  4  8 12 14 21 17 13  7  2  2</code></pre>
+#&gt;  5  7 12 25 14 15 10  8  3  1</code></pre>
 <p>この<code>x</code>に，<code>fct_lump()</code>をあてると以下のようになります:</p>
 <pre class="r"><code>fct_lump(x)
-#&gt;   [1] c c b g e h b i f b c d e b f j e e e e c f f e d a e e f h f d e e f
-#&gt;  [36] g c c b e e b f e d g f h g d e d f d g g f b d e h e h e f e b d h f
-#&gt;  [71] f a c g g c g g d c d a c e c f g d a g h g j e f c d i f d
-#&gt; Levels: a b c d e f g h i j
+#&gt;   [1] Other Other f     g     d     f     f     h     c     f     d    
+#&gt;  [12] g     d     g     e     h     d     c     e     d     d     g    
+#&gt;  [23] b     d     h     d     a     e     g     d     c     f     a    
+#&gt;  [34] e     h     b     h     c     f     g     d     f     d     d    
+#&gt;  [45] c     e     g     d     a     d     f     d     f     d     d    
+#&gt;  [56] a     e     d     g     h     d     f     d     b     d     e    
+#&gt;  [67] d     e     c     e     e     c     c     g     d     c     f    
+#&gt;  [78] f     Other c     f     h     f     e     h     a     c     d    
+#&gt;  [89] c     f     e     g     Other b     b     e     b     e     d    
+#&gt; [100] b    
+#&gt; Levels: a b c d e f g h Other
 table(fct_lump(x))
 #&gt; 
-#&gt;  a  b  c  d  e  f  g  h  i  j 
-#&gt;  4  8 12 14 21 17 13  7  2  2</code></pre>
+#&gt;     a     b     c     d     e     f     g     h Other 
+#&gt;     5     7    12    25    14    15    10     8     4</code></pre>
 <p>このように，少数の発生数しかないlevelsは<code>Other</code>へとまとめられます。なお，まとめられた<code>Other</code>はlevelsで一番後ろになります。</p>
 <p>まとめる基準についてですが，デフォルトでは，<strong>Otherにまとめた際に，Otherが各レベルで最小となる</strong>ように，自動でカットポイントが設定されます。上のパターンの場合，Otherの次に大きいのを取り込んでしまうと，Otherが一番小さくならないためにここでストップしています。</p>
 <p>引数にある<code>n</code>を指定することで，残すlevels数を指定することができます。正の値を指定すると，頻度順で大きい方から<code>n</code>個残して，残りを<code>Other</code>にまとめます:</p>
 <pre class="r"><code>fct_lump(x, n = 3)
-#&gt;   [1] Other Other Other Other e     Other Other Other f     Other Other
-#&gt;  [12] d     e     Other f     Other e     e     e     e     Other f    
-#&gt;  [23] f     e     d     Other e     e     f     Other f     d     e    
-#&gt;  [34] e     f     Other Other Other Other e     e     Other f     e    
-#&gt;  [45] d     Other f     Other Other d     e     d     f     d     Other
-#&gt;  [56] Other f     Other d     e     Other e     Other e     f     e    
-#&gt;  [67] Other d     Other f     f     Other Other Other Other Other Other
-#&gt;  [78] Other d     Other d     Other Other e     Other f     Other d    
-#&gt;  [89] Other Other Other Other Other e     f     Other d     Other f    
-#&gt; [100] d    
+#&gt;   [1] Other Other f     Other d     f     f     Other Other f     d    
+#&gt;  [12] Other d     Other e     Other d     Other e     d     d     Other
+#&gt;  [23] Other d     Other d     Other e     Other d     Other f     Other
+#&gt;  [34] e     Other Other Other Other f     Other d     f     d     d    
+#&gt;  [45] Other e     Other d     Other d     f     d     f     d     d    
+#&gt;  [56] Other e     d     Other Other d     f     d     Other d     e    
+#&gt;  [67] d     e     Other e     e     Other Other Other d     Other f    
+#&gt;  [78] f     Other Other f     Other f     e     Other Other Other d    
+#&gt;  [89] Other f     e     Other Other Other Other e     Other e     d    
+#&gt; [100] Other
 #&gt; Levels: d e f Other
 table(fct_lump(x, n = 3))
 #&gt; 
 #&gt;     d     e     f Other 
-#&gt;    14    21    17    48</code></pre>
+#&gt;    25    14    15    46</code></pre>
 <p>ここで<code>n</code>に負の値を指定すると，頻度順で小さい方から<code>n</code>個残して，残りを<code>Other</code>にまとめます:</p>
 <pre class="r"><code>fct_lump(x, n = -3)
-#&gt;   [1] Other Other Other Other Other Other Other i     Other Other Other
-#&gt;  [12] Other Other Other Other j     Other Other Other Other Other Other
-#&gt;  [23] Other Other Other a     Other Other Other Other Other Other Other
+#&gt;   [1] j     i     Other Other Other Other Other Other Other Other Other
+#&gt;  [12] Other Other Other Other Other Other Other Other Other Other Other
+#&gt;  [23] Other Other Other Other a     Other Other Other Other Other a    
 #&gt;  [34] Other Other Other Other Other Other Other Other Other Other Other
-#&gt;  [45] Other Other Other Other Other Other Other Other Other Other Other
-#&gt;  [56] Other Other Other Other Other Other Other Other Other Other Other
-#&gt;  [67] Other Other Other Other Other a     Other Other Other Other Other
-#&gt;  [78] Other Other Other Other a     Other Other Other Other Other Other
-#&gt;  [89] a     Other Other Other j     Other Other Other Other i     Other
+#&gt;  [45] Other Other Other Other a     Other Other Other Other Other Other
+#&gt;  [56] a     Other Other Other Other Other Other Other Other Other Other
+#&gt;  [67] Other Other Other Other Other Other Other Other Other Other Other
+#&gt;  [78] Other i     Other Other Other Other Other Other a     Other Other
+#&gt;  [89] Other Other Other Other i     Other Other Other Other Other Other
 #&gt; [100] Other
 #&gt; Levels: a i j Other
 table(fct_lump(x, n = -3))
 #&gt; 
 #&gt;     a     i     j Other 
-#&gt;     4     2     2    92</code></pre>
+#&gt;     5     3     1    91</code></pre>
 <p>このように個数でカットポイントを指定するのではなく，発生確率でカットポイントを指定するには引数<code>prop</code>を利用します。まず，各levelsの発生数/全発生数でlevelsごとの発生確率が算出され，それと<code>prop</code>で指定した確率とを比較してジャッジします:</p>
 <pre class="r"><code># 参考までに発生確率を算出
 kosaki &lt;- table(x)
 kosaki/sum(kosaki)
 #&gt; x
 #&gt;    a    b    c    d    e    f    g    h    i    j 
-#&gt; 0.04 0.08 0.12 0.14 0.21 0.17 0.13 0.07 0.02 0.02</code></pre>
+#&gt; 0.05 0.07 0.12 0.25 0.14 0.15 0.10 0.08 0.03 0.01</code></pre>
 <p>ここで，カットポイントとして<code>prop = 0.1</code>を指定すると，発生確率が<code>0.1</code>以下のlevelsを全てOtherにまとめます:</p>
 <pre class="r"><code># propを使ってまとめる
 fct_lump(x, prop = 0.1)
-#&gt;   [1] c     c     Other g     e     Other Other Other f     Other c    
-#&gt;  [12] d     e     Other f     Other e     e     e     e     c     f    
-#&gt;  [23] f     e     d     Other e     e     f     Other f     d     e    
-#&gt;  [34] e     f     g     c     c     Other e     e     Other f     e    
-#&gt;  [45] d     g     f     Other g     d     e     d     f     d     g    
-#&gt;  [56] g     f     Other d     e     Other e     Other e     f     e    
-#&gt;  [67] Other d     Other f     f     Other c     g     g     c     g    
-#&gt;  [78] g     d     c     d     Other c     e     c     f     g     d    
-#&gt;  [89] Other g     Other g     Other e     f     c     d     Other f    
-#&gt; [100] d    
-#&gt; Levels: c d e f g Other
+#&gt;   [1] Other Other f     Other d     f     f     Other c     f     d    
+#&gt;  [12] Other d     Other e     Other d     c     e     d     d     Other
+#&gt;  [23] Other d     Other d     Other e     Other d     c     f     Other
+#&gt;  [34] e     Other Other Other c     f     Other d     f     d     d    
+#&gt;  [45] c     e     Other d     Other d     f     d     f     d     d    
+#&gt;  [56] Other e     d     Other Other d     f     d     Other d     e    
+#&gt;  [67] d     e     c     e     e     c     c     Other d     c     f    
+#&gt;  [78] f     Other c     f     Other f     e     Other Other c     d    
+#&gt;  [89] c     f     e     Other Other Other Other e     Other e     d    
+#&gt; [100] Other
+#&gt; Levels: c d e f Other
 table(fct_lump(x, prop = 0.1))
 #&gt; 
-#&gt;     c     d     e     f     g Other 
-#&gt;    12    14    21    17    13    23</code></pre>
+#&gt;     c     d     e     f Other 
+#&gt;    12    25    14    15    34</code></pre>
 <p>また，この<code>prep</code>に負の値を指定すると，(正の値へ変換した)カットポイントの確率より大きいものを全てOtherにまとめます:</p>
 <pre class="r"><code>fct_lump(x, prop = -0.1)
-#&gt;   [1] Other Other b     Other Other h     b     i     Other b     Other
-#&gt;  [12] Other Other b     Other j     Other Other Other Other Other Other
-#&gt;  [23] Other Other Other a     Other Other Other h     Other Other Other
-#&gt;  [34] Other Other Other Other Other b     Other Other b     Other Other
-#&gt;  [45] Other Other Other h     Other Other Other Other Other Other Other
-#&gt;  [56] Other Other b     Other Other h     Other h     Other Other Other
-#&gt;  [67] b     Other h     Other Other a     Other Other Other Other Other
-#&gt;  [78] Other Other Other Other a     Other Other Other Other Other Other
-#&gt;  [89] a     Other h     Other j     Other Other Other Other i     Other
-#&gt; [100] Other
-#&gt; Levels: a b h i j Other
+#&gt;   [1] j     i     Other g     Other Other Other h     Other Other Other
+#&gt;  [12] g     Other g     Other h     Other Other Other Other Other g    
+#&gt;  [23] b     Other h     Other a     Other g     Other Other Other a    
+#&gt;  [34] Other h     b     h     Other Other g     Other Other Other Other
+#&gt;  [45] Other Other g     Other a     Other Other Other Other Other Other
+#&gt;  [56] a     Other Other g     h     Other Other Other b     Other Other
+#&gt;  [67] Other Other Other Other Other Other Other g     Other Other Other
+#&gt;  [78] Other i     Other Other h     Other Other h     a     Other Other
+#&gt;  [89] Other Other Other g     i     b     b     Other b     Other Other
+#&gt; [100] b    
+#&gt; Levels: a b g h i j Other
 table(fct_lump(x, prop = -0.1))
 #&gt; 
-#&gt;     a     b     h     i     j Other 
-#&gt;     4     8     7     2     2    77</code></pre>
+#&gt;     a     b     g     h     i     j Other 
+#&gt;     5     7    10     8     3     1    66</code></pre>
 <p><code>n</code>と<code>prop</code>の両方を指定した場合，<a href="https://github.com/tidyverse/forcats/blob/master/R/lump.R#L53-L72">ソースコード</a>を見る限り<code>n</code>を優先して処理するようです(2017/01/13現在)。</p>
 <p>もし発生頻度が同一のlevelsがある場合，<code>ties.method</code>にてランク付けmethodを指定できます。これは<code>base::rank()</code>に従いますので，そちらを参照してください。</p>
 <p>なお，“Other”のlevelsの値は<code>other_levels</code>にて指定できます。</p>
@@ -1066,13 +1079,13 @@ fct_recode(x, fruit = &quot;apple&quot;, fruit = &quot;banana&quot;)
 <p>そのまんまです。</p>
 <pre class="r"><code>f &lt;- factor(sample(letters[1:3], 20, replace = TRUE))
 f
-#&gt;  [1] a a a b b a c c a c a c b a b b b c b a
+#&gt;  [1] b a c b b c a a a a b a a c c c c c a b
 #&gt; Levels: a b c
 fct_expand(f, &quot;d&quot;, &quot;e&quot;, &quot;f&quot;)
-#&gt;  [1] a a a b b a c c a c a c b a b b b c b a
+#&gt;  [1] b a c b b c a a a a b a a c c c c c a b
 #&gt; Levels: a b c d e f
 fct_expand(f, letters[1:6])
-#&gt;  [1] a a a b b a c c a c a c b a b b b c b a
+#&gt;  [1] b a c b b c a a a a b a a c c c c c a b
 #&gt; Levels: a b c d e f</code></pre>
 </div>
 </div>
@@ -1170,56 +1183,58 @@ fct_c(fs)
 <pre class="r"><code>f &lt;- factor(sample(letters)[rpois(1000, 10)])
 table(f)
 #&gt; f
-#&gt;   a   c   d   f   g   h   i   j   k   l   n   o   p   q   s   t   u   v 
-#&gt;  79  84  22 130  23  29   1   7  98  45 104   3 140   1  64 117  10  42 
-#&gt;   w 
-#&gt;   1
+#&gt;   a   b   d   e   f   g   h   i   j   k   l   p   q   r   s   t   u   v 
+#&gt;  24 137   2 102   3  19  15   2   7  28   8 103  41 117  75 123   4  92 
+#&gt;   w   x 
+#&gt;  61  37
 fct_count(f)
-#&gt; # A tibble: 19 × 2
+#&gt; # A tibble: 20 × 2
 #&gt;         f     n
 #&gt;    &lt;fctr&gt; &lt;int&gt;
-#&gt; 1       a    79
-#&gt; 2       c    84
-#&gt; 3       d    22
-#&gt; 4       f   130
-#&gt; 5       g    23
-#&gt; 6       h    29
-#&gt; 7       i     1
-#&gt; 8       j     7
-#&gt; 9       k    98
-#&gt; 10      l    45
-#&gt; 11      n   104
-#&gt; 12      o     3
-#&gt; 13      p   140
-#&gt; 14      q     1
-#&gt; 15      s    64
-#&gt; 16      t   117
-#&gt; 17      u    10
-#&gt; 18      v    42
-#&gt; 19      w     1
+#&gt; 1       a    24
+#&gt; 2       b   137
+#&gt; 3       d     2
+#&gt; 4       e   102
+#&gt; 5       f     3
+#&gt; 6       g    19
+#&gt; 7       h    15
+#&gt; 8       i     2
+#&gt; 9       j     7
+#&gt; 10      k    28
+#&gt; 11      l     8
+#&gt; 12      p   103
+#&gt; 13      q    41
+#&gt; 14      r   117
+#&gt; 15      s    75
+#&gt; 16      t   123
+#&gt; 17      u     4
+#&gt; 18      v    92
+#&gt; 19      w    61
+#&gt; 20      x    37
 fct_count(f, sort = TRUE)
-#&gt; # A tibble: 19 × 2
+#&gt; # A tibble: 20 × 2
 #&gt;         f     n
 #&gt;    &lt;fctr&gt; &lt;int&gt;
-#&gt; 1       p   140
-#&gt; 2       f   130
-#&gt; 3       t   117
-#&gt; 4       n   104
-#&gt; 5       k    98
-#&gt; 6       c    84
-#&gt; 7       a    79
-#&gt; 8       s    64
-#&gt; 9       l    45
-#&gt; 10      v    42
-#&gt; 11      h    29
-#&gt; 12      g    23
-#&gt; 13      d    22
-#&gt; 14      u    10
-#&gt; 15      j     7
-#&gt; 16      o     3
-#&gt; 17      i     1
-#&gt; 18      q     1
-#&gt; 19      w     1</code></pre>
+#&gt; 1       b   137
+#&gt; 2       t   123
+#&gt; 3       r   117
+#&gt; 4       p   103
+#&gt; 5       e   102
+#&gt; 6       v    92
+#&gt; 7       s    75
+#&gt; 8       w    61
+#&gt; 9       q    41
+#&gt; 10      x    37
+#&gt; 11      k    28
+#&gt; 12      a    24
+#&gt; 13      g    19
+#&gt; 14      h    15
+#&gt; 15      l     8
+#&gt; 16      j     7
+#&gt; 17      u     4
+#&gt; 18      f     3
+#&gt; 19      d     2
+#&gt; 20      i     2</code></pre>
 </div>
 </div>
 <div id="fct_drop" class="section level3">
@@ -1307,11 +1322,11 @@ fct_unify(fs)
 <pre class="r"><code>f &lt;- factor(letters[rpois(100, 10)])
 
 unique(f)
-#&gt;  [1] o i q n j f m g h l d k e r p
-#&gt; Levels: d e f g h i j k l m n o p q r
+#&gt;  [1] g i h m j k q f e d n o c l p
+#&gt; Levels: c d e f g h i j k l m n o p q
 fct_unique(f)
-#&gt;  [1] d e f g h i j k l m n o p q r
-#&gt; Levels: d e f g h i j k l m n o p q r</code></pre>
+#&gt;  [1] c d e f g h i j k l m n o p q
+#&gt; Levels: c d e f g h i j k l m n o p q</code></pre>
 <p>このように<code>unique()</code>だと返り値は出現順になりますが，<code>fct_unique()</code>では返り値はlevelsの順序となります。</p>
 </div>
 </div>
@@ -1357,12 +1372,12 @@ lvls_union(fs)
 <pre class="r"><code>sessionInfo()
 #&gt; R version 3.3.2 (2016-10-31)
 #&gt; Platform: x86_64-pc-linux-gnu (64-bit)
-#&gt; Running under: Ubuntu 16.04.2 LTS
+#&gt; Running under: Debian GNU/Linux 8 (jessie)
 #&gt; 
 #&gt; locale:
 #&gt;  [1] LC_CTYPE=ja_JP.UTF-8       LC_NUMERIC=C              
 #&gt;  [3] LC_TIME=ja_JP.UTF-8        LC_COLLATE=ja_JP.UTF-8    
-#&gt;  [5] LC_MONETARY=ja_JP.UTF-8    LC_MESSAGES=ja_JP.UTF-8   
+#&gt;  [5] LC_MONETARY=ja_JP.UTF-8    LC_MESSAGES=C             
 #&gt;  [7] LC_PAPER=ja_JP.UTF-8       LC_NAME=C                 
 #&gt;  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
 #&gt; [11] LC_MEASUREMENT=ja_JP.UTF-8 LC_IDENTIFICATION=C       
@@ -1372,26 +1387,17 @@ lvls_union(fs)
 #&gt; 
 #&gt; other attached packages:
 #&gt;  [1] forcats_0.2.0   purrr_0.2.2     readr_1.0.0     tibble_1.2     
-#&gt;  [5] ggplot2_2.2.1   tidyverse_1.1.1 knitr_1.15.8    tidyr_0.6.1    
-#&gt;  [9] dplyr_0.5.0     DT_0.2.11      
+#&gt;  [5] ggplot2_2.2.1   tidyverse_1.0.0 knitr_1.15.1    tidyr_0.6.1    
+#&gt;  [9] dplyr_0.5.0     DT_0.2         
 #&gt; 
 #&gt; loaded via a namespace (and not attached):
-#&gt;  [1] Rcpp_0.12.9         highr_0.6           plyr_1.8.4         
-#&gt;  [4] tools_3.3.2         digest_0.6.12       lubridate_1.6.0    
-#&gt;  [7] gtable_0.2.0        jsonlite_1.2        evaluate_0.10      
-#&gt; [10] nlme_3.1-129        lattice_0.20-34     psych_1.6.12       
-#&gt; [13] shiny_1.0.0.9000    DBI_0.5-1           crosstalk_1.0.1    
-#&gt; [16] yaml_2.1.14         parallel_3.3.2      haven_1.0.0        
-#&gt; [19] xml2_1.1.1          httr_1.2.1          stringr_1.1.0      
-#&gt; [22] hms_0.3             htmlwidgets_0.8     rprojroot_1.2      
-#&gt; [25] grid_3.3.2          R6_2.2.0            readxl_0.1.1       
-#&gt; [28] foreign_0.8-67      rmarkdown_1.3.9002  modelr_0.1.0       
-#&gt; [31] reshape2_1.4.2      magrittr_1.5        scales_0.4.1       
-#&gt; [34] backports_1.0.5     htmltools_0.3.6     rvest_0.3.2        
-#&gt; [37] assertthat_0.1      mnormt_1.5-5        colorspace_1.3-2   
-#&gt; [40] mime_0.5            xtable_1.8-2        httpuv_1.3.3       
-#&gt; [43] labeling_0.3        stringi_1.1.2       munsell_0.4.3      
-#&gt; [46] lazyeval_0.2.0.9000 broom_0.4.2</code></pre>
+#&gt;  [1] Rcpp_0.12.9      magrittr_1.5     munsell_0.4.3    colorspace_1.3-2
+#&gt;  [5] R6_2.2.0         plyr_1.8.4       stringr_1.2.0    highr_0.6       
+#&gt;  [9] tools_3.3.2      grid_3.3.2       gtable_0.2.0     DBI_0.5-1       
+#&gt; [13] htmltools_0.3.5  yaml_2.1.14      lazyeval_0.2.0   assertthat_0.1  
+#&gt; [17] rprojroot_1.2    digest_0.6.12    htmlwidgets_0.8  evaluate_0.10   
+#&gt; [21] rmarkdown_1.3    labeling_0.3     stringi_1.1.2    scales_0.4.1    
+#&gt; [25] backports_1.0.5  jsonlite_1.2</code></pre>
 </div>
 <div class="footnotes">
 <hr />

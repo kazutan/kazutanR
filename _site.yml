@@ -20,6 +20,9 @@ navbar:
           href: DT_demo.html
         - text: "leaflet"
           href: leaflet_d.html
+  right:
+    - icon: fa-github
+      href: https://github.com/kazutan/kazutanR/
 output:
   html_document:
     theme: cosmo
