@@ -20,6 +20,10 @@ navbar:
           href: DT_demo.html
         - text: "leaflet"
           href: leaflet_d.html
+    - text: "その他"
+      menu:
+        - text: "webshot"
+          href: webshot_demo.html
   right:
     - icon: fa-github
       href: https://github.com/kazutan/kazutanR/

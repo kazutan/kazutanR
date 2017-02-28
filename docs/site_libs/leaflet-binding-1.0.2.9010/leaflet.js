@@ -1407,9 +1407,6 @@ methods.addAwesomeMarkers = function (lat, lng, icon, layerId, group, options, p
         return new _leaflet2.default.AwesomeMarkers.icon();
       }
 
-      if (opts.squareMarker) {
-        opts.className = "awesome-marker awesome-marker-square";
-      }
       return new _leaflet2.default.AwesomeMarkers.icon(opts);
     };
   }
@@ -1538,9 +1535,9 @@ methods.addPolylines = function (polygons, layerId, group, options, popup, popup
 
     addLayers(this, "shape", df, function (df, i) {
       var shapes = df.get(i, "shapes");
-      shapes = shapes.map(function (shape) {
-        return _htmlwidgets2.default.dataframeToD3(shape[0]);
-      });
+      for (var j = 0; j < shapes.length; j++) {
+        shapes[j] = _htmlwidgets2.default.dataframeToD3(shapes[j]);
+      }
       if (shapes.length > 1) {
         return _leaflet2.default.multiPolyline(shapes, df.get(i));
       } else {
@@ -1601,16 +1598,10 @@ methods.addPolygons = function (polygons, layerId, group, options, popup, popupO
     var df = new _dataframe2.default().col("shapes", polygons).col("layerId", layerId).col("group", group).col("popup", popup).col("popupOptions", popupOptions).col("label", label).col("labelOptions", labelOptions).col("highlightOptions", highlightOptions).cbind(options);
 
     addLayers(this, "shape", df, function (df, i) {
-      // This code used to use L.multiPolygon, but that caused
-      // double-click on a multipolygon to fail to zoom in on the
-      // map. Surprisingly, putting all the rings in a single
-      // polygon seems to still work; complicated multipolygons
-      // are still rendered correctly.
-      var shapes = df.get(i, "shapes").map(function (polygon) {
-        return polygon.map(_htmlwidgets2.default.dataframeToD3);
-      }).reduce(function (acc, val) {
-        return acc.concat(val);
-      }, []);
+      var shapes = df.get(i, "shapes");
+      for (var j = 0; j < shapes.length; j++) {
+        shapes[j] = _htmlwidgets2.default.dataframeToD3(shapes[j]);
+      }
       return _leaflet2.default.polygon(shapes, df.get(i));
     });
   }

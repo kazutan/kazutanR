@@ -6,7 +6,7 @@ title: ggplot2に関する資料
 knitr::opts_chunk$set(echo = FALSE)
 #スライド埋め込み用関数を使うため。
 #devtools::install_github("kazutan/zousan")
-library(zousan)
+#library(zousan)
 library(htmltools)
 library(webshot)
 ```
@@ -33,15 +33,22 @@ ggplot2はtidyverseパッケージ群に含まれており，githubのリポジ�
 
 ggplot2に初めて触れるという方は，まずこのスライドを一読されるのをおすすめします:
 
-```{r}
+```{r, eval=FALSE, echo=FALSE}
 embed_slide("https://www.slideshare.net/nocchi_airport/ggplot2-kazutan-rver2")
 ```
 
+<iframe src="https://www.slideshare.net/slideshow/embed_code/key/41AuyD0IYdcpMn" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="https://www.slideshare.net/nocchi_airport/ggplot2-kazutan-rver2" title="ggplot2によるグラフ化@HijiyamaR#2" target="_blank">ggplot2によるグラフ化@HijiyamaR#2</a> </strong> from <strong><a target="_blank" href="http://www.slideshare.net/nocchi_airport">nocchi_airport</a></strong> </div>
+
+
 ggplot2を理解するためには，その文法をイメージできるようになることが近道です。このスライドは従来のplotとggplot2との違いをわかりやすく解説してあります。まずはレイヤーの感覚をつかむためにも，提示してあるサンプルをひたすら打ちましょう。**手を動かす，大事**。
 
-```{r}
+```{r, eval=FALSE, echo=FALSE}
 embed_slide("https://www.slideshare.net/nocchi_airport/ggplot2-62471507")
 ```
+
+<iframe src="https://www.slideshare.net/slideshow/embed_code/key/NqpW3K8fWvI1ty" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="https://www.slideshare.net/nocchi_airport/ggplot2-62471507" title="ggplot2用例集　入門編" target="_blank">ggplot2用例集　入門編</a> </strong> from <strong><a target="_blank" href="http://www.slideshare.net/nocchi_airport">nocchi_airport</a></strong> </div>
+
+
 
 先ほどのスライドの続きの位置づけで，ggplot2を実際に使った用例集として，主に心理系領域での場面を想定して用意してあります。ここにあるサンプルコードをひたすら打ちましょう。**手を動かす，大事**。
 
@@ -49,9 +56,12 @@ embed_slide("https://www.slideshare.net/nocchi_airport/ggplot2-62471507")
 
 Rにもある程度慣れてて，上述のスライドにあるテストコードを打ち終わったら，こちらのスライドにチャレンジしましょう:
 
-```{r}
+```{r, eval=FALSE, echo=FALSE}
 embed_slide("https://www.slideshare.net/yutannihilation/ggplot2-53851875")
 ```
+
+<iframe src="https://www.slideshare.net/slideshow/embed_code/key/Aq6cXqzEhpZK5z" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="https://www.slideshare.net/yutannihilation/ggplot2-53851875" title="ggplot2再入門" target="_blank">ggplot2再入門</a> </strong> from <strong><a target="_blank" href="http://www.slideshare.net/yutannihilation">yutannihilation</a></strong> </div>
+
 
 ちょっと難しく感じるところがあるかも知れませんが、諦めず最後まで読み通しましょう。このスライドはggplot2の基礎、そして今後自分で使いこなすために必要な知識が過不足なくつめ込まれているからです。このスライドで"Grammar of Graphics"の感覚をつかむためにも、サンプルコードをひたすら打ちましょう。**手を動かす、大事**。
 
@@ -65,11 +75,7 @@ embed_slide("https://www.slideshare.net/yutannihilation/ggplot2-53851875")
 
 日常使いなら、できるだけコンパクトにまとまっていたほうが何かと楽ですね。RStudioが作成して公開しているチートシートが便利です:
 
-```{r}
-embed_slide("https://www.rstudio.com/wp-content/uploads/2016/11/ggplot2-cheatsheet-2.1.pdf")
-```
-
-pdfリンクを埋め込んでいます。ブラウザによっては表示されないかも知れません。リンク先は[こちら](https://www.rstudio.com/wp-content/uploads/2016/11/ggplot2-cheatsheet-2.1.pdf)です。
+- "https://www.rstudio.com/wp-content/uploads/2016/11/ggplot2-cheatsheet-2.1.pdf"
 
 非常にコンパクトにまとまっていて、使い勝手が非常に高いです。これを印刷して手元に置いてもいいのですが、RStudioの最新版ならメニューの"Help - Cheatsheet"から開くことができます。
 
@@ -103,9 +109,12 @@ tags$a(href="http://ggplot2.tidyverse.org/reference/index.html",
 
 これがどういうプロジェクトなのかについては，以下のスライドを参照してください:
 
-```{r}
+```{r, eval=FALSE, echo=FALSE}
 embed_slide("https://www.slideshare.net/yutannihilation/ggplot2-52447195")
 ```
+
+<iframe src="https://www.slideshare.net/slideshow/embed_code/key/8UOlwlFb3e3C5Z" width="427" height="356" frameborder="0" marginwidth="0" marginheight="0" scrolling="no" style="border:1px solid #CCC; border-width:1px; margin-bottom:5px; max-width: 100%;" allowfullscreen> </iframe> <div style="margin-bottom:5px"> <strong> <a href="https://www.slideshare.net/yutannihilation/ggplot2-52447195" title="押してダメなら引いてみろ！ ggplot2逆引きプロジェクト" target="_blank">押してダメなら引いてみろ！ ggplot2逆引きプロジェクト</a> </strong> from <strong><a target="_blank" href="http://www.slideshare.net/yutannihilation">yutannihilation</a></strong> </div>
+
 
 だいぶ記事がストックしてあるのですが，きっとまだまだあるはずです。小さなことでも大歓迎です。**ぜひ投稿しましょう!**。
 
@@ -123,7 +132,9 @@ ggplot2の特徴のひとつに，ggplot2に色んな物を追加する拡張パ
 
 ただその数は膨大で，それを探していくのは大変です。そこで有志がそれを取りまとめたサイトを作成しています:
 
-```{r ggplotextent}
+- ggplot2 extensions(現在リンクを外しています。左の2語で検索してください)
+
+```{r ggplotextent, eval=FALSE, echo=FALSE}
 img <- webshot(url = "https://www.ggplot2-exts.org/", file = "pics/ggplot_extention.png",cliprect = "viewport", vheight = 400)
 tags$a(href="https://www.ggplot2-exts.org/",
        tags$img(src=img, alt=""))

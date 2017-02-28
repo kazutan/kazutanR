@@ -8,10 +8,15 @@ output:
 このサイトは、私がこれまで書いてきたR関連の資料をまとめています。随時更新していく予定です。
 
 ## 更新履歴
-
-- 可視化にggplot2を追加(2017/02/22)
-- 可視化にDT, leafletを追加(2017/02/21)
-- データ操作にdplyr&tidyr，stringr, forcatsを追加(2017/02/21)
+- 2017/2/28
+    - その他にwebshotを追加
+    - 可視化のggplot2内でうまく表示できていなかったものを修正
+    - デザイン微修正
+- 2017/2/22
+    - 可視化にggplot2を追加
+- 2017/2/21
+    - 可視化にDT, leafletを追加
+    - データ操作にdplyr&tidyr，stringr, forcatsを追加
 
 ## Contents
 
@@ -21,11 +26,15 @@ output:
 - stringr
 - forcats
 
-### 可視化(visualisation)
+### 可視化(visualization)
 
 - ggplot2
 - DT
 - leaflet
+
+### その他
+
+- webshot
 
 ## Session Info
 

@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>webshotパッケージ</title>
+
+<script src="site_libs/jquery-1.12.4/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<script src="site_libs/htmlwidgets-0.8/htmlwidgets.js"></script>
+<link href="site_libs/leaflet-0.7.7/leaflet.css" rel="stylesheet" />
+<script src="site_libs/leaflet-0.7.7/leaflet.js"></script>
+<link href="site_libs/leafletfix-1.0.0/leafletfix.css" rel="stylesheet" />
+<link href="site_libs/leaflet-label-0.2.2/leaflet.label.css" rel="stylesheet" />
+<script src="site_libs/leaflet-label-0.2.2/leaflet.label.js"></script>
+<script src="site_libs/Proj4Leaflet-0.7.2/proj4-compressed.js"></script>
+<script src="site_libs/Proj4Leaflet-0.7.2/proj4leaflet.js"></script>
+<script src="site_libs/leaflet-binding-1.0.2.9010/leaflet.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="site_style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Kazutan.R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">home</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    データ操作
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="data_handling.html">dplyr, tidyr</a>
+    </li>
+    <li>
+      <a href="stringr-intro.html">stringr</a>
+    </li>
+    <li>
+      <a href="forcats_test.html">forcats</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    可視化
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="ggplot2_links.html">ggplot2</a>
+    </li>
+    <li>
+      <a href="DT_demo.html">DT</a>
+    </li>
+    <li>
+      <a href="leaflet_d.html">leaflet</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    その他
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="webshot_demo.html">webshot</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/kazutan/kazutanR/">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">webshotパッケージ</h1>
+
+</div>
+
+
+<style type="text/css">
+dt {
+  clear: left;
+  float: left;
+  width: 15%;
+  font-weight: bold;
+  text-align: right;
+  padding: 3px 15px 3px 0;
+}
+dd {
+  margin: 0 0 0 20%;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+img {
+  border: 1px solid #003366;
+  margin-left: 30px;
+}
+</style>
+<div id="webshot" class="section level2">
+<h2>webshotパッケージとは</h2>
+<p>webshotパッケージとは、RでWebページのスクリーンショットを簡単に取ることができるパッケージです。このパッケージは<a href="http://phantomjs.org/">PhantomJS</a>というアプリケーションを利用してキャプチャします。</p>
+<ul>
+<li><a href="https://github.com/wch/webshot/">GitHubサイト</a></li>
+<li><a href="https://cran.r-project.org/web/packages/webshot/vignettes/intro.html">CRAN上のvignette</a></li>
+</ul>
+<p>これだけの情報だとあまり面白くないように思えるかもしれませんが、最近のR事情を考えるとかなり使える場面が多くなります。そこで今回はパッケージのvignetteをなぞらえた後に、私が考えた応用パターンを紹介します。</p>
+</div>
+<div class="section level2">
+<h2>準備</h2>
+<p>まずはwebshotパッケージをインストールします:</p>
+<pre class="r"><code># CRANから
+install.packages(&quot;webshot&quot;)
+# GithHub版
+devtools::install_github(&quot;wch/webshot&quot;)</code></pre>
+<p>個人的にはCRAN版で十全に使えると思いますし、どちらからパッケージをインストールしてもらっても大丈夫でしょう。ただ、<strong>使用するマシンにPhantomJSが使える必要があります</strong>。<a href="http://phantomjs.org/">PhantomJS公式サイト</a>からダウンロードしてインストールし、<code>PATH</code>を通しておく必要があります。あまりこういうのに慣れない方は抵抗が出てしまうかもしれません。</p>
+<p>でもご安心ください。<strong>このパッケージにはそのPhantomJSをマシンにインストールするための関数が準備してあります</strong>。以下の関数を実行してください:</p>
+<pre class="r"><code>webshot::install_phantomjs()</code></pre>
+<p>これでOKです。この関数を実行してインストールしてすぐに、以下の内容を実行したけどうまくいかない時は、以下のを試してみてください。</p>
+<ol style="list-style-type: decimal">
+<li>Rのセッションを再起動</li>
+<li>マシンを再起動</li>
+<li>PATHを確認する</li>
+</ol>
+<p><code>install_phantomjs()</code>は各種OSに対応しているので基本大丈夫なはずですが、うまく動かないとしても1もしくは2で大丈夫なはずです。</p>
+</div>
+<div id="hello-webshot" class="section level2">
+<h2>hello, webshot</h2>
+<p>まずは記念撮影がてらやってましょう。ためしに<a href="https://kazutan.github.io/kazutanR/index.html">Kazutan.R</a>というサイトでやってみます。</p>
+<p>webshot関数にurlを引き渡すことで、その対象のスクリーンショットを撮影します:</p>
+<pre class="r"><code>library(webshot)
+url &lt;- &quot;https://kazutan.github.io/kazutanR&quot;
+webshot(url, file = &quot;pics/webshot_demo_01.png&quot;, delay = 0.5)</code></pre>
+<p><img src="webshot_demo_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>うまくいったならば，(上の例なら)<code>pics</code>ディレクトリ内に<code>webshot_demo_01.png</code>というpngファイルが生成されているはずです。簡単ですね。</p>
+</div>
+<div id="webshot" class="section level2">
+<h2><code>webshot()</code>関数について</h2>
+<div class="section level3">
+<h3>使い方</h3>
+<p>関数の引数と初期値の一覧は以下のとおりです:</p>
+<pre><code>webshot(url = NULL, file = &quot;webshot.png&quot;, vwidth = 992, vheight = 744,
+  cliprect = NULL, selector = NULL, expand = NULL, delay = 0.2,
+  zoom = 1, eval = NULL)</code></pre>
+</div>
+<div class="section level3">
+<h3>引数について</h3>
+<dl>
+<dt>url</dt>
+<dd><p>訪問するURLsのベクトル。</p>
+</dd>
+<dt>file</dt>
+<dd><p>outputファイルの名前で，ベクトル。ファイル名の最後は<strong>.png</strong>, <strong>.pdf</strong>, <strong>.jpeg</strong>のいずれかで，要するにこれらの出力形式に対応。<code>url</code>の引数に複数のURLを与えていて，この<code>file</code>引数では単一の値しかない場合，連番のファイル名で出力されます。</p>
+</dd>
+<dt>vwidth</dt>
+<dd><p>Viewportの幅。これがwebshotがブラウザで訪問した際のウィンドウ幅となります。</p>
+</dd>
+<dt>vheight</dt>
+<dd><p>Viewportの高さ。これがwebshotがブラウザで訪問した際のウィンドウ高さとなります。</p>
+</dd>
+<dt>cliprect</dt>
+<dd><p>クリッピングするrectangleを指定します。もし<code>cliprect</code>と<code>selector</code>の両方を指定しない場合，訪問したURLのサイトをまるっとそのままクリッピングしてきます。 <code>cliprect = &quot;viewport&quot;</code>と指定すると，<code>vwidth</code>と<code>vheight</code>で指定したウィンドウ幅でクリップしてきます。<br />
+<code>cliprect = c(200, 100, 300, 400)</code>と4つの要素を指定すると，順にtop, left, width, heightという値として解釈してクリッピングします。この例だと，「上から200左から100の点基準に幅300高さ400をクリッピングする」という意味となります。<br />
+<code>url</code>で複数のURLを指定している場合，listで束ねて上記内容のようにクリッピングを指定することができます。もちろんlistの長さと<code>url</code>で渡したベクトルの長さは同一にしてください。 なお，このオプションは<code>selector</code>とは併用できずどちらか一方となります。</p>
+</dd>
+<dt>selector</dt>
+<dd><p>矩形でクリッピングするDOM要素を特定するような，一つ以上のCSSセレクタを指定します。もし指定したセレクタがページ内で複数ヒットした場合，一番最初の要素をクリッピングしてきます。<br />
+<code>url</code>にURLを複数指定した場合，listで束ねてクリッピング対象を指定することができます。もちろんlistの長さと<code>url</code>で渡したベクトルの長さは同一にしてください。 なお，このオプションは<code>cliprect</code>とは併用できずどちらか一方となります。</p>
+</dd>
+<dt>expand</dt>
+<dd><p>矩形でクリッピングしたターゲットに対して，何ピクセル広げるかを指定します。余白というわけではなく，クリップするために指定した矩形(対象)を，上下左右に広げるかどうかを指定します。<br />
+<code>expand = 25</code>と単一の値であれば，それが上下左右すべてに指定されます。<code>expand = c(10, 20, 5, 30)</code>と4値指定すれば，順に上・右・下・左の値となります。<br />
+<code>url</code>にURLを複数指定した場合，listで束ねてクリッピング対象を指定することができます。もちろんlistの長さと<code>url</code>で渡したベクトルの長さは同一にしてください。</p>
+</dd>
+<dt>delay</dt>
+<dd><p>ブラウザで開いてからスクリーンショットを撮影するまでに待つ時間を秒で指定します。ブラウザでアクセスしてから表示に時間がかかるような重たいサイトの場合，この値を大きめに確保しておく必要があるでしょう。</p>
+</dd>
+<dt>zoom</dt>
+<dd><p>ズーム比を指定します。</p>
+</dd>
+<dt>eval</dt>
+<dd><p>ページを開いて<code>delay</code>の時間待機した後で，スクリーンショットを撮影する前に，評価させたいJavaScriptコードを指定します。文字列で渡します。詳しいことは<a href="http://docs.casperjs.org/en/latest/modules/casper.html">Casper API</a>に記載してあるということなので，興味がある方は参照してください。</p>
+</dd>
+</dl>
+</div>
+</div>
+<div id="webshot" class="section level2">
+<h2>webshotを使ってみる</h2>
+<div id="cliprect" class="section level3">
+<h3><code>cliprect</code>を利用</h3>
+<p><code>cliprect = &quot;viewport&quot;</code>と指定すると，<code>vwidth</code>と<code>vheight</code>で指定したウィンドウサイズでスクリーンショットを撮影します:</p>
+<pre class="r"><code>webshot(url, file = &quot;pics/webshot_demo_02.png&quot;, 
+        cliprect = &quot;viewport&quot;)</code></pre>
+<p><img src="webshot_demo_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>また，<code>cliprect = c(200, 100, 300, 400)</code>と具体的な値で指定も可能です:</p>
+<pre class="r"><code>webshot(url, file = &quot;pics/webshot_demo_03.png&quot;, 
+        cliprect = c(200, 100, 300, 150))</code></pre>
+<p><img src="webshot_demo_files/figure-html/unnamed-chunk-6-1.png" width="300" height="150" /></p>
+</div>
+<div id="selector" class="section level3">
+<h3><code>selector</code>を利用</h3>
+<p>セレクタを指定してみます:</p>
+<pre class="r"><code>webshot(url, file = &quot;pics/webshot_demo_04.png&quot;, 
+        selector = &quot;.navbar&quot;)</code></pre>
+<p><img src="webshot_demo_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>idでも指定可能です:</p>
+<pre class="r"><code>webshot(url, file = &quot;pics/webshot_demo_05.png&quot;, 
+        selector = &quot;#contents&quot;)</code></pre>
+<p><img src="webshot_demo_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>cssで指定するように絞り込んでいくことも可能ですし，<code>expand</code>も当てることができます:</p>
+<pre class="r"><code>webshot(url, file = &quot;pics/webshot_demo_06.png&quot;, 
+        selector = &quot;#contents #data&quot;)</code></pre>
+<p><img src="webshot_demo_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code>webshot(url, file = &quot;pics/webshot_demo_07.png&quot;,
+        selector = &quot;#contents #data&quot;,
+        expand = c(10, 15, 30, 5))</code></pre>
+<p><img src="webshot_demo_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
+<p>この他の例については，<a href="https://cran.r-project.org/web/packages/webshot/vignettes/intro.html">CRAN上のvignette</a>を参照してください。</p>
+</div>
+</div>
+<div class="section level2">
+<h2>その他の関数について</h2>
+<p>{webshot}パッケージには，この<code>webshot()</code>以外にもいくつか関数が準備してあります。</p>
+<div id="appshot" class="section level3">
+<h3>appshot()関数</h3>
+<p>Shinyアプリケーションのスクリーンショットを撮影するための関数です:</p>
+<pre><code>appshot(app, file = &quot;webshot.png&quot;, ..., port = getOption(&quot;shiny.port&quot;),
+  envvars = NULL)</code></pre>
+<p>詳しくはこの関数のヘルプ<code>?appshot</code>を参照してください。</p>
+</div>
+<div id="resize" class="section level3">
+<h3>resize()関数</h3>
+<p>画像をリサイズする関数です。なおこれを使用するためにはGraphicsMagickもしくはImageMagickがそのマシンにインストールされている必要があります。詳しくは関数のヘルプ<code>?resize</code>を参照してください。</p>
+</div>
+<div id="shrink" class="section level3">
+<h3>shrink()関数</h3>
+<p>PNG画像のファイルサイズを縮小する関数です。なおこれを使用するためにはoptipngがそのマシンにインストールされている必要があります。詳しくは関数のヘルプ<code>?shrink</code>を参照してください。</p>
+</div>
+</div>
+<div class="section level2">
+<h2>応用例</h2>
+<p>ここから，私が考えるwebshotパッケージの応用例について紹介します。</p>
+<div id="htmlwidgets" class="section level3">
+<h3>htmlwidgetsオブジェクトの画像化</h3>
+<p>最近ではRによる可視化としてhtmlwidgetsを利用したものが多く，色々な場面で見かけます。これらの多くはhtmlに埋め込むことによりインタラクティブなコンテンツを提供してくれます。</p>
+<p>しかしこれらhtmlwidgetsオブジェクトはhtmlであり，pdfドキュメントやdocxドキュメントに埋め込むことはできません。また画像として埋め込もうと思うと，画面に表示してキャプチャしてファイルで保存し，それを埋め込むという作業工程が必要となり，効率的はありません。そこで，webshotを利用して簡単に画像化してみます。</p>
+<p>まず例として，{leaflet}パッケージによる地図を生成してみます:</p>
+<pre class="r"><code>library(dplyr)
+library(leaflet)
+
+m &lt;- leaflet() %&gt;% addTiles() %&gt;% 
+  addPopups(135, 35, &quot;Popup!&quot;)
+m</code></pre>
+<div id="htmlwidget-32299c4d9997281db822" style="width:672px;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-32299c4d9997281db822">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"maxNativeZoom":null,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"continuousWorld":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":null,"unloadInvisibleTiles":null,"updateWhenIdle":null,"detectRetina":false,"reuseTiles":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap\u003c/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA\u003c/a>"}]},{"method":"addPopups","args":[35,135,"Popup!",null,null,{"maxWidth":300,"minWidth":50,"maxHeight":null,"autoPan":true,"keepInView":false,"closeButton":true,"zoomAnimation":true,"closeOnClick":null,"className":""}]}],"limits":{"lat":[35,35],"lng":[135,135]}},"evals":[],"jsHooks":[]}</script>
+<p>ではこれを{webshot}で画像するには以下のようにします:</p>
+<pre class="r"><code>library(htmlwidgets)
+saveWidget(m, file = &quot;leaflet2png.html&quot;)
+webshot(&quot;leaflet2png.html&quot;, file = &quot;pics/webshot_demo_08.png&quot;, delay = 6)</code></pre>
+<p><img src="webshot_demo_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+<p>まず，htmlwidgetsオブジェクトを<code>htmlwidgets::saveWidgets()</code>関数でhtmlファイルに出力します。そのhtmlファイルをwebshotでキャプチャする，という流れです。htmlwidgetsを利用しているパッケージであるならば，これで全て画像化することが可能です。</p>
+<p>おそらくこのテクニックと相性がいいのは{leaflet}あたりでしょう。逆に相性が悪いのは{DT}あたりで，<code>DT::datatable()</code>でちょいちょい設定しておかないと，きれいなキャプチャが取れないと思います。</p>
+<p>なお一時的に作成したhtmlファイルが邪魔である場合は，<code>webshot()</code>を実行した後<code>file.remove()</code>で削除してしまうといいでしょう。</p>
+<pre class="r"><code># 不要なhtmlファイルを削除
+file.remove(&quot;leaflet2png.html&quot;)</code></pre>
+<pre><code>## [1] TRUE</code></pre>
+</div>
+<div id="r-markdownwebhtml" class="section level3">
+<h3>R MarkdownでWebページキャプチャをhtmlドキュメントに埋め込む</h3>
+<p>R MarkdownでWebサイトを作っていたり，あるいは何らかの資料を作成していると，Webページをキャプチャしてそれをリサイズして埋め込みたい，と思うことがあります。もしこれをそのままやろうとするならば，(1)Webサイトを表示，(2)キャプチャアプリで画像に落としこむ，(3)Rmdに画像を入れる，という流れとなります。</p>
+<p>これは非常に手間ですし，またキャプチャ元のページ内容が更新されるとまたキャプチャし直しとなります。というわけでKnitする度に自動的にwebshotでキャプチャを取得し，そのままRmd内に埋め込めるようにします。</p>
+<p>これを実現するには，{htmltools}というパッケージを利用します:</p>
+<pre class="r"><code>library(htmltools)
+img &lt;- webshot(url = &quot;https://www.r-project.org/&quot;, 
+               file = &quot;pics/r-project_top.png&quot;,
+               cliprect = &quot;viewport&quot;, vheight = 400, vwidth = 780)
+tags$a(href=&quot;https://www.r-project.org/&quot;,
+       tags$img(src=img, alt=&quot;&quot;)
+       )</code></pre>
+<a href="https://www.r-project.org/">
+<img src="pics/r-project_top.png" alt=""/>
+</a>
+<p>この<code>htmltools::tags</code>はhtmlタグを生成するための関数群で，htmlタグをRでプログラマラブルに生成できます。また，R MarkdownでWebサイトを生成する場合，webshotで各ページサムネイルを生成し，それを活用していくことも可能です。以下のリンク先などを参照してみてください:</p>
+<ul>
+<li><a href="http://rmarkdown.rstudio.com/rmarkdown_websites.html#html_generation">HTML Generation - R Markdown Websites</a></li>
+<li><a href="http://qiita.com/kazutan/items/6301087a41a18c96faf2">R MarkdownでBootstrapのグリッドシステムを利用する - Qiita</a></li>
+</ul>
+<p>試しにサムネイルを実装してみます:</p>
+<pre class="r"><code>library(htmltools)
+thumbnail &lt;- function(title, img, href, caption = TRUE) {
+  tags$div(class = &quot;col-sm-4&quot;,
+      tags$a(class = &quot;thumbnail&quot;, title = title, href = href,
+        tags$img(src = img),
+        tags$div(class = ifelse(caption, &quot;caption&quot;, &quot;&quot;),
+          ifelse(caption, title, &quot;&quot;)
+        )
+      )
+  )
+}</code></pre>
+<pre class="r"><code>title &lt;- c(&quot;stringr&quot;, &quot;forcats&quot;, &quot;leaflet&quot;)
+urls &lt;- c(&quot;https://kazutan.github.io/kazutanR/stringr-intro.html&quot;,
+          &quot;https://kazutan.github.io/kazutanR/forcats_test.html&quot;,
+          &quot;https://kazutan.github.io/kazutanR/leaflet_d.html&quot;)
+imgs &lt;- webshot(urls, file = &quot;pics/thumb.png&quot;, cliprect = &quot;viewport&quot;, delay = 1)
+
+thumbs &lt;- mapply(thumbnail, title = title, img = imgs, href = urls,
+       SIMPLIFY = FALSE, USE.NAMES = FALSE)
+tags$div(class = &quot;row&quot;, thumbs)</code></pre>
+<div class="row">
+<div class="col-sm-4">
+<a class="thumbnail" title="stringr" href="https://kazutan.github.io/kazutanR/stringr-intro.html">
+<img src="pics/thumb001.png"/>
+<div class="caption">stringr</div>
+</a>
+</div>
+<div class="col-sm-4">
+<a class="thumbnail" title="forcats" href="https://kazutan.github.io/kazutanR/forcats_test.html">
+<img src="pics/thumb002.png"/>
+<div class="caption">forcats</div>
+</a>
+</div>
+<div class="col-sm-4">
+<a class="thumbnail" title="leaflet" href="https://kazutan.github.io/kazutanR/leaflet_d.html">
+<img src="pics/thumb003.png"/>
+<div class="caption">leaflet</div>
+</a>
+</div>
+</div>
+<p>このようなことも自動的に取得することができます。あとは色々と応用できるはずです。ぜひ試してみてください。</p>
+<p><strong>Enjoy!</strong></p>
+</div>
+</div>
+
+<p>Copyright &copy; 2017 Kazuhiro Maeda. </p>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
