@@ -176,9 +176,9 @@ cssで指定するように絞り込んでいくことも可能ですし，`expa
 
 ```{r}
 webshot(url, file = "pics/webshot_demo_06.png", 
-        selector = "#contents #data")
+        selector = "#contents div")
 webshot(url, file = "pics/webshot_demo_07.png",
-        selector = "#contents #data",
+        selector = "#contents div",
         expand = c(10, 15, 30, 5))
 ```
 

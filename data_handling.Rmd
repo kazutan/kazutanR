@@ -172,7 +172,7 @@ library(tidyr)
 ```{r}
 installed.packages() %>%
   as.data.frame() %>%
-  select(Package, Version) %>%
+  select_("Package"," Version") %>%
   filter(Package %in% c("dplyr", "tidyr"))
 ```
 

@@ -324,6 +324,9 @@ div.tocify {
     <li>
       <a href="webshot_demo.html">webshotによるキャプチャ</a>
     </li>
+    <li>
+      <a href="corrr_test.html">corrrによる相関行列の操作・可視化</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -572,7 +575,7 @@ library(tidyr)</code></pre>
 </ul>
 <pre class="r"><code>installed.packages() %&gt;%
   as.data.frame() %&gt;%
-  select(Package, Version) %&gt;%
+  select_(&quot;Package&quot;,&quot; Version&quot;) %&gt;%
   filter(Package %in% c(&quot;dplyr&quot;, &quot;tidyr&quot;))</code></pre>
 <pre><code>## # A tibble: 2 × 2
 ##   Package Version

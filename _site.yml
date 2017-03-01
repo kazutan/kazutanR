@@ -24,6 +24,8 @@ navbar:
       menu:
         - text: "webshotによるキャプチャ"
           href: webshot_demo.html
+        - text: "corrrによる相関行列の操作・可視化"
+          href: corrr_test.html
   right:
     - text: "GitHub"
       icon: fa-github

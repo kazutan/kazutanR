@@ -35,11 +35,14 @@ output:
 
 - webshotによるWebページキャプチャ
     - webshotを利用したWebページのキャプチャと応用
+- corrrによる相関行列の操作・可視化
+    - corrrパッケージを利用して，いい感じで相関行列を処理
 
 
 
 ## News {.col-md-4 .news}
 - 2017/3/1
+    - その他にcorrrを追加
     - Homeの内容変更とNavBar修正
     - aboutを追加
     - dplyr&tidyr, forcatsのsessioninfoを削除

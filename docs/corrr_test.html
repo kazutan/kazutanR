@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>corrrパッケージで相関行列を操作・可視化</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="site_style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Kazutan.R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="about.html">about</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    データ操作
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="data_handling.html">データセット操作(dplyr, tidyr)</a>
+    </li>
+    <li>
+      <a href="stringr-intro.html">文字列操作(stringr)</a>
+    </li>
+    <li>
+      <a href="forcats_test.html">factor型データ操作(forcats)</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    可視化
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="ggplot2_links.html">ggplot2によるプロット</a>
+    </li>
+    <li>
+      <a href="DT_demo.html">DTによる表作成</a>
+    </li>
+    <li>
+      <a href="leaflet_d.html">leafletによる地図プロット</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    その他
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="webshot_demo.html">webshotによるキャプチャ</a>
+    </li>
+    <li>
+      <a href="corrr_test.html">corrrによる相関行列の操作・可視化</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/kazutan/kazutanR/">
+    <span class="fa fa-github"></span>
+     
+    GitHub
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">corrrパッケージで相関行列を操作・可視化</h1>
+
+</div>
+
+
+<div id="corrr" class="section level2">
+<h2>corrrパッケージとは</h2>
+<p>概要は以下のとおりです:</p>
+<blockquote>
+<p>A tool for exploring correlations. It makes it possible to easily perform routine tasks when exploring correlation matrices such as ignoring the diagonal, focusing on the correlations of certain variables against others, or rearranging and visualising the matrix in terms of the strength of the correlations.</p>
+</blockquote>
+<p>要するに、<strong>相関行列を簡単に、そしてちょっと便利に出しますよ</strong>というものです。</p>
+<ul>
+<li><a href="https://cran.rstudio.com/web/packages/corrr/index.html">cranのページ</a></li>
+<li><a href="https://github.com/drsimonj/corrr">githubのサイト</a></li>
+</ul>
+</div>
+<div class="section level2">
+<h2>インストール</h2>
+<p>cran版は通常通りでインストール可能:</p>
+<pre class="r"><code>install.packages(&quot;corrr&quot;)</code></pre>
+<p>開発版はgithubよりインストール。ただ<code>devtools</code>パッケージがv1.6以上を要求するようです:</p>
+<pre class="r"><code>if (packageVersion(&quot;devtools&quot;) &lt; 1.6) {
+  install.packages(&quot;devtools&quot;)
+}
+devtools::install_github(&quot;drsimonj/corrr&quot;)</code></pre>
+<p>もしくは<code>{githubinstall}</code>でさくっといれます:</p>
+<pre class="r"><code>devtools::install_github(&quot;hoxo-m/githubinstall&quot;)
+library(&quot;githubinstall&quot;)
+githubinstall(&quot;corrr&quot;)</code></pre>
+<p>あと、依存関係で色々なパッケージがDLされます。詳しくは<a href="https://cran.rstudio.com/web/packages/corrr/index.html">cranの該当パッケージ情報</a>をご覧ください。</p>
+</div>
+<div id="corrr" class="section level2">
+<h2>corrrを使ってみる</h2>
+<p>読み込んで使用していきます:</p>
+<pre class="r"><code>library(&quot;corrr&quot;)</code></pre>
+<p>以下、githubに書いてある例をベースにサンプルデータセットを作成します:</p>
+<pre class="r"><code>library(MASS)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;MASS&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     select</code></pre>
+<pre class="r"><code>set.seed(57)
+
+# 相関がお互いに.7の3変数を作成
+mu &lt;- rep(0, 3)
+Sigma &lt;- matrix(.7, nrow = 3, ncol = 3) + diag(3)*.3
+seven &lt;- mvrnorm(n = 1000, mu = mu, Sigma = Sigma)
+# 相関がお互いに.4の3変数を作成
+mu &lt;- rep(0, 3)
+Sigma &lt;- matrix(.4, nrow = 3, ncol = 3) + diag(3)*.6
+four &lt;- mvrnorm(n = 1000, mu = mu, Sigma = Sigma)
+# 二つを結合してv1:v6までの変数を持つデータの作成
+d &lt;- cbind(seven, four)
+colnames(d) &lt;- paste0(&quot;v&quot;, 1:ncol(d))
+# 1列目と5列目に欠損値をまぶす
+d[sample(1:nrow(d), 100, replace = TRUE), 1] &lt;- NA
+d[sample(1:nrow(d), 200, replace = TRUE), 5] &lt;- NA
+
+# dfの情報
+summary(d)</code></pre>
+<pre><code>##        v1                 v2                  v3          
+##  Min.   :-3.32585   Min.   :-3.168534   Min.   :-3.67105  
+##  1st Qu.:-0.64058   1st Qu.:-0.638804   1st Qu.:-0.69661  
+##  Median : 0.03548   Median :-0.008613   Median :-0.01928  
+##  Mean   : 0.03225   Mean   : 0.045645   Mean   :-0.01248  
+##  3rd Qu.: 0.75966   3rd Qu.: 0.760739   3rd Qu.: 0.65623  
+##  Max.   : 2.48431   Max.   : 3.311481   Max.   : 2.85512  
+##  NA&#39;s   :97                                               
+##        v4                 v5                 v6          
+##  Min.   :-3.43809   Min.   :-3.00714   Min.   :-3.18721  
+##  1st Qu.:-0.62709   1st Qu.:-0.65496   1st Qu.:-0.62557  
+##  Median : 0.07109   Median : 0.01357   Median : 0.04961  
+##  Mean   : 0.06450   Mean   : 0.04083   Mean   : 0.01731  
+##  3rd Qu.: 0.74101   3rd Qu.: 0.67596   3rd Qu.: 0.66742  
+##  Max.   : 2.93350   Max.   : 3.45739   Max.   : 3.08986  
+##                     NA&#39;s   :184</code></pre>
+<p>以下、このパッケージの主要な関数についてテストします。</p>
+</div>
+<div id="correlate" class="section level2">
+<h2><code>correlate()</code></h2>
+<p>数値ベクトル、行列、もしくはデータフレームから相関行列を算出します。出力は<code>tbl(tiblle::data_frame)</code>などが付与されたもので、ほぼ<code>data.frame</code>と同様に扱えます。</p>
+<pre class="r"><code>x &lt;- correlate(d)</code></pre>
+<pre><code>## 
+## Correlation method: &#39;pearson&#39;
+## Missing treated using: &#39;pairwise.complete.obs&#39;</code></pre>
+<pre class="r"><code>class(x)</code></pre>
+<pre><code>## [1] &quot;cor_df&quot;     &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
+<pre class="r"><code>x</code></pre>
+<pre><code>## # A tibble: 6 × 7
+##   rowname          v1          v2           v3           v4           v5
+##     &lt;chr&gt;       &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
+## 1      v1          NA  0.70533312  0.696751634 -0.019391631 -0.040154825
+## 2      v2  0.70533312          NA  0.716027507 -0.019635452 -0.030941464
+## 3      v3  0.69675163  0.71602751           NA -0.003882606 -0.006444362
+## 4      v4 -0.01939163 -0.01963545 -0.003882606           NA  0.380190219
+## 5      v5 -0.04015482 -0.03094146 -0.006444362  0.380190219           NA
+## 6      v6 -0.01903664 -0.03123876 -0.003892283  0.394416376  0.413242180
+## # ... with 1 more variables: v6 &lt;dbl&gt;</code></pre>
+<p>この関数は<code>stats::cor()</code>と同様、以下のように使います:</p>
+<pre><code>correlate(x, y = NULL, use = &quot;pairwise.complete.obs&quot;, method = &quot;pearson&quot;)</code></pre>
+<ul>
+<li><code>use=</code>は欠損値を持つ変数に対してどういう処理をするかを文字列でひとつ指定します。選択肢は<code>&quot;everything&quot;, &quot;all.obs&quot;, &quot;complete.obs&quot;, &quot;na.or.complete&quot;, or &quot;pairwise.complete.obs&quot;</code>で、デフォルトではペアワイズです。</li>
+<li><code>method=</code>は相関係数の算出法について文字列で指定します。選択肢は<code>&quot;pearson&quot; (default), &quot;kendall&quot;, or &quot;spearman&quot;</code>で、デフォルトはピアソンです。</li>
+</ul>
+<p>この<code>correlate()</code>で生成された相関行列には<code>cor_df</code>クラスが付与されていて、このパッケージ内の他の関数を使って色々便利なことができるようになります。</p>
+</div>
+<div id="focus" class="section level2">
+<h2><code>focus()</code></h2>
+<p><code>correlate()</code>で算出した相関行列(<code>cor_df</code>クラス)のうち、着目したい変数を絞り込むことができます:</p>
+<pre class="r"><code>focus(x, v1:v4)</code></pre>
+<pre><code>## # A tibble: 2 × 5
+##   rowname          v1          v2           v3        v4
+##     &lt;chr&gt;       &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;
+## 1      v5 -0.04015482 -0.03094146 -0.006444362 0.3801902
+## 2      v6 -0.01903664 -0.03123876 -0.003892283 0.3944164</code></pre>
+<p>この関数は以下のように使います:</p>
+<pre><code>focus(x, ..., mirror = FALSE)</code></pre>
+<ul>
+<li><code>x</code>は<code>correlate()</code>で作成された相関行列(<code>cor_df</code>クラス)を指定します。</li>
+<li><code>...</code>の部分で、焦点を当てる変数(列)を選択します。ここで選択した変数が列として残り、それ以外の変数は行方向に並びます。</li>
+<li><code>mirror=</code>は選択した列を行方向にミラーするかどうかを論理値で指定します。デフォルトではFALSEで、上記のようになります。</li>
+</ul>
+<p>この関数のポイントは2点あり、<strong><code>mirror=</code>の指定</strong>と<strong>変数の選択方法</strong>です。以下解説します。</p>
+<div id="mirror" class="section level3">
+<h3><code>mirror=</code>の指定</h3>
+<p>上の例で、<code>mirror=TRUE</code>を指定すると、以下のようになります:</p>
+<pre class="r"><code>focus(x, v1:v4, mirror = TRUE)</code></pre>
+<pre><code>## # A tibble: 4 × 5
+##   rowname          v1          v2           v3           v4
+##     &lt;chr&gt;       &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
+## 1      v1          NA  0.70533312  0.696751634 -0.019391631
+## 2      v2  0.70533312          NA  0.716027507 -0.019635452
+## 3      v3  0.69675163  0.71602751           NA -0.003882606
+## 4      v4 -0.01939163 -0.01963545 -0.003882606           NA</code></pre>
+<p>比較してもらえれば一目瞭然かと思います。必要に応じて使い分けると便利でしょう。</p>
+</div>
+<div class="section level3">
+<h3>変数の選択方法</h3>
+<p>このパッケージでは{dplyr}パッケージをインポートしてきます。なので、<strong><code>dplyr::select()</code>と同じように変数選択が可能</strong>です。普段から<code>dplyr::select()</code>に慣れているならば、その意味がよくわかることでしょう。</p>
+<pre class="r"><code>focus(x, ends_with(&quot;5&quot;))</code></pre>
+<pre><code>## # A tibble: 5 × 2
+##   rowname           v5
+##     &lt;chr&gt;        &lt;dbl&gt;
+## 1      v1 -0.040154825
+## 2      v2 -0.030941464
+## 3      v3 -0.006444362
+## 4      v4  0.380190219
+## 5      v6  0.413242180</code></pre>
+</div>
+</div>
+<div id="rearrange" class="section level2">
+<h2><code>rearrange()</code></h2>
+<p><code>correlate()</code>で作成した相関行列(<code>cor_df</code>クラス)について、<strong>高い相関を持つ変数が近くになるようグループにする</strong>関数です。ここではわかりやすくするため、<code>mtcars</code>のデータセットで説明します:</p>
+<pre class="r"><code>d2 &lt;- mtcars %&gt;% 
+  correlate() %&gt;% 
+  focus(-cyl, -vs, -hp, mirror = TRUE)</code></pre>
+<pre><code>## 
+## Correlation method: &#39;pearson&#39;
+## Missing treated using: &#39;pairwise.complete.obs&#39;</code></pre>
+<pre class="r"><code>d2</code></pre>
+<pre><code>## # A tibble: 8 × 9
+##   rowname        mpg       disp        drat         wt        qsec
+##     &lt;chr&gt;      &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;
+## 1     mpg         NA -0.8475514  0.68117191 -0.8676594  0.41868403
+## 2    disp -0.8475514         NA -0.71021393  0.8879799 -0.43369788
+## 3    drat  0.6811719 -0.7102139          NA -0.7124406  0.09120476
+## 4      wt -0.8676594  0.8879799 -0.71244065         NA -0.17471588
+## 5    qsec  0.4186840 -0.4336979  0.09120476 -0.1747159          NA
+## 6      am  0.5998324 -0.5912270  0.71271113 -0.6924953 -0.22986086
+## 7    gear  0.4802848 -0.5555692  0.69961013 -0.5832870 -0.21268223
+## 8    carb -0.5509251  0.3949769 -0.09078980  0.4276059 -0.65624923
+## # ... with 3 more variables: am &lt;dbl&gt;, gear &lt;dbl&gt;, carb &lt;dbl&gt;</code></pre>
+<p>この場合、出力される相関行列はデータセット上の並びとなります。これに<code>rearrange()</code>を適用するとこうなります:</p>
+<pre class="r"><code>rearrange(d2)</code></pre>
+<pre><code>## # A tibble: 8 × 9
+##   rowname        drat          am         wt       gear       disp
+##     &lt;chr&gt;       &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
+## 1    drat          NA  0.71271113 -0.7124406  0.6996101 -0.7102139
+## 2      am  0.71271113          NA -0.6924953  0.7940588 -0.5912270
+## 3      wt -0.71244065 -0.69249526         NA -0.5832870  0.8879799
+## 4    gear  0.69961013  0.79405876 -0.5832870         NA -0.5555692
+## 5    disp -0.71021393 -0.59122704  0.8879799 -0.5555692         NA
+## 6     mpg  0.68117191  0.59983243 -0.8676594  0.4802848 -0.8475514
+## 7    carb -0.09078980  0.05753435  0.4276059  0.2740728  0.3949769
+## 8    qsec  0.09120476 -0.22986086 -0.1747159 -0.2126822 -0.4336979
+## # ... with 3 more variables: mpg &lt;dbl&gt;, carb &lt;dbl&gt;, qsec &lt;dbl&gt;</code></pre>
+<p>この関数は以下のように使います:</p>
+<pre><code>rearrange(x, method = &quot;PC&quot;, absolute = TRUE)</code></pre>
+<ul>
+<li><code>x</code>は<code>correlate()</code>で作成された相関行列(<code>cor_df</code>クラス)を指定します。</li>
+<li><code>method=</code>は配置(クラスタリング)する方法を文字列で指定します。デフォルトは“PC”で主成分分析です。</li>
+<li><code>absolute=</code>クラスタリングするときに相関係数の絶対値を利用するかどうかを論理値で指定します。デフォルトはTRUEで絶対値を使ってクラスタリングします。</li>
+</ul>
+<p>つまり相関行列からクラスタリングしてまとめてくれて並べ直してくれる、という関数となります。このクラスタリングは<code>seriation::seriate()</code>に依存していますので、この関数のヘルプや開発者がこの点について説明している<a href="https://drsimonj.svbtle.com/rearrange-your-correlations-with-corrr#how-is-the-order-decided_2">記事</a>を参照してください。</p>
+</div>
+<div id="shave" class="section level2">
+<h2><code>shave()</code></h2>
+<p><code>correlate()</code>で作成した相関行列(<code>cor_df</code>クラス)について、三角化します:</p>
+<pre class="r"><code>shave(x)</code></pre>
+<pre><code>## # A tibble: 6 × 7
+##   rowname          v1          v2           v3        v4        v5    v6
+##     &lt;chr&gt;       &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;
+## 1      v1          NA          NA           NA        NA        NA    NA
+## 2      v2  0.70533312          NA           NA        NA        NA    NA
+## 3      v3  0.69675163  0.71602751           NA        NA        NA    NA
+## 4      v4 -0.01939163 -0.01963545 -0.003882606        NA        NA    NA
+## 5      v5 -0.04015482 -0.03094146 -0.006444362 0.3801902        NA    NA
+## 6      v6 -0.01903664 -0.03123876 -0.003892283 0.3944164 0.4132422    NA</code></pre>
+<p>この関数は以下のように使います:</p>
+<pre><code>shave(x, upper = TRUE)</code></pre>
+<ul>
+<li><code>x</code>は<code>correlate()</code>で作成された相関行列(<code>cor_df</code>クラス)を指定します。</li>
+<li><code>upper=</code>は上側三角をNAにするかどうかを論理値で指定します。デフォルトはTRUEで、上の例のように上側三角がNAとなります。</li>
+</ul>
+<p>おそらく説明は不要かと思います。</p>
+</div>
+<div id="stretch" class="section level2">
+<h2><code>stretch()</code></h2>
+<p><code>correlate()</code>で作成した相関行列(<code>cor_df</code>クラス)について、Long型のデータ構造へ変換します:</p>
+<pre class="r"><code>stretch(x)</code></pre>
+<pre><code>## # A tibble: 36 × 3
+##        x     y           r
+##    &lt;chr&gt; &lt;chr&gt;       &lt;dbl&gt;
+## 1     v1    v1          NA
+## 2     v1    v2  0.70533312
+## 3     v1    v3  0.69675163
+## 4     v1    v4 -0.01939163
+## 5     v1    v5 -0.04015482
+## 6     v1    v6 -0.01903664
+## 7     v2    v1  0.70533312
+## 8     v2    v2          NA
+## 9     v2    v3  0.71602751
+## 10    v2    v4 -0.01963545
+## # ... with 26 more rows</code></pre>
+<p>この関数は以下のように使います:</p>
+<pre><code>stretch(x, na_omit = FALSE)</code></pre>
+<ul>
+<li><code>x</code>は<code>correlate()</code>で作成された相関行列(<code>cor_df</code>クラス)を指定します。</li>
+<li><code>na_omit=</code>は相関係数がNAの箇所を含むかどうかを論理値で指定します。デフォルトはFALSEです。</li>
+</ul>
+<p>よく使う流れとしては、<code>shave()</code>で三角だけ残して、それを<code>%&gt;% stretch(na.rm = TRUE)</code>とするパターンかと思います:</p>
+<pre class="r"><code>x %&gt;% shave() %&gt;% 
+  stretch(na.rm = TRUE)</code></pre>
+<pre><code>## # A tibble: 15 × 3
+##        x     y            r
+##    &lt;chr&gt; &lt;chr&gt;        &lt;dbl&gt;
+## 1     v1    v2  0.705333119
+## 2     v1    v3  0.696751634
+## 3     v1    v4 -0.019391631
+## 4     v1    v5 -0.040154825
+## 5     v1    v6 -0.019036643
+## 6     v2    v3  0.716027507
+## 7     v2    v4 -0.019635452
+## 8     v2    v5 -0.030941464
+## 9     v2    v6 -0.031238765
+## 10    v3    v4 -0.003882606
+## 11    v3    v5 -0.006444362
+## 12    v3    v6 -0.003892283
+## 13    v4    v5  0.380190219
+## 14    v4    v6  0.394416376
+## 15    v5    v6  0.413242180</code></pre>
+<p>こうすると、全ての変数間の組み合わせで、重複するもの(とNAになっている不要なもの)が取り除かれます。</p>
+</div>
+<div id="as_matrix" class="section level2">
+<h2><code>as_matrix()</code></h2>
+<p><code>correlate()</code>で作成した相関行列(<code>cor_df</code>クラス)を、通常の相関行列(matrix)に変換します:</p>
+<pre class="r"><code>as_matrix(x)</code></pre>
+<pre><code>##             v1          v2           v3           v4           v5
+## v1  1.00000000  0.70533312  0.696751634 -0.019391631 -0.040154825
+## v2  0.70533312  1.00000000  0.716027507 -0.019635452 -0.030941464
+## v3  0.69675163  0.71602751  1.000000000 -0.003882606 -0.006444362
+## v4 -0.01939163 -0.01963545 -0.003882606  1.000000000  0.380190219
+## v5 -0.04015482 -0.03094146 -0.006444362  0.380190219  1.000000000
+## v6 -0.01903664 -0.03123876 -0.003892283  0.394416376  0.413242180
+##              v6
+## v1 -0.019036643
+## v2 -0.031238765
+## v3 -0.003892283
+## v4  0.394416376
+## v5  0.413242180
+## v6  1.000000000</code></pre>
+<pre class="r"><code>class(as_matrix(x))</code></pre>
+<pre><code>## [1] &quot;matrix&quot;</code></pre>
+<p>関数名に注意してください。<code>as.matrix()</code>ではなく、<code>_</code>です。もし通常のmatrix型にしたい場合は、この関数を適用してください。</p>
+</div>
+<div id="fashion" class="section level2">
+<h2><code>fashion()</code></h2>
+<p>プリント向けに調整する関数です:</p>
+<pre class="r"><code>fashion(x)</code></pre>
+<pre><code>## # A tibble: 6 × 7
+##         rowname            v1            v2            v3            v4
+##   &lt;S3: noquote&gt; &lt;S3: noquote&gt; &lt;S3: noquote&gt; &lt;S3: noquote&gt; &lt;S3: noquote&gt;
+## 1            v1                         .71           .70          -.02
+## 2            v2           .71                         .72          -.02
+## 3            v3           .70           .72                        -.00
+## 4            v4          -.02          -.02          -.00              
+## 5            v5          -.04          -.03          -.01           .38
+## 6            v6          -.02          -.03          -.00           .39
+## # ... with 2 more variables: v5 &lt;S3: noquote&gt;, v6 &lt;S3: noquote&gt;</code></pre>
+<p>この関数は以下のように使います:</p>
+<pre><code>fashion(x, decimals, na_print)</code></pre>
+<ul>
+<li><code>x</code>はベクトルや行列、データフレームなど調整するオブジェクトをしています。</li>
+<li><code>decimals=</code>は小数点以下の表示桁数を指定します。デフォルトでは2桁となっています。</li>
+<li><code>na_print=</code>はNAを表示させるかどうかを指定します。</li>
+</ul>
+<p>おそらくよく使うパターンとしては、<code>shave() %&gt;% fashion()</code>だと思います:</p>
+<pre class="r"><code>shave(x) %&gt;% 
+  fashion(decimals = 3)</code></pre>
+<pre><code>## # A tibble: 6 × 7
+##         rowname            v1            v2            v3            v4
+##   &lt;S3: noquote&gt; &lt;S3: noquote&gt; &lt;S3: noquote&gt; &lt;S3: noquote&gt; &lt;S3: noquote&gt;
+## 1            v1                                                        
+## 2            v2          .705                                          
+## 3            v3          .697          .716                            
+## 4            v4         -.019         -.020         -.004              
+## 5            v5         -.040         -.031         -.006          .380
+## 6            v6         -.019         -.031         -.004          .394
+## # ... with 2 more variables: v5 &lt;S3: noquote&gt;, v6 &lt;S3: noquote&gt;</code></pre>
+<p>なお、この関数の<code>x</code>は例の相関行列でなくても対応しています。</p>
+<pre class="r"><code>x %&gt;% shave() %&gt;% 
+  stretch(na.rm = TRUE) %&gt;% 
+  fashion(decimals = 3)</code></pre>
+<pre><code>## # A tibble: 15 × 3
+##                x             y             r
+##    &lt;S3: noquote&gt; &lt;S3: noquote&gt; &lt;S3: noquote&gt;
+## 1             v1            v2          .705
+## 2             v1            v3          .697
+## 3             v1            v4         -.019
+## 4             v1            v5         -.040
+## 5             v1            v6         -.019
+## 6             v2            v3          .716
+## 7             v2            v4         -.020
+## 8             v2            v5         -.031
+## 9             v2            v6         -.031
+## 10            v3            v4         -.004
+## 11            v3            v5         -.006
+## 12            v3            v6         -.004
+## 13            v4            v5          .380
+## 14            v4            v6          .394
+## 15            v5            v6          .413</code></pre>
+</div>
+<div id="rplot" class="section level2">
+<h2><code>rplot()</code></h2>
+<p><code>correlate()</code>で作成した相関行列(<code>cor_df</code>クラス)を、<code>ggplot2</code>を利用して可視化します。わかりやすくするため<code>mtcars</code>データセットを使います:</p>
+<pre class="r"><code>rplot(d2)</code></pre>
+<p><img src="corrr_test_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p>この関数は以下のように使います:</p>
+<pre><code>rplot(x, print_cor, shape)</code></pre>
+<ul>
+<li><code>x</code>は<code>correlate()</code>で作成された相関行列(<code>cor_df</code>クラス)を指定します。</li>
+<li><code>print_cor=</code>は相関係数をそれぞれに表示させるかどうかを論理値で指定します。デフォルトは<code>FALSE</code>で表示せず、TRUEを指定すると表示されます。</li>
+<li><code>shape=</code>はプロットするマークの形状(<code>shape</code>)を指定します。これは<code>ggplot2::geom_point()</code>の<code>aes(shape=**)</code>に引き渡されます。</li>
+</ul>
+<p>この関数は<code>ggplot</code>オブジェクトを返してきますので、もし他の設定を当てたい場合は<code>ggplot2</code>のドキュメントを参照してください。例えば三角にして相関係数を表示させてマークを変えたいときは、以下のようなコードになります:</p>
+<pre class="r"><code>g &lt;- shave(d2) %&gt;% 
+  rplot(print_cor = TRUE, shape=15)
+class(g)</code></pre>
+<pre><code>## [1] &quot;gg&quot;     &quot;ggplot&quot;</code></pre>
+<pre class="r"><code>g</code></pre>
+<p><img src="corrr_test_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<p>また、上述の<code>rearrange()</code>と組み合わせるパターンも有効でしょう:</p>
+<pre class="r"><code>g2 &lt;- rearrange(d2, absolute = FALSE) %&gt;% 
+  shave() %&gt;% 
+  rplot(print_cor = TRUE)
+g2</code></pre>
+<p><img src="corrr_test_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+</div>
+<div id="network_plot" class="section level2">
+<h2><code>network_plot()</code></h2>
+<p><code>correlate()</code>で作成した相関行列(<code>cor_df</code>クラス)を、<code>ggplot2</code>を用いてネットワーク的に可視化します。わかりやすくするため<code>mtcars</code>データセットを使います:</p>
+<pre class="r"><code>g &lt;- network_plot(d2)
+g</code></pre>
+<p><img src="corrr_test_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p>この関数は、以下のように使います:</p>
+<pre><code>network_plot(x, min_cor)</code></pre>
+<ul>
+<li><code>x</code>は<code>correlate()</code>で作成された相関行列(<code>cor_df</code>クラス)を指定します。</li>
+<li><code>min_cor</code>はプロットに使う相関係数の最小値を0-1の範囲で指定します。デフォルトは<code>.30</code>です。</li>
+</ul>
+<p>これは<code>rplot()</code>同様、<code>ggplot2</code>パッケージを使ってプロットしていますので、出力は<code>ggplot</code>オブジェクトです。なお、変数の場所(座標)は多次元尺度法(<code>stats::cmdscales()</code>による出力)によって算出していますので、近いもの同士は近くになります。</p>
+<p>相関が強いものだけをプロットしたい場合は、以下のように引数を設定してください:</p>
+<pre class="r"><code>network_plot(d2, min_cor = .5)</code></pre>
+<p><img src="corrr_test_files/figure-html/unnamed-chunk-23-1.png" width="672" /></p>
+</div>
+<div class="section level2">
+<h2>感想</h2>
+<p>相関行列の算出や編集については、これ以上ないくらい便利です。また視覚的に捉えられる<code>rplot()</code>もさくっと出せるのでいい感じでしょう。</p>
+<p>でも、<code>network_plot()</code>は…これはあくまで分析者がチェックや概観をみるためだけに止めといたほうがいい気がします。</p>
+<p><strong>Enjoy!</strong></p>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2017 Kazutan.R. </p>
+</footer>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

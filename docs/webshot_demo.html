@@ -333,6 +333,9 @@ div.tocify {
     <li>
       <a href="webshot_demo.html">webshotによるキャプチャ</a>
     </li>
+    <li>
+      <a href="corrr_test.html">corrrによる相関行列の操作・可視化</a>
+    </li>
   </ul>
 </li>
       </ul>
@@ -489,10 +492,10 @@ webshot(url, file = &quot;pics/webshot_demo_01.png&quot;, delay = 0.5)</code></p
 <p><img src="webshot_demo_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>cssで指定するように絞り込んでいくことも可能ですし，<code>expand</code>も当てることができます:</p>
 <pre class="r"><code>webshot(url, file = &quot;pics/webshot_demo_06.png&quot;, 
-        selector = &quot;#contents #data&quot;)</code></pre>
+        selector = &quot;#contents div&quot;)</code></pre>
 <p><img src="webshot_demo_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <pre class="r"><code>webshot(url, file = &quot;pics/webshot_demo_07.png&quot;,
-        selector = &quot;#contents #data&quot;,
+        selector = &quot;#contents div&quot;,
         expand = c(10, 15, 30, 5))</code></pre>
 <p><img src="webshot_demo_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
 <p>この他の例については，<a href="https://cran.r-project.org/web/packages/webshot/vignettes/intro.html">CRAN上のvignette</a>を参照してください。</p>
@@ -531,8 +534,8 @@ library(leaflet)
 m &lt;- leaflet() %&gt;% addTiles() %&gt;% 
   addPopups(135, 35, &quot;Popup!&quot;)
 m</code></pre>
-<div id="htmlwidget-0a11d5ff19e6abb19538" style="width:672px;height:480px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-0a11d5ff19e6abb19538">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"maxNativeZoom":null,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"continuousWorld":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":null,"unloadInvisibleTiles":null,"updateWhenIdle":null,"detectRetina":false,"reuseTiles":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap\u003c/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA\u003c/a>"}]},{"method":"addPopups","args":[35,135,"Popup!",null,null,{"maxWidth":300,"minWidth":50,"maxHeight":null,"autoPan":true,"keepInView":false,"closeButton":true,"zoomAnimation":true,"closeOnClick":null,"className":""}]}],"limits":{"lat":[35,35],"lng":[135,135]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-28f78e243cae774e3484" style="width:672px;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-28f78e243cae774e3484">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"maxNativeZoom":null,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"continuousWorld":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":null,"unloadInvisibleTiles":null,"updateWhenIdle":null,"detectRetina":false,"reuseTiles":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap\u003c/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA\u003c/a>"}]},{"method":"addPopups","args":[35,135,"Popup!",null,null,{"maxWidth":300,"minWidth":50,"maxHeight":null,"autoPan":true,"keepInView":false,"closeButton":true,"zoomAnimation":true,"closeOnClick":null,"className":""}]}],"limits":{"lat":[35,35],"lng":[135,135]}},"evals":[],"jsHooks":[]}</script>
 <p>ではこれを{webshot}で画像するには以下のようにします:</p>
 <pre class="r"><code>library(htmlwidgets)
 saveWidget(m, file = &quot;leaflet2png.html&quot;)
