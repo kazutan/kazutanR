@@ -7,7 +7,42 @@ output:
 
 このサイトは、私がこれまで書いてきたR関連の資料をまとめています。随時更新していく予定です。
 
-## 更新履歴
+目的やSessionInfoについては [about](about.html) を参照してください。
+
+# {.row}
+
+## Contents {.col-md-8}
+
+### データ操作
+
+- データセットの操作(dplyr, tidyr)
+    - dplyr, tidyrを利用したデータセットの操作
+- 文字列の操作(stringr)
+    - stringrを利用した文字列データの操作
+- factor型データの操作(forcats)
+    - forcatsを利用したfactor型データの操作
+
+### 可視化
+
+- ggplot2によるPlot
+    - ggplot2を利用したデータの可視化に関する資料リンク
+- DTによる表作成
+    - DTを利用したインタラクティブな表の作成
+- leafletによる地図作成
+    - leafletを利用した地図およびデータプロットの作成
+
+### その他
+
+- webshotによるWebページキャプチャ
+    - webshotを利用したWebページのキャプチャと応用
+
+
+
+## News {.col-md-4 .news}
+- 2017/3/1
+    - Homeの内容変更とNavBar修正
+    - aboutを追加
+    - dplyr&tidyr, forcatsのsessioninfoを削除
 - 2017/2/28
     - その他にwebshotを追加
     - 可視化のggplot2内でうまく表示できていなかったものを修正
@@ -17,29 +52,3 @@ output:
 - 2017/2/21
     - 可視化にDT, leafletを追加
     - データ操作にdplyr&tidyr，stringr, forcatsを追加
-
-## Contents
-
-### データ操作(data)
-
-- dplyr, tidyr
-- stringr
-- forcats
-
-### 可視化(visualization)
-
-- ggplot2
-- DT
-- leaflet
-
-### その他
-
-- webshot
-
-## Session Info
-
-```{r}
-sessionInfo()
-```
-
-

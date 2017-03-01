@@ -11,7 +11,7 @@
 
 
 
-<title>Kazutan.R</title>
+<title>このサイトについて</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -246,87 +246,70 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">Kazutan.R</h1>
+<h1 class="title toc-ignore">このサイトについて</h1>
 
 </div>
 
 
-<p>このサイトは、私がこれまで書いてきたR関連の資料をまとめています。随時更新していく予定です。</p>
-<p>目的やSessionInfoについては <a href="about.html">about</a> を参照してください。</p>
-<div id="section" class="section level1 row">
-<h1></h1>
-<div id="contents" class="section level2 col-md-8">
-<h2>Contents</h2>
-<div class="section level3">
-<h3>データ操作</h3>
-<ul>
-<li>データセットの操作(dplyr, tidyr)
-<ul>
-<li>dplyr, tidyrを利用したデータセットの操作</li>
-</ul></li>
-<li>文字列の操作(stringr)
-<ul>
-<li>stringrを利用した文字列データの操作</li>
-</ul></li>
-<li>factor型データの操作(forcats)
-<ul>
-<li>forcatsを利用したfactor型データの操作</li>
-</ul></li>
-</ul>
+<div class="section level2">
+<h2>目的と位置づけ</h2>
+<p><strong>[WIP]</strong></p>
 </div>
-<div class="section level3">
-<h3>可視化</h3>
-<ul>
-<li>ggplot2によるPlot
-<ul>
-<li>ggplot2を利用したデータの可視化に関する資料リンク</li>
-</ul></li>
-<li>DTによる表作成
-<ul>
-<li>DTを利用したインタラクティブな表の作成</li>
-</ul></li>
-<li>leafletによる地図作成
-<ul>
-<li>leafletを利用した地図およびデータプロットの作成</li>
-</ul></li>
-</ul>
+<div class="section level2">
+<h2>免責事項</h2>
+<p><strong>[WIP]</strong></p>
 </div>
-<div class="section level3">
-<h3>その他</h3>
-<ul>
-<li>webshotによるWebページキャプチャ
-<ul>
-<li>webshotを利用したWebページのキャプチャと応用</li>
-</ul></li>
-</ul>
-</div>
-</div>
-<div id="news" class="section level2 col-md-4 news">
-<h2>News</h2>
-<ul>
-<li>2017/3/1
-<ul>
-<li>Homeの内容変更とNavBar修正</li>
-<li>aboutを追加</li>
-<li>dplyr&amp;tidyr, forcatsのsessioninfoを削除</li>
-</ul></li>
-<li>2017/2/28
-<ul>
-<li>その他にwebshotを追加</li>
-<li>可視化のggplot2内でうまく表示できていなかったものを修正</li>
-<li>デザイン微修正</li>
-</ul></li>
-<li>2017/2/22
-<ul>
-<li>可視化にggplot2を追加</li>
-</ul></li>
-<li>2017/2/21
-<ul>
-<li>可視化にDT, leafletを追加</li>
-<li>データ操作にdplyr&amp;tidyr，stringr, forcatsを追加</li>
-</ul></li>
-</ul>
-</div>
+<div id="session-info" class="section level2">
+<h2>Session Info</h2>
+<p>このページをBuildした状態のSession Infoを以下に示します。各コードを実行するのに必要なパッケージ群は<code>other attached pakcages:</code>の箇所です。</p>
+<pre class="r"><code>sessionInfo()</code></pre>
+<pre><code>## R version 3.3.2 (2016-10-31)
+## Platform: x86_64-pc-linux-gnu (64-bit)
+## Running under: Ubuntu 16.04.2 LTS
+## 
+## locale:
+##  [1] LC_CTYPE=ja_JP.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=ja_JP.UTF-8        LC_COLLATE=ja_JP.UTF-8    
+##  [5] LC_MONETARY=ja_JP.UTF-8    LC_MESSAGES=ja_JP.UTF-8   
+##  [7] LC_PAPER=ja_JP.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=ja_JP.UTF-8 LC_IDENTIFICATION=C       
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] rmarkdown_1.3.9002       htmlwidgets_0.8         
+##  [3] webshot_0.4.0            htmltools_0.3.6         
+##  [5] leaflet_1.0.2.9010       DiagrammeR_0.9.0        
+##  [7] forcats_0.2.0            stringr_1.1.0           
+##  [9] knitr_1.15.8             dplyr_0.5.0             
+## [11] purrr_0.2.2              readr_1.0.0             
+## [13] tidyr_0.6.1              tibble_1.2              
+## [15] ggplot2_2.2.1            tidyverse_1.1.1         
+## [17] githubinstall_0.2.1.9001 devtools_1.12.0         
+## [19] DT_0.2.11               
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_0.12.9         lubridate_1.6.0     lattice_0.20-34    
+##  [4] visNetwork_1.0.3    assertthat_0.1      rprojroot_1.2      
+##  [7] digest_0.6.12       psych_1.6.12        mime_0.5           
+## [10] R6_2.2.0            plyr_1.8.4          backports_1.0.5    
+## [13] evaluate_0.10       httr_1.2.1          lazyeval_0.2.0.9000
+## [16] curl_2.3            readxl_0.1.1        rstudioapi_0.6     
+## [19] data.table_1.10.4   foreign_0.8-67      igraph_1.0.1       
+## [22] munsell_0.4.3       shiny_1.0.0.9000    broom_0.4.2        
+## [25] influenceR_0.1.0    rgexf_0.15.3        httpuv_1.3.3       
+## [28] modelr_0.1.0        mnormt_1.5-5        gridExtra_2.2.1    
+## [31] XML_3.98-1.5        withr_1.0.2         grid_3.3.2         
+## [34] nlme_3.1-131        jsonlite_1.2        xtable_1.8-2       
+## [37] gtable_0.2.0        DBI_0.5-1           magrittr_1.5       
+## [40] scales_0.4.1        stringi_1.1.2       reshape2_1.4.2     
+## [43] viridis_0.3.4       xml2_1.1.1          brew_1.0-6         
+## [46] RColorBrewer_1.1-2  tools_3.3.2         hms_0.3            
+## [49] crosstalk_1.0.1     Rook_1.1-1          parallel_3.3.2     
+## [52] yaml_2.1.14         colorspace_1.3-2    rvest_0.3.2        
+## [55] memoise_1.0.0       haven_1.0.0</code></pre>
 </div>
 
 <footer>

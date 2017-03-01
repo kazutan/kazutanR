@@ -1,0 +1,44 @@
+---
+title: "このサイトについて"
+output:
+  html_document:
+    toc: false
+---
+
+```{r setup, include=FALSE}
+#使っているパッケージ一覧をSessionInfoに入れるために読み込み
+library(devtools)
+library(githubinstall)
+library(tidyverse)
+library(dplyr)
+library(tidyr)
+library(knitr)
+library(stringr)
+library(tibble)
+library(forcats)
+library(ggplot2)
+library(DT)
+library(DiagrammeR)
+library(leaflet)
+library(htmltools)
+library(webshot)
+library(htmlwidgets)
+library(rmarkdown)
+```
+
+
+## 目的と位置づけ
+
+**[WIP]**
+
+## 免責事項
+
+**[WIP]**
+
+## Session Info
+
+このページをBuildした状態のSession Infoを以下に示します。各コードを実行するのに必要なパッケージ群は`other attached pakcages:`の箇所です。
+
+```{r}
+sessionInfo()
+```

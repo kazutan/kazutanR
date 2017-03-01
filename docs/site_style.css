@@ -10,3 +10,8 @@ h3 {
   color: #03f;
   margin-top: 20px;
 }
+
+footer {
+  margin-top: 20px;
+  border-top: 1px solid #006;
+}

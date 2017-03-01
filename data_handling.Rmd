@@ -4,9 +4,6 @@ output:
   html_document:
     number_section: yes
     theme: cosmo
-    toc: yes
-    toc_depth: 2
-    toc_float: yes
 ---
 
 
@@ -170,13 +167,13 @@ library(tidyr)
 ```
 
 - CRANにあります
-- 今回は以下のバージョンで説明します
-- dplyr 0.5.0
-- tidyr 0.6.0
-
-## sessioninfo
-```{r sessioninfo}
-sessionInfo()
+- 今回は以下のバージョンで実行しています
+    - 詳細なsessioninfoはトップページをご覧ください
+```{r}
+installed.packages() %>%
+  as.data.frame() %>%
+  select(Package, Version) %>%
+  filter(Package %in% c("dplyr", "tidyr"))
 ```
 
 

@@ -904,9 +904,3 @@ lvls_union(fs)
 
 **Enjoy!**
 
-## 実行環境
-
-```{r}
-sessionInfo()
-```
-

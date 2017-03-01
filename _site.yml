@@ -2,30 +2,31 @@ name: "Kazutan.R"
 navbar:
   title: "Kazutan.R"
   left:
-    - text: "home"
-      href: index.html
+    - text: "about"
+      href: about.html
     - text: "データ操作"
       menu:
-        - text: "dplyr, tidyr"
+        - text: "データセット操作(dplyr, tidyr)"
           href: data_handling.html
-        - text: "stringr"
+        - text: "文字列操作(stringr)"
           href: stringr-intro.html
-        - text: "forcats"
+        - text: "factor型データ操作(forcats)"
           href: forcats_test.html
     - text: "可視化"
       menu:
-        - text: "ggplot2"
+        - text: "ggplot2によるプロット"
           href: ggplot2_links.html
-        - text: "DT"
+        - text: "DTによる表作成"
           href: DT_demo.html
-        - text: "leaflet"
+        - text: "leafletによる地図プロット"
           href: leaflet_d.html
     - text: "その他"
       menu:
-        - text: "webshot"
+        - text: "webshotによるキャプチャ"
           href: webshot_demo.html
   right:
-    - icon: fa-github
+    - text: "GitHub"
+      icon: fa-github
       href: https://github.com/kazutan/kazutanR/
 output:
   html_document:

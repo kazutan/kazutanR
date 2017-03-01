@@ -176,7 +176,7 @@ $(document).ready(function ()  {
 
     // establish options
     var options = {
-      selectors: "h1,h2",
+      selectors: "h1,h2,h3",
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
@@ -276,7 +276,7 @@ div.tocify {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">home</a>
+  <a href="about.html">about</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -286,13 +286,13 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="data_handling.html">dplyr, tidyr</a>
+      <a href="data_handling.html">データセット操作(dplyr, tidyr)</a>
     </li>
     <li>
-      <a href="stringr-intro.html">stringr</a>
+      <a href="stringr-intro.html">文字列操作(stringr)</a>
     </li>
     <li>
-      <a href="forcats_test.html">forcats</a>
+      <a href="forcats_test.html">factor型データ操作(forcats)</a>
     </li>
   </ul>
 </li>
@@ -304,13 +304,13 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="ggplot2_links.html">ggplot2</a>
+      <a href="ggplot2_links.html">ggplot2によるプロット</a>
     </li>
     <li>
-      <a href="DT_demo.html">DT</a>
+      <a href="DT_demo.html">DTによる表作成</a>
     </li>
     <li>
-      <a href="leaflet_d.html">leaflet</a>
+      <a href="leaflet_d.html">leafletによる地図プロット</a>
     </li>
   </ul>
 </li>
@@ -322,7 +322,7 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="webshot_demo.html">webshot</a>
+      <a href="webshot_demo.html">webshotによるキャプチャ</a>
     </li>
   </ul>
 </li>
@@ -332,6 +332,7 @@ div.tocify {
   <a href="https://github.com/kazutan/kazutanR/">
     <span class="fa fa-github"></span>
      
+    GitHub
   </a>
 </li>
       </ul>
@@ -564,42 +565,20 @@ library(dplyr)
 library(tidyr)</code></pre>
 <ul>
 <li>CRANにあります</li>
-<li>今回は以下のバージョンで説明します</li>
-<li>dplyr 0.5.0</li>
-<li>tidyr 0.6.0</li>
+<li>今回は以下のバージョンで実行しています
+<ul>
+<li>詳細なsessioninfoはトップページをご覧ください</li>
+</ul></li>
 </ul>
-</div>
-<div id="sessioninfo" class="section level2">
-<h2><span class="header-section-number">5.2</span> sessioninfo</h2>
-<pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>## R version 3.3.2 (2016-10-31)
-## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Ubuntu 16.04.2 LTS
-## 
-## locale:
-##  [1] LC_CTYPE=ja_JP.UTF-8       LC_NUMERIC=C              
-##  [3] LC_TIME=ja_JP.UTF-8        LC_COLLATE=ja_JP.UTF-8    
-##  [5] LC_MONETARY=ja_JP.UTF-8    LC_MESSAGES=ja_JP.UTF-8   
-##  [7] LC_PAPER=ja_JP.UTF-8       LC_NAME=C                 
-##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
-## [11] LC_MEASUREMENT=ja_JP.UTF-8 LC_IDENTIFICATION=C       
-## 
-## attached base packages:
-## [1] stats     graphics  grDevices utils     datasets  methods   base     
-## 
-## other attached packages:
-## [1] knitr_1.15.8 tidyr_0.6.1  dplyr_0.5.0  DT_0.2.11   
-## 
-## loaded via a namespace (and not attached):
-##  [1] Rcpp_0.12.9         magrittr_1.5        xtable_1.8-2       
-##  [4] R6_2.2.0            highr_0.6           stringr_1.1.0      
-##  [7] tools_3.3.2         DBI_0.5-1           htmltools_0.3.6    
-## [10] crosstalk_1.0.1     lazyeval_0.2.0.9000 yaml_2.1.14        
-## [13] assertthat_0.1      rprojroot_1.2       digest_0.6.12      
-## [16] tibble_1.2          shiny_1.0.0.9000    htmlwidgets_0.8    
-## [19] evaluate_0.10       mime_0.5            rmarkdown_1.3.9002 
-## [22] stringi_1.1.2       backports_1.0.5     jsonlite_1.2       
-## [25] httpuv_1.3.3</code></pre>
+<pre class="r"><code>installed.packages() %&gt;%
+  as.data.frame() %&gt;%
+  select(Package, Version) %&gt;%
+  filter(Package %in% c(&quot;dplyr&quot;, &quot;tidyr&quot;))</code></pre>
+<pre><code>## # A tibble: 2 × 2
+##   Package Version
+##    &lt;fctr&gt;  &lt;fctr&gt;
+## 1   dplyr   0.5.0
+## 2   tidyr   0.6.1</code></pre>
 </div>
 </div>
 <div class="section level1">
@@ -1424,7 +1403,9 @@ tidyrのよく使う関数を、今回のスライドよりも少しだけ丁寧
 </div>
 </div>
 
-<p>Copyright &copy; 2017 Kazuhiro Maeda. </p>
+<footer>
+  <p>Copyright &copy; 2017 Kazutan.R. </p>
+</footer>
 
 
 </div>
