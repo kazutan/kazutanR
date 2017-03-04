@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>R Markdown入門</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="site_style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Kazutan.R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="about.html">about</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    データ操作
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="data_handling.html">データセット操作(dplyr, tidyr)</a>
+    </li>
+    <li>
+      <a href="stringr-intro.html">文字列操作(stringr)</a>
+    </li>
+    <li>
+      <a href="forcats_test.html">factor型データ操作(forcats)</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    可視化
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="ggplot2_links.html">ggplot2によるプロット</a>
+    </li>
+    <li>
+      <a href="DT_demo.html">DTによる表作成</a>
+    </li>
+    <li>
+      <a href="leaflet_d.html">leafletによる地図プロット</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Markdown
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Rmd_intro.html">R Markdown入門</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    その他
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="webshot_demo.html">webshotによるキャプチャ</a>
+    </li>
+    <li>
+      <a href="corrr_test.html">corrrによる相関行列の操作・可視化</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/kazutan/kazutanR/">
+    <span class="fa fa-github"></span>
+     
+    GitHub
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">R Markdown入門</h1>
+
+</div>
+
+
+<div class="section level1">
+<h1>はじめに</h1>
+<div class="section level2">
+<h2>今回の内容</h2>
+<ul>
+<li>R Markdownとは
+<ul>
+<li>仕組みを簡単に紹介します</li>
+</ul></li>
+<li>Markdown記法
+<ul>
+<li>必要最低限の説明をします</li>
+</ul></li>
+<li>R Markdownでドキュメント生成
+<ul>
+<li>実際にファイルを使って説明します</li>
+</ul></li>
+<li>R Markdownでスライド生成
+<ul>
+<li>実際にファイルを使って作ってみます</li>
+</ul></li>
+</ul>
+</div>
+<div class="section level2">
+<h2>留意事項</h2>
+<p>このドキュメントはR Markdownの初心者を想定しています。なので基本的な内容を中心に構成しています。なおRのコードは必要最低限しか出てきません。なおこれは過去にスライド形式で発表したRmdファイルをほぼそのままドキュメントとして出力しています。そのためほぼ箇条書きで書いています。</p>
+<p>実行環境は,<a href="about.html">about</a>を参照してください。</p>
+</div>
+</div>
+<div id="r-markdown" class="section level1">
+<h1>R Markdownとは</h1>
+<div id="r" class="section level2">
+<h2>Rでドキュメント生成</h2>
+<ul>
+<li>Rはデータ解析</li>
+<li>実はRでドキュメントを生成することが可能
+<ul>
+<li>R Markdownを利用</li>
+<li>その便利さ、その将来性に注目が</li>
+</ul></li>
+<li>今日はR Markdownによるドキュメントやスライド生成をご紹介</li>
+</ul>
+</div>
+<div id="r" class="section level2">
+<h2>Rでやるメリット</h2>
+<ul>
+<li>分析からレポート生成までが完結
+<ul>
+<li>WordもExcelも(そしてぱわぽも)いらない</li>
+<li>コピペ汚染からの開放</li>
+</ul></li>
+<li>再現性の確保
+<ul>
+<li>同一の内容をそのまま再現できる</li>
+</ul></li>
+<li>再利用、配布が簡単
+<ul>
+<li>コードを簡単に再利用可能</li>
+<li>テキストデータなので運用が簡単</li>
+</ul></li>
+<li>作るのが簡単
+<ul>
+<li>ドキュメント部分は基本Markdown</li>
+</ul></li>
+<li>and more!!</li>
+</ul>
+</div>
+<div id="r-markdown" class="section level2">
+<h2>R Markdownの基本的な仕組み</h2>
+<ul>
+<li>以下の2ステップでドキュメントなどを生成します
+<ul>
+<li>Rmdファイル内のRコードを評価</li>
+<li>Rコードの出力をMarkdownに起こす</li>
+<li>出来上がったMarkdownファイルを変換
+<ul>
+<li>Pandocというソフトウェアを利用</li>
+<li>RStudioに標準で組み込まれています</li>
+</ul></li>
+</ul></li>
+</ul>
+<p><img src="Rmd_intro_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+</div>
+<div class="section level2">
+<h2>ワークフロー</h2>
+<ol style="list-style-type: decimal">
+<li>R Markdownファイル(hoge.Rmd)を準備</li>
+<li>中身を記述</li>
+<li>レンダリング(Knit)して出力を確認</li>
+<li>2と3を繰り返す</li>
+<li>完成</li>
+</ol>
+<ul>
+<li>正直なところ，まずは<strong>Markdownが書けて，Rチャンク(後述)を作れればOK</strong>です
+<ul>
+<li>様々な機能や設定は大量にありますが，デフォルトでも十分使えます</li>
+<li>まずは早速使ってみましょう</li>
+</ul></li>
+</ul>
+</div>
+<div id="r-markdown" class="section level2">
+<h2>はじめてのR Markdown</h2>
+<div class="column1">
+<ol style="list-style-type: decimal">
+<li>Rmdファイルを作成
+<ul>
+<li>RStudioを起動</li>
+<li>画面左上のボタンから<strong>R Markdown…</strong>をクリック</li>
+</ul></li>
+</ol>
+</div>
+<div class="column2">
+<div class="figure">
+<img src="pics/Rmd/make_rmd_file.png" />
+
+</div>
+</div>
+<hr />
+<div class="column1">
+<ol start="2" style="list-style-type: decimal">
+<li>初期設定
+<ul>
+<li>Title: ドキュメントのタイトル</li>
+<li>Author: 著者名</li>
+<li>Output Format: ファイル形式</li>
+</ul></li>
+</ol>
+</div>
+<div class="column2">
+<div class="figure">
+<img src="pics/Rmd/make_rmd_file2.png" />
+
+</div>
+</div>
+<hr />
+<p>ファイルが作成され，自動で開きます:</p>
+<div class="figure">
+<img src="pics/Rmd/default_new_rmd.png" />
+
+</div>
+<hr />
+<div class="column1">
+<ol start="3" style="list-style-type: decimal">
+<li>Knitする
+<ul>
+<li>window上部の<strong>Knit</strong>ボタンをクリック</li>
+<li>Rmdファイルのファイルを保存するダイアログボックスが表示</li>
+<li>保存したら実行されます</li>
+</ul></li>
+</ol>
+</div>
+<div class="column2">
+<div class="figure">
+<img src="pics/Rmd/knit_button.png" />
+
+</div>
+</div>
+<hr />
+<p>レンダリングが終了すると，自動的に<code>.html</code>ファイルが作成され，Viewerに表示されます:</p>
+<div class="figure">
+<img src="pics/Rmd/default_rmd_render.png" />
+
+</div>
+</div>
+<div class="section level2">
+<h2>ワークフローの確認</h2>
+<ol style="list-style-type: decimal">
+<li>R Markdownファイル(hoge.Rmd)を準備</li>
+<li>中身を記述</li>
+<li>レンダリング(Knit)して出力を確認</li>
+<li>2と3を繰り返す</li>
+<li>完成</li>
+</ol>
+<ul>
+<li>というわけで，1と3の基本はこれでOKです</li>
+<li>次に，中身の作り方を説明します</li>
+</ul>
+</div>
+</div>
+<div id="markdown" class="section level1">
+<h1>Markdown記法</h1>
+<div id="markdownmd" class="section level2">
+<h2>Markdown(md)とは</h2>
+<ul>
+<li>文書を記述するための軽量マークアップ言語のひとつ
+<ul>
+<li>ドキュメント構造の基本的なものを提供</li>
+<li>R Markdownはこれで文書を作ります</li>
+</ul></li>
+<li>mdには色々な“方言”が
+<ul>
+<li>RmdはPandoc Markdownです</li>
+</ul></li>
+<li>RStudioにはクイックリファレンスが
+<ul>
+<li>[Help] - [Markdown Quick Reference]</li>
+<li>これみとけばOK</li>
+</ul></li>
+</ul>
+</div>
+<div id="h1-h4" class="section level2">
+<h2>見出し(h1-h4)</h2>
+<div class="column1">
+<ul>
+<li>文書構造を明確にするためにも、きっちり割り振る
+<ul>
+<li>レベル1は通常文書タイトル(章クラス)</li>
+<li>レベル2は通常節クラス</li>
+<li>以下準じて下がっていく</li>
+</ul></li>
+<li>極力見出しの前後は空行をいれとくといいです</li>
+</ul>
+</div>
+<div class="column2">
+<pre><code># レベル1(h1)
+## レベル2(h2)
+### レベル3(h3)
+#### レベル4(h4)</code></pre>
+</div>
+</div>
+<div id="pbr" class="section level2">
+<h2>段落(p)と強制改行(br)</h2>
+<pre><code>「もうすこしだ！　この山を越えると、梅の林がある。――疾く参って梅林の木陰に憩い、思うさま梅の実みをとれ。――梅の実をたたき落して喰え」
+
+　聞くと、奄々と渇にくるしんでいた兵も、  
+「梅でもいい！」  
+「梅ばやしまで頑張れ」と、にわかに勇気づいた。
+
+　そして無意識のうちに、梅の酸っぱい味を想像し、口中に唾をわかせて、渇を忘れてしまっていた。
+
+　――梅酸渇を医す。</code></pre>
+<ul>
+<li>上下に空行を挟むと、そこを段落ブロック(p)として認識</li>
+<li>行末に半角スペース2つ以上いれると強制改行(br)</li>
+</ul>
+</div>
+<div id="ulli" class="section level2">
+<h2>番号なし箇条書き(ul&gt;li)</h2>
+<div class="column1">
+<pre><code>- 箇条書き1
+    - 箇条書き1-1
+- 箇条書き2
+    * 箇条書き2-1
+    * 箇条書き2-2</code></pre>
+</div>
+<div class="column2">
+<ul>
+<li>記号とスペースの後に内容を記述
+<ul>
+<li>どちらでもOK</li>
+<li>行頭の空白4つで1レベル下がる</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="olli" class="section level2">
+<h2>番号あり箇条書き(ol&gt;li)</h2>
+<div class="column1">
+<pre><code>1. 番号1
+    1. 番号1-1
+2. 番号2
+    1. 番号2-1
+    2. 番号2-2</code></pre>
+</div>
+<div class="column2">
+<ul>
+<li>番号とピリオドとスペースの後に内容を記述
+<ul>
+<li>行頭の空白4つで1レベル下がる</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="precode" class="section level2">
+<h2>コードブロック(pre&gt;code)</h2>
+<div class="column1">
+<ul>
+<li>入力した内容がそのまま表示されます
+<ul>
+<li>Rのコードは評価されません</li>
+</ul></li>
+</ul>
+</div>
+<div class="column2">
+<pre><code>```
+(ここにコード記述)
+```</code></pre>
+</div>
+</div>
+<div class="section level2">
+<h2>強調表示</h2>
+<div class="column1">
+<ul>
+<li>左のとおりです</li>
+<li>強調具合などはCSSなどに依存します</li>
+</ul>
+</div>
+<div class="column2">
+<pre><code>*斜体*、もひとつ_斜体_
+**太字**、もひとつ__太字__</code></pre>
+</div>
+</div>
+<div class="section level2">
+<h2>リンク、画像</h2>
+<div class="column1">
+<pre><code>- http://blog.kz-md.net/
+- [リンク文字](http://blog.kz-me.net/)
+
+![R looo](https://www.r-project.org/Rlogo.png)
+![zou-san](pics/user.png)</code></pre>
+</div>
+<div class="column2">
+<ul>
+<li>基本、相対パスや絶対パスの両方OK</li>
+<li>URLでもOK</li>
+</ul>
+</div>
+</div>
+<div class="section level2">
+<h2>その他</h2>
+<ul>
+<li>以下の内容もいけます
+<ul>
+<li>コードブロック</li>
+<li>引用</li>
+<li>脚注</li>
+<li>Latex数式</li>
+<li>表</li>
+<li>水平線　etc…</li>
+</ul></li>
+<li>Pandoc Markdownなら大抵OKです</li>
+<li>その他，htmlタグ直打ちでもOKです
+<ul>
+<li>ただし，出力フォーマットがhtmlのみ</li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="r-markdown" class="section level1">
+<h1>R Markdownの書き方</h1>
+<div id="markdown" class="section level2">
+<h2>Markdownとの違い</h2>
+<ul>
+<li>Markdownに<strong>Rのコードを評価するブロック(Rチャンク)</strong>と<strong>ドキュメント設定用のYAMLヘッダ</strong>を組み込めるようにしたもの
+<ul>
+<li>拡張子は<strong>.Rmd</strong></li>
+<li>Markdownの基礎があれば、Rチャンクを少し勉強すれば利用可能</li>
+</ul></li>
+<li>RStudioを使うと抜群に楽になる
+<ul>
+<li>専用の便利機能がたくさん</li>
+<li>すぐに内容を確認(Preview)できる</li>
+<li>補完機能も充実</li>
+</ul></li>
+</ul>
+</div>
+<div class="section level2">
+<h2>対応する出力形式</h2>
+<ul>
+<li>いろんなものに対応しています(一部抜粋)
+<ul>
+<li>htmlファイル
+<ul>
+<li>基本かつ<strong>最強</strong>。最もRmdを活かせるタイプ。</li>
+</ul></li>
+<li>pdfファイル
+<ul>
+<li>tex環境が必要。いくつか地雷があるけど整えれば楽しい。</li>
+</ul></li>
+<li>docxファイル
+<ul>
+<li>Officeをインストールしてなくても生成可能。</li>
+</ul></li>
+<li>odtファイル
+<ul>
+<li>LibreOfficeなどで利用可能。</li>
+</ul></li>
+<li>mdファイル
+<ul>
+<li>Githubやブログ記事向け。</li>
+</ul></li>
+<li>rtfファイル
+<ul>
+<li>リッチテキスト形式。</li>
+</ul></li>
+<li>その他いろいろ</li>
+</ul></li>
+</ul>
+</div>
+<div class="section level2">
+<h2>なにから手を付けるべき?</h2>
+<ul>
+<li>まずはMarkdownに慣れる
+<ul>
+<li>慣れないうちはQuick Referenceをみましょう</li>
+</ul></li>
+<li>Rチャンクに慣れる
+<ul>
+<li>いろんなコードを実行してKnitする</li>
+<li>基本的なチャンクオプションをおぼえる</li>
+</ul></li>
+<li>YAMLヘッダに慣れる
+<ul>
+<li>YAMLの書き方に慣れる</li>
+<li>基本的なオプションをおぼえる</li>
+</ul></li>
+</ul>
+<p>これでOK。</p>
+</div>
+</div>
+<div id="rchunk" class="section level1">
+<h1>Rチャンク(chunk)の基本</h1>
+<div id="r" class="section level2">
+<h2>Rチャンクとは</h2>
+<ul>
+<li>Rのコードを記述したブロック
+<ul>
+<li><p>基本的な書き方は以下の通り</p>
+<pre><code>```{r}
+head(iris)
+```</code></pre></li>
+<li><p>ちなみに実行結果は以下の通り:</p></li>
+</ul></li>
+</ul>
+<pre><code>## # A tibble: 6 × 5
+##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+## *        &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;  &lt;fctr&gt;
+## 1          5.1         3.5          1.4         0.2  setosa
+## 2          4.9         3.0          1.4         0.2  setosa
+## 3          4.7         3.2          1.3         0.2  setosa
+## 4          4.6         3.1          1.5         0.2  setosa
+## 5          5.0         3.6          1.4         0.2  setosa
+## 6          5.4         3.9          1.7         0.4  setosa</code></pre>
+<hr />
+<p>キャプチャするとこんな感じ:</p>
+<div class="column1">
+<div class="figure">
+<img src="pics/Rmd/rchunk_code.png" />
+
+</div>
+</div>
+<div class="column2">
+<div class="figure">
+<img src="pics/Rmd/rchunk_output.png" />
+
+</div>
+</div>
+</div>
+<div id="r" class="section level2">
+<h2>Rチャンクの基本</h2>
+<ul>
+<li>Rチャンクはいくつでも設置可
+<ul>
+<li>チャンクに名前をつけることも可能</li>
+<li>結構詳細にオプションを設定可能</li>
+<li>Rオブジェクトを引き継ぐことも可能</li>
+</ul></li>
+<li>通常と(ほぼ)同じようにRが使える
+<ul>
+<li>パッケージ読み込みやファイルへのアクセス</li>
+</ul></li>
+<li>コードのみを実行可能
+<ul>
+<li>コードのみを実行すると<code>Global Envirnment</code>に</li>
+<li>Knitした場合，別のEnvironmentで実行される</li>
+<li>cacheしておくことも可能(今回は省略)</li>
+</ul></li>
+</ul>
+</div>
+<div id="r-" class="section level2">
+<h2>Rチャンク オプション</h2>
+<ul>
+<li>そのRチャンクでの設定を記述
+<ul>
+<li>設定項目はたくさんある</li>
+<li>そのあたりはリファレンスを参照</li>
+<li>以下、絶対覚えるべきものだけ紹介</li>
+</ul></li>
+</ul>
+<pre><code>```{r chank-name, eval=TRUE}
+head(iris)
+```</code></pre>
+</div>
+<div id="echo" class="section level2">
+<h2>echo(コード部の表示・非表示)</h2>
+<ul>
+<li>Rのチャンクコードを表示させるかどうか
+<ul>
+<li><code>echo=FALSE</code>で非表示</li>
+<li>あくまで表示に関することだけ</li>
+<li>コード評価をするかどうかは影響しない</li>
+</ul></li>
+</ul>
+<pre><code>```{r, echo=FALSE}
+head(iris)
+```</code></pre>
+</div>
+<div id="eval" class="section level2">
+<h2>eval(コード部の評価・非評価)</h2>
+<ul>
+<li>Rチャンクのコードを評価するかしないか
+<ul>
+<li><code>eval=FALSE</code>で非評価</li>
+</ul></li>
+</ul>
+<pre><code>```{r, eval=FALSE}
+head(iris)
+```</code></pre>
+</div>
+<div id="include" class="section level2">
+<h2>include(レポートに組み込むか否か)</h2>
+<ul>
+<li>Rチャンクをレポートに組み込むかどうか
+<ul>
+<li><code>include=FALSE</code>でレポートから除外</li>
+<li>でもコードは評価されます</li>
+<li>セットアップとか前処理とかパッケージ読み込みとかで重宝</li>
+</ul></li>
+</ul>
+<pre><code>```{r, include=FALSE}
+library(zousan)
+```</code></pre>
+</div>
+</div>
+<div id="yaml" class="section level1">
+<h1>yamlヘッダ</h1>
+<div id="yaml" class="section level2">
+<h2>yamlヘッダの基本</h2>
+<div class="column1">
+<ul>
+<li>ドキュメントの全体的な設定など記述</li>
+<li>yaml記法で記述
+<ul>
+<li>左のスペース、重要</li>
+<li>多分感覚をつかむまでは、見様見真似でやっていったほうがいいです</li>
+</ul></li>
+</ul>
+</div>
+<div class="column2">
+<pre><code>---
+title: &quot;Untitled&quot;
+author: &quot;kazutan&quot;
+date: &quot;2017年2月17日&quot;
+output: html_document
+---</code></pre>
+</div>
+<div class="section level2">
+<h2>標準で入る項目</h2>
+<div class="column1">
+<ul>
+<li><code>Title:</code>はドキュメントのタイトル</li>
+<li><code>author:</code>は名前</li>
+<li><code>date:</code>は日にち</li>
+<li><code>output:</code>は出力形式に関して
+<ul>
+<li>ここで出力を指定・設定</li>
+<li>まずはここでいろいろ試しましょう</li>
+</ul></li>
+</ul>
+</div>
+<div class="column2">
+<pre><code>---
+title: &quot;Untitled&quot;
+author: &quot;kazutan&quot;
+date: &quot;2017年2月17日&quot;
+output: html_document
+---</code></pre>
+</div>
+</div>
+<div id="-toc" class="section level2">
+<h2>練習: tocを有効にする</h2>
+<div class="column1">
+<ul>
+<li>Rmdファイルを新規作成</li>
+<li>冒頭のyamlヘッダを編集
+<ul>
+<li>output部分を右のように変更</li>
+<li>スペース2個分で段差をつける</li>
+</ul></li>
+<li>knitして出力されたファイルを確認</li>
+</ul>
+</div>
+<div class="column2">
+<pre><code>---
+(省略)
+output:
+  html_document:
+    toc: true
+---</code></pre>
+</div>
+</div>
+<div id="-floating-toc" class="section level2">
+<h2>練習: floating tocを有効にする</h2>
+<div class="column1">
+<ul>
+<li>冒頭のyamlヘッダを編集
+<ul>
+<li>output部分を右のように変更</li>
+</ul></li>
+<li>knitして出力されたファイルを確認</li>
+</ul>
+</div>
+<div class="column2">
+<pre><code>---
+(省略)
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---</code></pre>
+</div>
+</div>
+<div id="toc" class="section level2">
+<h2>toc関連の設定項目</h2>
+<div class="column1">
+<ul>
+<li>toc: 見出しリスト作成。論理値。</li>
+<li>toc_depth: tocで拾ってくる見出しレベルの指定。数値。</li>
+<li>toc_float: tocをサイドメニューとして浮かせて表示させるか。論理値</li>
+<li>number_section: 見出しに通し番号を自動付与させるか。論理値。</li>
+</ul>
+</div>
+<div class="column2">
+<pre><code>---
+(省略)
+output:
+  html_document:
+    toc: true
+    toc_depth: 2
+    toc_float: true
+    number_section: true
+---</code></pre>
+</div>
+</div>
+<div class="section level2">
+<h2>出力まわり</h2>
+<div class="column1">
+<ul>
+<li>keep_md: knitした時に途中で作成されるMarkdownをファイルとして残すかどうか。論理値。</li>
+<li>self_contained: 出力されるhtmlファイルに、画像やcssファイル、あるいはjsファイルなどを組み込んでしまい、htmlファイル単独でも表示できるようにするか。論理値。</li>
+</ul>
+</div>
+<div class="column2">
+<pre><code>---
+(省略)
+output:
+  html_document:
+    keep_md: true
+    self_contained: true
+---</code></pre>
+</div>
+<div class="column1">
+<ul>
+<li>md_extentions: Pandoc Markdown拡張で追加and/or削除する要素を指定。
+<ul>
+<li>日本語見出しを使う場合、重要になります</li>
+</ul></li>
+<li>pandoc_args: Pandocに送る引数を指定。
+<ul>
+<li>revealjsスライドを使う場合、重要になります</li>
+</ul></li>
+</ul>
+</div>
+<div class="column2">
+<pre><code>---
+(省略)
+output:
+  html_document:
+    md_extentions: NULL
+    pandoc_args: NULL
+---</code></pre>
+</div>
+</div>
+<div class="section level2">
+<h2>その他の設定項目について</h2>
+<ul>
+<li>html_documentで使える項目一覧は以下にまとめました:
+<ul>
+<li><a href="http://qiita.com/kazutan/items/726e03dfcef1615ae999">R Markdownのhtml_documentで指定できるyamlヘッダ項目について</a></li>
+</ul></li>
+<li>その他、以下の資料を参考にしてください:
+<ul>
+<li><a href="https://www.rstudio.com/wp-content/uploads/2016/11/Rmarkdown-cheatsheet-2.0_ja.pdf">R Markdownチートシート(日本語版, pdf)</a></li>
+<li><a href="http://rmarkdown.rstudio.com/html_document_format.html">R Markdownのhtml documentの解説ページ</a></li>
+</ul></li>
+</ul>
+</div>
+</div>
+<div id="r-markdown" class="section level1">
+<h1>R Markdownでスライド生成</h1>
+<div id="r-markdown" class="section level2">
+<h2>なぜR Markdownでスライドを作るのか?</h2>
+<ul>
+<li>先述したドキュメント生成のメリットは共通</li>
+<li>スライドはアウトラインから起こすと作りやすい
+<ul>
+<li>セクション、各スライドタイトル、コンテンツで構成</li>
+<li>シンプルなルールがそのまま適用できる</li>
+</ul></li>
+<li>レイアウトやテーマ要素をいちいち考えなくていい
+<ul>
+<li>ごてごてしたレイアウト、本当に必要?</li>
+<li>テーマはスライドで共通してるから全体設定すればOK</li>
+</ul></li>
+</ul>
+</div>
+<div class="section level2">
+<h2>スライド作成のバリエーション</h2>
+<ul>
+<li>R Presentation
+<ul>
+<li>RStudioに組み込まれたものでreveal.jsがベース</li>
+<li><strong>現状あまりおすすめしにくい</strong></li>
+</ul></li>
+<li>ioslides
+<ul>
+<li>rmarkdown標準で組み込み。結構きれい</li>
+</ul></li>
+<li>slidy
+<ul>
+<li>rmarkdown標準で組み込み。いまいち</li>
+</ul></li>
+<li>beamer
+<ul>
+<li>てふにしゃん御用達でpdfファイル形式</li>
+</ul></li>
+<li>{revealjs}パッケージ
+<ul>
+<li>多機能、デザイン豊富、カスタマイズしやすい</li>
+<li>このスライドもこれで作ってます</li>
+</ul></li>
+</ul>
+</div>
+<div id="rmd" class="section level2">
+<h2>Rmdでスライドを作るには</h2>
+<p>以下のワークフローで進めます:</p>
+<ol style="list-style-type: decimal">
+<li>スライド用のRmdファイルを新規で作成</li>
+<li>内容を編集</li>
+<li>knitして確認</li>
+<li>2と3を繰り返す</li>
+<li>完成</li>
+</ol>
+<p>ほぼドキュメントのときと違いませんが、どれで作るかによって1と2が変化してきます</p>
+</div>
+<div id="ioslides" class="section level2">
+<h2>ioslidesでスライド作成</h2>
+<ol style="list-style-type: decimal">
+<li>R Markdownファイルをダイアログボックスから作成
+<ul>
+<li><strong>Presentation</strong>に切り替える</li>
+<li><strong>ioslides(HTML)</strong>を選択してOK</li>
+</ul></li>
+</ol>
+<div class="figure">
+<img src="pics/Rmd/make_rmd_ioslide.PNG" />
+
+</div>
+<ol start="2" style="list-style-type: decimal">
+<li>内容を編集して<strong>Knit</strong>を実行</li>
+<li>こういうスライドができあがります</li>
+</ol>
+<div class="figure">
+<img src="pics/Rmd/ioslides_capt.PNG" />
+
+</div>
+</div>
+<div id="ioslides" class="section level2">
+<h2>ioslidesの使い方</h2>
+<ul>
+<li>スライド区切り
+<ul>
+<li>見出しレベル2<code>##</code>が各スライドのタイトル
+<ul>
+<li>レベル3以下はスライド内部の見出しとして処理</li>
+</ul></li>
+<li>見出しなしでのスライド区切りは<code>---</code>で</li>
+</ul></li>
+<li>セクション区切り
+<ul>
+<li>見出しレベル1<code>#</code>の見出しがセクション区切り</li>
+<li>スライド内コンテンツを入れても表示される</li>
+</ul></li>
+<li>いろんな機能がありますので、以下を参照してください
+<ul>
+<li><a href="http://rmarkdown.rstudio.com/ioslides_presentation_format.html">Presentations with ioslides</a></li>
+</ul></li>
+</ul>
+</div>
+<div id="revealjs" class="section level2">
+<h2>revealjsパッケージで作成</h2>
+<ol style="list-style-type: decimal">
+<li>パッケージをインストール</li>
+</ol>
+<pre class="r"><code># CRANから
+install.packages(&quot;revealjs&quot;)
+# GitHubから
+devtools::install_github(&quot;rstudio/revealjs&quot;)
+# githubinstallパッケージでもok
+githubinstall::githubinstall(&quot;revealjs&quot;)</code></pre>
+<hr />
+<ol start="2" style="list-style-type: decimal">
+<li>R Markdownファイルをダイアログボックスから作成
+<ul>
+<li><strong>From Template</strong>に切り替える</li>
+<li><strong>revealjs Presentation</strong>を選択してOK</li>
+</ul></li>
+</ol>
+<div class="figure">
+<img src="pics/Rmd/make_rmd_revealjs.PNG" />
+
+</div>
+<ol start="3" style="list-style-type: decimal">
+<li>内部を編集して<strong>Knit</strong>を実行</li>
+<li>こういうスライドができあがります</li>
+</ol>
+<div class="figure">
+<img src="pics/Rmd/revealjs_capt.PNG" />
+
+</div>
+</div>
+<div id="revealjs" class="section level2">
+<h2>revealjsの使い方</h2>
+<ul>
+<li>水平スライド遷移のみ(1Dスライド)
+<ul>
+<li>見出しレベル2<code>##</code>でスライド区切り</li>
+<li>レベル1<code>#</code>は<strong>使用しないこと</strong></li>
+<li>タイトル無しスライド区切りは<code>---</code></li>
+</ul></li>
+<li>水平･垂直スライド遷移(2Dスライド)
+<ul>
+<li>見出しレベル1がセクション区切り</li>
+<li>見出しレベル2がスライド区切り</li>
+<li>同一セクションが縦に連なり、セクションが移る際右へ</li>
+<li>セクション見出しのスライドはタイトルのみ
+<ul>
+<li>何か書くと垂直が機能しなくなります</li>
+</ul></li>
+</ul></li>
+</ul>
+<div class="column1">
+<ul>
+<li>テーマ切り替え
+<ul>
+<li>yamlヘッダを編集</li>
+<li>使えるのは“default”, “simple”, “sky”, “beige”, “selif”, “solarized”, “blood”, “moon”, “night”, “black”, “league”, “white”</li>
+</ul></li>
+</ul>
+</div>
+<div class="column2">
+<pre><code>---
+output:
+  revealjs::revealjs_presentation:
+    theme: sky
+---</code></pre>
+</div>
+<div class="column1">
+<ul>
+<li>cssによる設定
+<ul>
+<li>cssファイルを準備</li>
+<li>yamlヘッダを編集</li>
+<li>cssのセレクタについては、実際のhtmlを見てみるのが速い</li>
+<li>楽したい方は<a href="http://qiita.com/kazutan/items/017bcdf5f9beedc170f1">こちら</a>に近い情報あり</li>
+</ul></li>
+</ul>
+</div>
+<div class="column2">
+<pre><code>---
+output:
+  revealjs::revealjs_presentation:
+    css: style.css
+---</code></pre>
+</div>
+<ul>
+<li>その他、いろんなことができます
+<ul>
+<li>詳しくは本家のドキュメントを参照してください</li>
+<li><a href="https://github.com/rstudio/revealjs" class="uri">https://github.com/rstudio/revealjs</a></li>
+</ul></li>
+<li>ほぼ内容かぶりますが、昔まとめたのがこちらです
+<ul>
+<li><a href="https://kazutan.github.io/SappoRoR6/rmd_slide.html" class="uri">https://kazutan.github.io/SappoRoR6/rmd_slide.html</a></li>
+</ul></li>
+<li>あるいは、Twitterなどで私に直接聞いてください</li>
+</ul>
+</div>
+</div>
+<div id="faq" class="section level1">
+<h1>FAQ</h1>
+<div class="section level2">
+<h2>スライドが戻る(進まない)</h2>
+<ul>
+<li>見出しがかぶるとこういう症状が発生します
+<ul>
+<li>htmlの{#id}が自動生成されるときに重複するため</li>
+<li>これはPandocによる変換のときに付与されています
+<ul>
+<li>この自動付与のルールについては、Pandoc Markdownの仕様を確認してください</li>
+</ul></li>
+</ul></li>
+<li><strong>日本語&amp;半角英数字の見出しだと、半角英数字がかぶるだけで発生</strong>
+<ul>
+<li>{rmarkdown}がPandocに送る<a href="http://qiita.com/kazutan/items/eb15a42607f87f57b525">デフォルト設定</a>の仕様です</li>
+<li>正直つらい</li>
+</ul></li>
+<li>回避策
+<ul>
+<li><p>htmlドキュメントの場合、以下のおまじないを入れておいてください</p>
+<pre><code>---
+output:
+  html_document:
+md_extensions: -ascii_identifiers
+---</code></pre></li>
+<li><p>revealjsの場合は以下のようにしてください</p>
+<pre><code>---
+output:
+  revealjs::revealjs_presentation:
+pandoc_args: [
+  &#39;--from&#39;, &#39;markdown+autolink_bare_uris+tex_math_single_backslash-implicit_figures&#39;
+]
+---</code></pre></li>
+<li><p>それでもうまくいかないときは、見出しを変更するか、以下のように`#idを手動で付与してください</p>
+<pre><code># ほげほげ{#hogehoge}</code></pre></li>
+</ul></li>
+</ul>
+</div>
+<div class="section level2">
+<h2>スライドの縦が足りない</h2>
+<ul>
+<li>まずは1枚に収まるように内容を再考しましょう
+<ul>
+<li>**その内容は本当に必要ですか?</li>
+</ul></li>
+<li>どうしても必要なら…
+<ul>
+<li>適当なところで<code>---</code>を差し込んで複数に分ける</li>
+<li>slidyを使う</li>
+</ul></li>
+</ul>
+</div>
+<div class="section level2">
+<h2>動的なコンテンツがおかしい</h2>
+<ul>
+<li>htmlで出力してくるものが{revealjs}などのcssと干渉してくるため</li>
+<li><p>以下のおまじないをsetupチャンクに仕込んでください</p>
+<pre><code>knit_print.htmlwidget &lt;- function (widget, ..., options = NULL)
+{
+file &lt;- basename(tempfile(fileext = &quot;.html&quot;))
+selfcontained &lt;- if(is.null(rmarkdown::metadata$self_contained)) TRUE else rmarkdown::metadata$self_contained
+htmlwidgets::saveWidget(widget, file = file, selfcontained = selfcontained)
+content &lt;- if (selfcontained) {
+    on.exit(unlink(file), add = TRUE)
+    list(srcdoc = paste(readLines(file), collapse = &quot;\n&quot;)) 
+}
+else {
+    list(src = file)
+}
+x &lt;- htmltools::tag(&quot;iframe&quot;, content)
+knitr::knit_print(x, options = options, ...)
+}</code></pre></li>
+</ul>
+</div>
+<div class="section level2">
+<h2>○○を追加したい!</h2>
+<ul>
+<li>基本、html上で実現可能なものならすべて対応できます
+<ul>
+<li>Rmd(というかmd)はhtml直打ちに対応</li>
+</ul></li>
+<li>html_documentはjQueryとbootstrapを組み込んでる
+<ul>
+<li>これらで実現できることならわりと簡単にできる</li>
+</ul></li>
+<li>面倒だったら、直接私に聞いてください</li>
+</ul>
+</div>
+<div class="section level2">
+<h2>インタラクティブな要素を組み込みたい</h2>
+<ul>
+<li>RにはShinyがあります
+<ul>
+<li>langtestはshinyです</li>
+<li>詳しくはshinyマスターへご相談ください</li>
+</ul></li>
+</ul>
+</div>
+<div id="pythonr-markdown" class="section level2">
+<h2>PythonでR Markdownみたいなのないの?</h2>
+<ul>
+<li>私の知る限り、ここまでのものは現在ありません
+<ul>
+<li>でも<strong>R Markdown上でPythonを実行できます</strong></li>
+<li>詳しくは以下を参照してください</li>
+<li><a href="http://rmarkdown.rstudio.com/authoring_knitr_engines.html" class="uri">http://rmarkdown.rstudio.com/authoring_knitr_engines.html</a></li>
+</ul></li>
+</ul>
+</div>
+<div class="section level2">
+<h2>デフォルトで入ってくる文字列うざい</h2>
+<ul>
+<li>Rmdのテンプレートを自作する方法が
+<ul>
+<li>詳しくは本家ドキュメントを</li>
+<li>ただし、Pandocの知識が必要 = 面倒だったら、<code>zousan::new_rmd_ja()</code>を</li>
+<li>自分用に作りました</li>
+<li>ただし、急に仕様変更使用することがあるので注意</li>
+</ul></li>
+</ul>
+</div>
+<div class="section level2">
+<h2>チャンクを入れるのがめんどくさい</h2>
+<ul>
+<li>チャンクを入れるボタンがあります</li>
+<li>キーボードショートカットを活用
+<ul>
+<li>Ctrl/Cmd + Alt + I</li>
+</ul></li>
+<li>Knitにもキーボードショートカットあります
+<ul>
+<li>Ctrl/Cmd + Shift + K</li>
+</ul></li>
+<li>チャンク内コードを実行するショートカットも
+<ul>
+<li>Ctrl/Cmd + Shift + Enter</li>
+</ul></li>
+</ul>
+</div>
+<div id="windows" class="section level2">
+<h2>Windowsだと文字化けしたりする</h2>
+<div class="figure">
+<img src="pics/Rmd/why_are_you_using_SJIS.PNG" />
+
+</div>
+</div>
+</div>
+<div class="section level1">
+<h1>次のステップに進むには?</h1>
+<div id="html_document" class="section level2">
+<h2>まずはhtml_documentになれる</h2>
+<ul>
+<li>これが一番の基本です
+<ul>
+<li>公式ドキュメントを一度見てください</li>
+<li><a href="http://rmarkdown.rstudio.com/html_document_format.html" class="uri">http://rmarkdown.rstudio.com/html_document_format.html</a></li>
+</ul></li>
+<li>チャンクオプションやyamlについてはよく使うのをおさえればOK
+<ul>
+<li>わからなくなったら、RStudioのヘルプメニューへ
+<ul>
+<li>R Markdown CheatSheatが便利です</li>
+<li>R Markdown Reference Guideもいい感じです</li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div id="pandoc" class="section level2">
+<h2>Pandocについて調べる</h2>
+<ul>
+<li>R MarkdownはPandocを使ってmdを変換
+<ul>
+<li>よくも悪くもPandocの仕様が大きく影響</li>
+<li>文量が多いですが、以下を読むとかなり理解が進みます</li>
+<li><a href="http://sky-y.github.io/site-pandoc-jp/users-guide/" class="uri">http://sky-y.github.io/site-pandoc-jp/users-guide/</a>
+<ul>
+<li>実際、私はよくここでトラブルの解決策を探してます</li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div id="cssjavascript" class="section level2">
+<h2>CSSとJavascriptを勉強する</h2>
+<ul>
+<li>htmlドキュメントはcssで書式設定
+<ul>
+<li>cssが使えるようになれば自由自在</li>
+<li>Bootstrapが標準で組み込まれている
+<ul>
+<li>あわせてこちらもチェックするとより便利に</li>
+</ul></li>
+</ul></li>
+<li>jsが使えると幅が広がる
+<ul>
+<li>動的なものも作れるように</li>
+<li>jQueryが標準で組み込まれている
+<ul>
+<li>あわせてこちらもチェックするとよりすごいことが</li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+<div class="section level2">
+<h2>いろんな出力フォーマットを試す</h2>
+<ul>
+<li>docxドキュメントやpdf(tex)にも対応</li>
+<li>Webサイト構築も</li>
+<li>Blogも作れる</li>
+<li>電子書籍も作れる</li>
+</ul>
+<p><strong>Enjoy!</strong></p>
+</div>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2017 Kazutan.R. </p>
+</footer>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

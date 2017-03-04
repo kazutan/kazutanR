@@ -1,0 +1,25 @@
+---
+title: "R, RStudioの導入"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Rのインストール
+
+### Windown
+
+### Mac
+
+### Ubuntu
+
+## RStudioのインストール
+
+### Windows
+
+### Mac
+
+### Ubuntu
+
+## RStudio Serverの利用

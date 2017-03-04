@@ -31,6 +31,11 @@ output:
 - leafletによる地図作成
     - leafletを利用した地図およびデータプロットの作成
 
+### R Markdown
+
+- R Markdown入門
+    - R Markdownによるドキュメント生成とスライド生成の基礎的な内容
+
 ### その他
 
 - webshotによるWebページキャプチャ
@@ -41,6 +46,8 @@ output:
 
 
 ## News {.col-md-4 .news}
+- 2017/3/4
+    - R MarkdownにR Markdown入門を追加
 - 2017/3/1
     - その他にcorrrを追加
     - Homeの内容変更とNavBar修正
