@@ -1,0 +1,107 @@
+---
+title: "状態遷移図の可視化"
+author: "kazutan"
+date: "2017年3月6日"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+状態遷移図というのをRで可視化してみたいと思ったのでやってみた。とりあえず{DiagrammeR}と{networkD3}で作ってみた。
+
+## ライブラリ読み込み
+
+```{r}
+library(dplyr)
+library(stringr)
+library(DiagrammeR)
+library(networkD3)
+```
+
+## 状態遷移確率を準備
+
+```{r}
+# 初期値設定
+set.seed(57)
+n <- 5
+# 状態遷移確率
+v0 <- 1:n/sum(1:n)
+vm <- vector()
+for(i in 1:n){
+  vm <- rbind(vm, sample(v0))
+}
+vp <- as.vector(vm)
+```
+
+## DiagrammeRによる描写例
+
+```{r}
+# セッティング
+pen_size <- 8
+font_size <- 20
+edge_color <- "#9999FF"
+font_color <- "#0000FF"
+
+# NDF
+nodes <- create_node_df(
+  n = n,
+  label = LETTERS[1:n],
+  shape = "circle"
+)
+
+# EDF
+edge_list <- as.vector(outer(1:n, 1:n, FUN = "paste", sep = "-"))
+edges <- create_edge_df(
+  from = str_sub(edge_list, 1, 1) %>% as.integer(),
+  to = str_sub(edge_list, -1, -1) %>% as.integer(),
+  label = round(vp, digits = 2),
+  penwidth = vp*pen_size,
+  fontsize = vp*font_size,
+  color = paste0(edge_color, sprintf("%02X", floor(vp*200+55))),
+  fontcolor = paste0(font_color, sprintf("%02X", floor(vp*200+55))) # digets for alpha does not work...why?
+)
+
+# create diagram
+g <- create_graph(
+  nodes_df = nodes,
+  edges_df = edges
+)
+render_graph(g)
+```
+
+うーん，微妙かも。もうちょっとやり方がある気がする。あとDiagrammeRの仕様変更にドキュメントがついていっていないので正直つらい。
+
+## {networkD3}による描写
+
+```{r}
+# networkD3用にデータセット作成
+edge_list2 <- as.vector(outer(LETTERS[1:n], LETTERS[1:n], FUN = "paste", sep = "-"))
+ds_nwD3 <- list(
+  nodes = data.frame(
+    name = c(paste0(LETTERS[1:n],1), paste0(LETTERS[1:n],2)),
+    stringsAsFactors = FALSE
+  ),
+  links = data.frame(
+    source = str_sub(edge_list2, 1, 1) %>% 
+      str_replace_all(c("A"="0", "B"="1", "C"="2", "D"="3", "E"="4")) %>% 
+      as.numeric(),
+    target = str_sub(edge_list2, -1, -1) %>% 
+      str_replace_all(c("A"="5", "B"="6", "C"="7", "D"="8", "E"="9")) %>% 
+      as.numeric(),
+    value = round(vp*100, digits = 2),
+    stringsAsFactors = FALSE
+  )
+)
+
+sankeyNetwork(Links = ds_nwD3$links, Nodes = ds_nwD3$nodes, Source = 'source',
+              Target = 'target', Value = 'value', NodeID = 'name', units = '%', nodeWidth = 50, iterations = 3,
+              fontSize = 18)
+```
+
+networkD3::sankeyNetworkを利用して作ってる。これを状態遷移図と表現していいかはアレだけど，推移という意味ではつかみやすいかも。でもドキュメントまわりがあんまり充実してないから手探り感がある。
+
+## 所感
+
+どちらにしろ，ドキュメント周りが厳しくてつらい。まだ最適解はないっぽい。

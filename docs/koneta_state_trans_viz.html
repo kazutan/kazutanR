@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="kazutan" />
+
+
+<title>状態遷移図の可視化</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<script src="site_libs/htmlwidgets-0.8/htmlwidgets.js"></script>
+<script src="site_libs/viz-0.3/viz.js"></script>
+<link href="site_libs/DiagrammeR-styles-0.2/styles.css" rel="stylesheet" />
+<script src="site_libs/grViz-binding-0.9.0/grViz.js"></script>
+<script src="site_libs/d3-4.5.0/d3.min.js"></script>
+<script src="site_libs/sankey-1/sankey.js"></script>
+<script src="site_libs/sankeyNetwork-binding-0.3/sankeyNetwork.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="site_style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Kazutan.R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="about.html">about</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    データ操作
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="data_handling.html">データセット操作(dplyr, tidyr)</a>
+    </li>
+    <li>
+      <a href="stringr-intro.html">文字列操作(stringr)</a>
+    </li>
+    <li>
+      <a href="forcats_test.html">factor型データ操作(forcats)</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    可視化
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="ggplot2_links.html">ggplot2によるプロット</a>
+    </li>
+    <li>
+      <a href="DT_demo.html">DTによる表作成</a>
+    </li>
+    <li>
+      <a href="leaflet_d.html">leafletによる地図プロット</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Markdown
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Rmd_intro.html">R Markdown入門</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    その他
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="webshot_demo.html">webshotによるキャプチャ</a>
+    </li>
+    <li>
+      <a href="corrr_test.html">corrrによる相関行列の操作・可視化</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="koneta_top.html">小ネタ集</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/kazutan/kazutanR/">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">状態遷移図の可視化</h1>
+<h4 class="author"><em>kazutan</em></h4>
+<h4 class="date"><em>2017年3月6日</em></h4>
+
+</div>
+
+
+<p>状態遷移図というのをRで可視化してみたいと思ったのでやってみた。とりあえず{DiagrammeR}と{networkD3}で作ってみた。</p>
+<div class="section level2">
+<h2>ライブラリ読み込み</h2>
+<pre class="r"><code>library(dplyr)
+library(stringr)
+library(DiagrammeR)
+library(networkD3)</code></pre>
+</div>
+<div class="section level2">
+<h2>状態遷移確率を準備</h2>
+<pre class="r"><code># 初期値設定
+set.seed(57)
+n &lt;- 5
+# 状態遷移確率
+v0 &lt;- 1:n/sum(1:n)
+vm &lt;- vector()
+for(i in 1:n){
+  vm &lt;- rbind(vm, sample(v0))
+}
+vp &lt;- as.vector(vm)</code></pre>
+</div>
+<div id="diagrammer" class="section level2">
+<h2>DiagrammeRによる描写例</h2>
+<pre class="r"><code># セッティング
+pen_size &lt;- 8
+font_size &lt;- 20
+edge_color &lt;- &quot;#9999FF&quot;
+font_color &lt;- &quot;#0000FF&quot;
+
+# NDF
+nodes &lt;- create_node_df(
+  n = n,
+  label = LETTERS[1:n],
+  shape = &quot;circle&quot;
+)
+
+# EDF
+edge_list &lt;- as.vector(outer(1:n, 1:n, FUN = &quot;paste&quot;, sep = &quot;-&quot;))
+edges &lt;- create_edge_df(
+  from = str_sub(edge_list, 1, 1) %&gt;% as.integer(),
+  to = str_sub(edge_list, -1, -1) %&gt;% as.integer(),
+  label = round(vp, digits = 2),
+  penwidth = vp*pen_size,
+  fontsize = vp*font_size,
+  color = paste0(edge_color, sprintf(&quot;%02X&quot;, floor(vp*200+55))),
+  fontcolor = paste0(font_color, sprintf(&quot;%02X&quot;, floor(vp*200+55))) # digets for alpha does not work...why?
+)
+
+# create diagram
+g &lt;- create_graph(
+  nodes_df = nodes,
+  edges_df = edges
+)
+render_graph(g)</code></pre>
+<div id="htmlwidget-a260f0280829eac346cb" style="width:672px;height:480px;" class="grViz html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a260f0280829eac346cb">{"x":{"diagram":"digraph {\n\ngraph [layout = \"neato\",\n       outputorder = \"edgesfirst\"]\n\nnode [fontname = \"Helvetica\",\n     fontsize = \"10\",\n     shape = \"circle\",\n     fixedsize = \"true\",\n     width = \"0.5\",\n     style = \"filled\",\n     fillcolor = \"aliceblue\",\n     color = \"gray70\",\n     fontcolor = \"gray50\"]\n\nedge [len = \"1.5\",\n     color = \"gray40\",\n     arrowsize = \"0.5\"]\n\n  \"1\" [label = \"A\", shape = \"circle\"] \n  \"2\" [label = \"B\", shape = \"circle\"] \n  \"3\" [label = \"C\", shape = \"circle\"] \n  \"4\" [label = \"D\", shape = \"circle\"] \n  \"5\" [label = \"E\", shape = \"circle\"] \n\"1\"->\"1\" [id = \"1\", label = \"0.13\", penwidth = \"1.06666666666667\", fontsize = \"2.66666666666667\", color = \"#9999FF51\", fontcolor = \"#0000FF51\"] \n\"2\"->\"1\" [id = \"2\", label = \"0.27\", penwidth = \"2.13333333333333\", fontsize = \"5.33333333333333\", color = \"#9999FF6C\", fontcolor = \"#0000FF6C\"] \n\"3\"->\"1\" [id = \"3\", label = \"0.33\", penwidth = \"2.66666666666667\", fontsize = \"6.66666666666667\", color = \"#9999FF79\", fontcolor = \"#0000FF79\"] \n\"4\"->\"1\" [id = \"4\", label = \"0.2\", penwidth = \"1.6\", fontsize = \"4\", color = \"#9999FF5F\", fontcolor = \"#0000FF5F\"] \n\"5\"->\"1\" [id = \"5\", label = \"0.33\", penwidth = \"2.66666666666667\", fontsize = \"6.66666666666667\", color = \"#9999FF79\", fontcolor = \"#0000FF79\"] \n\"1\"->\"2\" [id = \"6\", label = \"0.2\", penwidth = \"1.6\", fontsize = \"4\", color = \"#9999FF5F\", fontcolor = \"#0000FF5F\"] \n\"2\"->\"2\" [id = \"7\", label = \"0.33\", penwidth = \"2.66666666666667\", fontsize = \"6.66666666666667\", color = \"#9999FF79\", fontcolor = \"#0000FF79\"] \n\"3\"->\"2\" [id = \"8\", label = \"0.13\", penwidth = \"1.06666666666667\", fontsize = \"2.66666666666667\", color = \"#9999FF51\", fontcolor = \"#0000FF51\"] \n\"4\"->\"2\" [id = \"9\", label = \"0.07\", penwidth = \"0.533333333333333\", fontsize = \"1.33333333333333\", color = \"#9999FF44\", fontcolor = \"#0000FF44\"] \n\"5\"->\"2\" [id = \"10\", label = \"0.2\", penwidth = \"1.6\", fontsize = \"4\", color = \"#9999FF5F\", fontcolor = \"#0000FF5F\"] \n\"1\"->\"3\" [id = \"11\", label = \"0.07\", penwidth = \"0.533333333333333\", fontsize = \"1.33333333333333\", color = \"#9999FF44\", fontcolor = \"#0000FF44\"] \n\"2\"->\"3\" [id = \"12\", label = \"0.13\", penwidth = \"1.06666666666667\", fontsize = \"2.66666666666667\", color = \"#9999FF51\", fontcolor = \"#0000FF51\"] \n\"3\"->\"3\" [id = \"13\", label = \"0.2\", penwidth = \"1.6\", fontsize = \"4\", color = \"#9999FF5F\", fontcolor = \"#0000FF5F\"] \n\"4\"->\"3\" [id = \"14\", label = \"0.27\", penwidth = \"2.13333333333333\", fontsize = \"5.33333333333333\", color = \"#9999FF6C\", fontcolor = \"#0000FF6C\"] \n\"5\"->\"3\" [id = \"15\", label = \"0.27\", penwidth = \"2.13333333333333\", fontsize = \"5.33333333333333\", color = \"#9999FF6C\", fontcolor = \"#0000FF6C\"] \n\"1\"->\"4\" [id = \"16\", label = \"0.27\", penwidth = \"2.13333333333333\", fontsize = \"5.33333333333333\", color = \"#9999FF6C\", fontcolor = \"#0000FF6C\"] \n\"2\"->\"4\" [id = \"17\", label = \"0.2\", penwidth = \"1.6\", fontsize = \"4\", color = \"#9999FF5F\", fontcolor = \"#0000FF5F\"] \n\"3\"->\"4\" [id = \"18\", label = \"0.07\", penwidth = \"0.533333333333333\", fontsize = \"1.33333333333333\", color = \"#9999FF44\", fontcolor = \"#0000FF44\"] \n\"4\"->\"4\" [id = \"19\", label = \"0.13\", penwidth = \"1.06666666666667\", fontsize = \"2.66666666666667\", color = \"#9999FF51\", fontcolor = \"#0000FF51\"] \n\"5\"->\"4\" [id = \"20\", label = \"0.07\", penwidth = \"0.533333333333333\", fontsize = \"1.33333333333333\", color = \"#9999FF44\", fontcolor = \"#0000FF44\"] \n\"1\"->\"5\" [id = \"21\", label = \"0.33\", penwidth = \"2.66666666666667\", fontsize = \"6.66666666666667\", color = \"#9999FF79\", fontcolor = \"#0000FF79\"] \n\"2\"->\"5\" [id = \"22\", label = \"0.07\", penwidth = \"0.533333333333333\", fontsize = \"1.33333333333333\", color = \"#9999FF44\", fontcolor = \"#0000FF44\"] \n\"3\"->\"5\" [id = \"23\", label = \"0.27\", penwidth = \"2.13333333333333\", fontsize = \"5.33333333333333\", color = \"#9999FF6C\", fontcolor = \"#0000FF6C\"] \n\"4\"->\"5\" [id = \"24\", label = \"0.33\", penwidth = \"2.66666666666667\", fontsize = \"6.66666666666667\", color = \"#9999FF79\", fontcolor = \"#0000FF79\"] \n\"5\"->\"5\" [id = \"25\", label = \"0.13\", penwidth = \"1.06666666666667\", fontsize = \"2.66666666666667\", color = \"#9999FF51\", fontcolor = \"#0000FF51\"] \n}","config":{"engine":null,"options":null}},"evals":[],"jsHooks":[]}</script>
+<p>うーん，微妙かも。もうちょっとやり方がある気がする。あとDiagrammeRの仕様変更にドキュメントがついていっていないので正直つらい。</p>
+</div>
+<div id="networkd3" class="section level2">
+<h2>{networkD3}による描写</h2>
+<pre class="r"><code># networkD3用にデータセット作成
+edge_list2 &lt;- as.vector(outer(LETTERS[1:n], LETTERS[1:n], FUN = &quot;paste&quot;, sep = &quot;-&quot;))
+ds_nwD3 &lt;- list(
+  nodes = data.frame(
+    name = c(paste0(LETTERS[1:n],1), paste0(LETTERS[1:n],2)),
+    stringsAsFactors = FALSE
+  ),
+  links = data.frame(
+    source = str_sub(edge_list2, 1, 1) %&gt;% 
+      str_replace_all(c(&quot;A&quot;=&quot;0&quot;, &quot;B&quot;=&quot;1&quot;, &quot;C&quot;=&quot;2&quot;, &quot;D&quot;=&quot;3&quot;, &quot;E&quot;=&quot;4&quot;)) %&gt;% 
+      as.numeric(),
+    target = str_sub(edge_list2, -1, -1) %&gt;% 
+      str_replace_all(c(&quot;A&quot;=&quot;5&quot;, &quot;B&quot;=&quot;6&quot;, &quot;C&quot;=&quot;7&quot;, &quot;D&quot;=&quot;8&quot;, &quot;E&quot;=&quot;9&quot;)) %&gt;% 
+      as.numeric(),
+    value = round(vp*100, digits = 2),
+    stringsAsFactors = FALSE
+  )
+)
+
+sankeyNetwork(Links = ds_nwD3$links, Nodes = ds_nwD3$nodes, Source = &#39;source&#39;,
+              Target = &#39;target&#39;, Value = &#39;value&#39;, NodeID = &#39;name&#39;, units = &#39;%&#39;, nodeWidth = 50, iterations = 3,
+              fontSize = 18)</code></pre>
+<div id="htmlwidget-78fd9894b9910fd09c49" style="width:672px;height:480px;" class="sankeyNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-78fd9894b9910fd09c49">{"x":{"links":{"source":[0,1,2,3,4,0,1,2,3,4,0,1,2,3,4,0,1,2,3,4,0,1,2,3,4],"target":[5,5,5,5,5,6,6,6,6,6,7,7,7,7,7,8,8,8,8,8,9,9,9,9,9],"value":[13.33,26.67,33.33,20,33.33,20,33.33,13.33,6.67,20,6.67,13.33,20,26.67,26.67,26.67,20,6.67,13.33,6.67,33.33,6.67,26.67,33.33,13.33]},"nodes":{"name":["A1","B1","C1","D1","E1","A2","B2","C2","D2","E2"],"group":["A1","B1","C1","D1","E1","A2","B2","C2","D2","E2"]},"options":{"NodeID":"name","NodeGroup":"name","LinkGroup":null,"colourScale":"d3.scaleOrdinal(d3.schemeCategory20);","fontSize":18,"fontFamily":null,"nodeWidth":50,"nodePadding":10,"units":"%","margin":{"top":null,"right":null,"bottom":null,"left":null},"iterations":3,"sinksRight":true}},"evals":[],"jsHooks":[]}</script>
+<p>networkD3::sankeyNetworkを利用して作ってる。これを状態遷移図と表現していいかはアレだけど，推移という意味ではつかみやすいかも。でもドキュメントまわりがあんまり充実してないから手探り感がある。</p>
+</div>
+<div class="section level2">
+<h2>所感</h2>
+<p>どちらにしろ，ドキュメント周りが厳しくてつらい。まだ最適解はないっぽい。</p>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2017 Kazutan.R. </p>
+</footer>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

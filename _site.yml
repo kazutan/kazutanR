@@ -30,16 +30,18 @@ navbar:
           href: webshot_demo.html
         - text: "corrrによる相関行列の操作・可視化"
           href: corrr_test.html
+    - text: "小ネタ集"
+      href: koneta_top.html
   right:
-    - text: "GitHub"
-      icon: fa-github
+    - icon: fa-github
       href: https://github.com/kazutan/kazutanR/
 output:
   html_document:
     theme: cosmo
     highlight: textmate
     toc: true
-    toc_float: true
+    toc_float:
+      collapse: false
     df_print: "tibble"
     include:
       after_body: footer.html
