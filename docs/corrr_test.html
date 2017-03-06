@@ -442,8 +442,11 @@ summary(d)</code></pre>
 <div id="correlate" class="section level2">
 <h2><code>correlate()</code></h2>
 <p>数値ベクトル、行列、もしくはデータフレームから相関行列を算出します。出力は<code>tbl(tiblle::data_frame)</code>などが付与されたもので、ほぼ<code>data.frame</code>と同様に扱えます。</p>
-<pre class="r"><code>x &lt;- correlate(d)
-class(x)</code></pre>
+<pre class="r"><code>x &lt;- correlate(d)</code></pre>
+<pre><code>## 
+## Correlation method: &#39;pearson&#39;
+## Missing treated using: &#39;pairwise.complete.obs&#39;</code></pre>
+<pre class="r"><code>class(x)</code></pre>
 <pre><code>## [1] &quot;cor_df&quot;     &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
 <pre class="r"><code>x</code></pre>
 <pre><code>## # A tibble: 6 × 7
@@ -513,8 +516,11 @@ class(x)</code></pre>
 <p><code>correlate()</code>で作成した相関行列(<code>cor_df</code>クラス)について、<strong>高い相関を持つ変数が近くになるようグループにする</strong>関数です。ここではわかりやすくするため、<code>mtcars</code>のデータセットで説明します:</p>
 <pre class="r"><code>d2 &lt;- mtcars %&gt;% 
   correlate() %&gt;% 
-  focus(-cyl, -vs, -hp, mirror = TRUE)
-d2</code></pre>
+  focus(-cyl, -vs, -hp, mirror = TRUE)</code></pre>
+<pre><code>## 
+## Correlation method: &#39;pearson&#39;
+## Missing treated using: &#39;pairwise.complete.obs&#39;</code></pre>
+<pre class="r"><code>d2</code></pre>
 <pre><code>## # A tibble: 8 × 9
 ##   rowname        mpg       disp        drat         wt        qsec
 ##     &lt;chr&gt;      &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;

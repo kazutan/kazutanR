@@ -691,7 +691,7 @@ githubinstall::githubinstall("revealjs")
 <div class="column1">
 - テーマ切り替え
     - yamlヘッダを編集
-    - 使えるのは"default", "simple", "sky", "beige", "selif", "solarized", "blood", "moon", "night", "black", "league", "white"
+    - 使えるのは"default", "simple", "sky", "beige", "serif", "solarized", "blood", "moon", "night", "black", "league", "white"
 </div>
 <div class="column2">
 ```
