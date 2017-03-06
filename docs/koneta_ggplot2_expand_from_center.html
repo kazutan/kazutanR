@@ -9,9 +9,10 @@
 <meta name="generator" content="pandoc" />
 
 
+<meta name="author" content="kazutan" />
 
 
-<title>小ネタ集</title>
+<title>ggplot2で中央から左右に開いた棒グラフ</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -19,6 +20,9 @@
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
@@ -163,6 +167,101 @@ $(document).ready(function () {
 
 
 
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
 
 
 <div class="navbar navbar-default  navbar-fixed-top" role="navigation">
@@ -263,28 +362,101 @@ $(document).ready(function () {
 
 
 
-<h1 class="title toc-ignore">小ネタ集</h1>
+<h1 class="title toc-ignore">ggplot2で中央から左右に開いた棒グラフ</h1>
+<h4 class="author"><em>kazutan</em></h4>
+<h4 class="date"><em>2017/03/07</em></h4>
 
 </div>
 
 
-<p>通常のメニューのページとして取り上げるには小さいようなネタを，ひとまずこちらに置いておくことにしました。</p>
-<p>需要があったり追記・修正した場合には，通常のコーナーへと格上げする場合もあります。また小ネタなので他の物よりも説明が少ないですし，ほとんどメモ書きみたいなのも含めています。</p>
-<p>質問などある場合には，GitHubのissueもしくは私(<span class="citation">@kazutan</span>)までご連絡ください。</p>
+<p>この内容は,以前私がRPubに公開した内容についてコードを確認して転記したものです。</p>
 <div class="section level2">
-<h2>小ネタリスト</h2>
+<h2>完成例</h2>
+<pre><code>## 
+## Attaching package: &#39;gridExtra&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     combine</code></pre>
+<p><img src="koneta_ggplot2_expand_from_center_files/figure-html/plot_only-1.png" width="672" /></p>
+</div>
+<div class="section level2">
+<h2>経緯</h2>
+<p>人口ピラミッドのようなグラフをggplot2でやりたいなと思っていたところで,以下の記事の最後の方にあるplotが気になったので、やり方をトレースして試してみた。</p>
 <ul>
-<li><a href="koneta_ggplot2_expand_from_center.html">ggplot2で中央から左右に開いた棒グラフ</a>(2017/03/07)
-<ul>
-<li>以前RPubで公開してそのままにしてた分をチェックして再度公開。</li>
-<li>人口ピラミッドみたいな感じのを{ggplot2}と{gridExtra}で実装</li>
-</ul></li>
-<li><a href="koneta_state_trans_viz.html">状態遷移図の可視化</a>(2017/03/06)
-<ul>
-<li>以前どこかで書いてそのままにした分をチェックして再度公開。</li>
-<li>{DiagrammeR}と{network3D}を利用</li>
-</ul></li>
+<li><a href="http://rpubs.com/hasmirahhassan/111171">RPubs - Analysis Storm Data</a></li>
 </ul>
+<pre class="r"><code># パッケージロード
+library(ggplot2)
+library(gridExtra)
+
+# 使用するデータ
+df &lt;- data.frame(fac=as.factor(c(&quot;x01&quot;,&quot;x02&quot;,&quot;xo3&quot;)),
+                 a=c(10,30,50),
+                 b=c(40,20,10))
+
+# 真ん中の部分を生成
+g_mid &lt;- ggplot(data=df, aes(x=1,y=fac)) +
+  geom_text(aes(label=fac),size=4) +
+  ggtitle(&quot;&quot;) +
+  ylab(NULL) +
+  scale_x_continuous(expand=c(0,0),limits=c(0.94,1.065)) +
+  theme(axis.title=element_blank(),
+        panel.grid=element_blank(),
+        axis.text.y=element_blank(),
+        axis.ticks.y=element_blank(),
+        panel.background=element_blank(),
+        axis.text.x=element_text(color=NA),
+        axis.ticks.x=element_line(color=NA),
+        plot.margin = unit(c(1,-1,1,-1), &quot;mm&quot;))
+
+# 左の部分を生成
+g_left &lt;- ggplot(data=df, aes(x=fac,y=a)) +
+  geom_bar(stat=&quot;identity&quot;) +
+  geom_text(aes(label=a),size=3, vjust=0.5, hjust=2.0) +
+  ggtitle(&quot;aのグラフ&quot;) +
+  scale_y_reverse(expand=c(0, 0), limits=c(60,0)) + 
+  coord_flip() +
+  theme(axis.title.x = element_blank(), 
+        axis.title.y = element_blank(), 
+        axis.text.y = element_blank(), 
+        axis.ticks.y = element_blank(), 
+        plot.margin = unit(c(1,-1,1,0), &quot;mm&quot;)) 
+
+# 右の部分を生成
+g_right &lt;- ggplot(data=df, aes(x=fac,y=b)) +
+  geom_bar(stat=&quot;identity&quot;) +
+  geom_text(aes(label=b),size=3, vjust=0.5, hjust=-1.0) +
+  ggtitle(&quot;bのグラフ&quot;) +
+  scale_y_continuous(expand=c(0, 0), limits=c(0,60)) + 
+  coord_flip() +
+  theme(axis.title.x = element_blank(), 
+        axis.title.y = element_blank(), 
+        axis.text.y = element_blank(), 
+        axis.ticks.y = element_blank(), 
+        plot.margin = unit(c(1,0,1,-1), &quot;mm&quot;)) 
+
+# 3つを組み合わせてみた
+grid.arrange(g_left,g_mid,g_right,
+             ncol=3,widths=c(4.5/10,1/10,4.5/10),
+             top=&quot;中央から左右に向けて棒が伸びていくタイプのグラフ例&quot;)</code></pre>
+<p><img src="koneta_ggplot2_expand_from_center_files/figure-html/plot-1.png" width="672" /></p>
+</div>
+<div class="section level2">
+<h2>元の記事からの変更点</h2>
+<ul>
+<li><code>grid.arrange()</code>はいちいち<code>gtable</code>にしなくてもggplotオブジェクトでもいいみたいだったので、そのままもってきた。</li>
+<li>元の記事には<code>grid.arrange(..., main=&quot;hoge&quot;)</code>ってなってたけど、このタイトル指定は{gridExtra}のv2.0以降廃止されてて<code>top=&quot;hoge&quot;</code>になってた。</li>
+</ul>
+</div>
+<div class="section level2">
+<h2>課題</h2>
+<ul>
+<li><code>theme()</code>の内容を記述するのがかなりだるい。どっかにまとめたほうがいいかも。</li>
+<li>各グラフの目盛軸、文字が削れてしまってる。多分<code>plot.margin</code>の値を調整しないと行けないんだろうけど力尽きました。</li>
+<li>グラフの比率や文字サイズは、その都度調整が必要になる。これも自動化できたらなぁ。</li>
+<li>もっとスマートな方法をどなたか教えてください。</li>
+</ul>
+<p><strong>Enjoy!</strong></p>
 </div>
 
 <footer>
@@ -292,6 +464,8 @@ $(document).ready(function () {
 </footer>
 
 
+</div>
+</div>
 
 </div>
 

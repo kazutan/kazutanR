@@ -13,9 +13,11 @@ output:
 
 ## 小ネタリスト
 
+- [ggplot2で中央から左右に開いた棒グラフ](koneta_ggplot2_expand_from_center.html)(2017/03/07)
+    - 以前RPubで公開してそのままにしてた分をチェックして再度公開。
+    - 人口ピラミッドみたいな感じのを{ggplot2}と{gridExtra}で実装
 - [状態遷移図の可視化](koneta_state_trans_viz.html)(2017/03/06)
     - 以前どこかで書いてそのままにした分をチェックして再度公開。
     - {DiagrammeR}と{network3D}を利用
-
 
 

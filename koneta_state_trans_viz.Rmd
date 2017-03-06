@@ -3,6 +3,7 @@ title: "状態遷移図の可視化"
 author: "kazutan"
 date: "2017年3月6日"
 output: html_document
+keywords: "DiagrammeR, networkD3, 状態遷移図"
 ---
 
 ```{r setup, include=FALSE}
