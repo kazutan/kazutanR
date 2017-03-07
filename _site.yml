@@ -24,6 +24,8 @@ navbar:
       menu:
         - text: "R Markdown入門"
           href: Rmd_intro.html
+        - text: "R Markdownでダッシュボード"
+          href: fdb_intro.html
     - text: "その他"
       menu:
         - text: "webshotによるキャプチャ"

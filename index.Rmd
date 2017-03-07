@@ -5,9 +5,9 @@ output:
     toc: false
 ---
 
-このサイトは、私がこれまで書いてきたR関連の資料をまとめています。随時更新していく予定です。
+このサイトは、私がこれまで書いてきたR関連の資料をまとめています。随時更新していく予定です。  
+目的やSessionInfoについてはメニューバーの**about**を参照してください。
 
-目的やSessionInfoについては [about](about.html) を参照してください。
 
 # {.row}
 
@@ -15,32 +15,34 @@ output:
 
 ### データ操作
 
-- データセットの操作(dplyr, tidyr)
+- [データセットの操作](data_handling.html)(dplyr, tidyr)
     - dplyr, tidyrを利用したデータセットの操作
-- 文字列の操作(stringr)
+- [文字列の操作](stringr-intro.html)(stringr)
     - stringrを利用した文字列データの操作
-- factor型データの操作(forcats)
+- [factor型データの操作](forcats_test.html)(forcats)
     - forcatsを利用したfactor型データの操作
 
 ### 可視化
 
-- ggplot2によるPlot
+- [ggplot2によるPlot](ggplot2_links.html)
     - ggplot2を利用したデータの可視化に関する資料リンク
-- DTによる表作成
+- [DTによる表作成](DT_demo.html)
     - DTを利用したインタラクティブな表の作成
-- leafletによる地図作成
+- [leafletによる地図作成](leaflet_d.html)
     - leafletを利用した地図およびデータプロットの作成
 
 ### R Markdown
 
-- R Markdown入門
+- [R Markdown入門](Rmd_intro.html)
     - R Markdownによるドキュメント生成とスライド生成の基礎的な内容
+- [R Markdownでダッシュボード作成](fdb_intro.html)
+    - flexdashboardを利用してダッシュボードを作成
 
 ### その他
 
-- webshotによるWebページキャプチャ
+- [webshotによるWebページキャプチャ](webshot_demo.html)
     - webshotを利用したWebページのキャプチャと応用
-- corrrによる相関行列の操作・可視化
+- [corrrによる相関行列の操作・可視化](corrr_test.html)
     - corrrパッケージを利用して，いい感じで相関行列を処理
 
 ### 小ネタ集
@@ -52,6 +54,9 @@ output:
 
 ## News {.col-md-4 .news}
 - 2017/3/7
+    - R Markdownに「R Markdownでダッシュボード作成」を追加
+    - トップページのリンクを調整
+    - R Markdown入門の見出しレベル調整
     - 小ネタ集に「ggplot2で中央から左右に開いた棒グラフ」を追加
 - 2017/3/6
     - 小ネタ集設置

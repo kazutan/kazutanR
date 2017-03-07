@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>R Markdownでダッシュボード作成</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="site_style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Kazutan.R</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="about.html">about</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    データ操作
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="data_handling.html">データセット操作(dplyr, tidyr)</a>
+    </li>
+    <li>
+      <a href="stringr-intro.html">文字列操作(stringr)</a>
+    </li>
+    <li>
+      <a href="forcats_test.html">factor型データ操作(forcats)</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    可視化
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="ggplot2_links.html">ggplot2によるプロット</a>
+    </li>
+    <li>
+      <a href="DT_demo.html">DTによる表作成</a>
+    </li>
+    <li>
+      <a href="leaflet_d.html">leafletによる地図プロット</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    R Markdown
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="Rmd_intro.html">R Markdown入門</a>
+    </li>
+    <li>
+      <a href="fdb_intro.html">R Markdownでダッシュボード</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    その他
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="webshot_demo.html">webshotによるキャプチャ</a>
+    </li>
+    <li>
+      <a href="corrr_test.html">corrrによる相関行列の操作・可視化</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="koneta_top.html">小ネタ集</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/kazutan/kazutanR/">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">R Markdownでダッシュボード作成</h1>
+<h4 class="date"><em>2017/03/07</em></h4>
+
+</div>
+
+
+<p>このドキュメントはR Markdownの初心者を想定しています。なので基本的な内容を中心に構成しています。なおRのコードは必要最低限しか出てきません。なおこれは過去にスライド形式で発表したRmdファイルをほぼそのままドキュメントとして出力しています。そのためほぼ箇条書きで書いています。</p>
+<div class="section level2">
+<h2>ダッシュボードとは?</h2>
+<ul>
+<li>色々な情報をぱっと見で理解できるように集約したもの
+<ul>
+<li>車の運転席のダッシュボードをイメージしてもらえれば</li>
+<li>グラフや表，文字などをわかりやすく配置</li>
+</ul></li>
+<li>データを集約して表示するのに便利
+<ul>
+<li>あるトピックについて，様々な角度から可視化</li>
+<li>相手に情報を伝えやすい!</li>
+</ul></li>
+</ul>
+</div>
+<div id="flexdashboard" class="section level2">
+<h2>flexdashboardパッケージ</h2>
+<ul>
+<li>R Markdownの拡張パッケージ
+<ul>
+<li><strong>Rmdファイル単体で</strong>ダッシュボードを作成可能</li>
+</ul></li>
+<li>レイアウトが簡単
+<ul>
+<li>row(行)とcolumn(列)によるレイアウトシステム</li>
+<li>モバイル対応(フレキシブルデザイン)</li>
+</ul></li>
+<li>レイアウト設定以外は通常のRmd
+<ul>
+<li>動的なコンテンツ(htmlwidgets系)も作成可能</li>
+<li>shinyもOK</li>
+</ul></li>
+</ul>
+</div>
+<div id="howtoFdb" class="section level2">
+<h2>使ってみよう</h2>
+<div id="flexdashboard" class="section level3">
+<h3>flexdashboardのインストール</h3>
+<ul>
+<li>CRANから</li>
+</ul>
+<pre class="r"><code>install.packages(&quot;flexdashboard&quot;)</code></pre>
+<ul>
+<li>GitHub版から</li>
+</ul>
+<pre class="r"><code>devtools::install_github(&quot;rstudio/flexdashboard&quot;)</code></pre>
+<ul>
+<li>githubinstallから</li>
+</ul>
+<pre class="r"><code>githubinstall::githubinstall(&quot;flexdashboard&quot;)</code></pre>
+</div>
+<div id="rmd" class="section level3">
+<h3>テンプレートからRmdファイル生成</h3>
+<ul>
+<li>R Markdownを新規作成</li>
+<li>“From Template”を選択</li>
+<li>“Flex Dashboard”を選択</li>
+<li>OKをクリック</li>
+</ul>
+<div class="figure">
+<img src="pics/fdb_create.png" />
+
+</div>
+<p>こんなRmdができます:</p>
+<div class="figure">
+<img src="pics/fdb_default.png" />
+
+</div>
+<p>そのままknitするとこうなります:</p>
+<div class="figure">
+<img src="pics/fdb_defalut_knit.png" />
+
+</div>
+</div>
+</div>
+<div id="yaml" class="section level2">
+<h2>冒頭のyamlについて</h2>
+<pre><code>title: &quot;Untitled&quot;
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill</code></pre>
+<ul>
+<li>title: ページのタイトル(navbarにあるやつ)</li>
+<li>orientation: <strong>列方向(columns)</strong>で区切るか<strong>行方向(rows)</strong>で区切るか
+<ul>
+<li><strong>見出し要素Lv2</strong>の方向を決定します</li>
+</ul></li>
+<li>vertical_layout: グラフを範囲内に収める(“fill”)かスクロール(“scroll”)するか</li>
+<li>social: 要するに“共有”ボタンをつけるかどうか</li>
+</ul>
+<p>他にもありますが，<code>?flexdashboard::flex_dashboard</code>でヘルプを参照してください</p>
+</div>
+<div class="section level2">
+<h2>レイアウトと見出しレベルについて</h2>
+<div id="1-" class="section level3">
+<h3>見出しレベル1: ページ区切り</h3>
+<ul>
+<li>見出しレベル1(h1)があると，ページ区切りとして機能
+<ul>
+<li><p>公式やサンプルでは<code>====</code>を使った方法で解説</p>
+<pre><code>ページタイトル
+====</code></pre></li>
+<li><p>でもいつもの<code>#</code>でもOK</p>
+<pre><code># ページタイトル</code></pre></li>
+</ul></li>
+<li>この文字は<strong>表示されません</strong>
+<ul>
+<li>識別用に利用されます</li>
+</ul></li>
+</ul>
+</div>
+<div id="2-" class="section level3">
+<h3>見出しレベル2: 親ブロックの区切り</h3>
+<ul>
+<li>見出しレベル2(h2)があると，その数だけページ内を区切ります
+<ul>
+<li><p>公式やサンプルでは<code>----</code>を使った方法で解説</p>
+<pre><code>ブロック
+----</code></pre></li>
+<li><p>でもいつもの<code>##</code>でもOK</p>
+<pre><code>## ブロック</code></pre></li>
+</ul></li>
+<li>この文字は<strong>表示されません</strong>
+<ul>
+<li>識別用に利用されます</li>
+</ul></li>
+</ul>
+</div>
+<div id="3-" class="section level3">
+<h3>見出しレベル3: 親ブロック内の子ブロック</h3>
+<ul>
+<li>見出しレベル3(h3)があると，その親ブロック内で子ブロックを作成します
+<ul>
+<li><p>いつも通り<code>###</code>で作ります</p>
+<pre><code>### ちゃーと</code></pre></li>
+<li>この中にRチャンクを挿入して中身を作成</li>
+<li>親ブロック内に子ブロックが複数あると<strong>親と逆の方向で区切ります</strong></li>
+</ul></li>
+<li>この文字は<strong>表示されます</strong></li>
+</ul>
+</div>
+</div>
+<div class="section level2">
+<h2>タブセットの利用</h2>
+<ul>
+<li>親ブロック(見出しレベル2)内でタブを設定可能
+<ul>
+<li>子ブロック要素が各タブの内容となります</li>
+</ul>
+<pre><code>## 親ブロック {.tabset}
+
+### 子ブロック1
+(ここにRチャンクなど)
+
+### 子ブロック2
+(ここにRチャンクなど)</code></pre></li>
+</ul>
+</div>
+<div class="section level2">
+<h2>その他のレイアウト関連</h2>
+<ul>
+<li>他にも色んなパターンができます
+<ul>
+<li>区切り幅(高さ)の調整</li>
+<li>サイドバーを表示</li>
+<li>ストーリボード</li>
+</ul></li>
+<li>詳しくは，以下の本家のサイトを参照してください
+<ul>
+<li><a href="http://rmarkdown.rstudio.com/flexdashboard/layouts.html">Sample flexdashboard Layouts</a></li>
+</ul></li>
+</ul>
+</div>
+<div id="components" class="section level2">
+<h2>Components</h2>
+<ul>
+<li><a href="http://rmarkdown.rstudio.com/flexdashboard/using.html#value_boxes">ValueBoxes</a>: 単一の値をシンプルに示したい時に <img src="pics/fdb_vbox.png" /></li>
+<li><a href="http://rmarkdown.rstudio.com/flexdashboard/using.html#gauges">gauge</a>: ゲージをさっくりと作ることも可能 <img src="pics/fdb_gauge.png" /></li>
+<li>詳細およびその他の要素は本家のサイトを参照
+<ul>
+<li><a href="http://rmarkdown.rstudio.com/flexdashboard/using.html#components">Using flexdashboard#components</a></li>
+</ul></li>
+</ul>
+</div>
+<div class="section level2">
+<h2>活用例</h2>
+<p>過去に私が作ったダッシュボードの例を参考までに。</p>
+<div id="-" class="section level3">
+<h3>活用例: グルメマップ</h3>
+<ul>
+<li>学会に参加<strong>できなかった</strong>から作りました
+<ul>
+<li>実際のダッシュボードは<a href="http://kz-md.net/stat/tmp_box/sp2016_map_dashboard.html">こちら</a></li>
+<li>Rmdのコードは<a href="http://kz-md.net/stat/tmp_box/sp2016_map_dashboard.Rmd">こちら</a> (データはありません) <img src="pics/fdb_sample_jssp.png" /></li>
+</ul></li>
+</ul>
+</div>
+<div id="-" class="section level3">
+<h3>活用例: 台風プロット</h3>
+<ul>
+<li>気付いたら作るようになってた
+<ul>
+<li>実際のダッシュボードは<a href="http://kz-md.net/stat/tmp_box/2016typhoon2.html">こちら</a></li>
+<li>Rmdのコードは<a href="http://kz-md.net/stat/tmp_box/2016typhoon2.Rmd">こちら</a> (データはありません) <img src="pics/fdb_sample_typhoon.png" /></li>
+</ul></li>
+</ul>
+</div>
+<div id="-" class="section level3">
+<h3>活用例: 個人別ダッシュボード</h3>
+<ul>
+<li>「あるデータセットから，個人別のダッシュボードをまとめて作りたい」
+<ul>
+<li>R Markdownのパラメータ機能をうまく利用すれば可能</li>
+<li>詳細は以下を参照<br />
+<a href="https://github.com/kazutan/param_dashboard">R Markdownのparams機能を利用してflexdashboard作成</a></li>
+</ul></li>
+</ul>
+<div class="figure">
+<img src="pics/fdb_sample_kosaki.png" />
+
+</div>
+</div>
+</div>
+<div id="ref-fdb" class="section level2">
+<h2>参考資料</h2>
+<ul>
+<li><a href="http://rmarkdown.rstudio.com/flexdashboard/">flexdashboard: Easy interactive dashboards for R</a>
+<ul>
+<li>本家のWebサイト</li>
+<li>たぶんまともな情報はここくらいにしかない</li>
+<li>あとはソースコードとヘルプを読むくらいしか…</li>
+</ul></li>
+<li><a href="http://rmarkdown.rstudio.com/flexdashboard/examples.html">flexdashboard Examples</a>
+<ul>
+<li>サンプルがギャラリーになってます</li>
+<li>ソースコードも(いくつかは)確認できます
+<ul>
+<li>各ギャラリーをクリックして表示</li>
+<li>画面右上の“&lt;/&gt;Source Code”をクリック</li>
+</ul></li>
+<li>Pokemonすげぇ</li>
+</ul></li>
+</ul>
+<p><strong>Enjoy!</strong></p>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2017 Kazutan.R. </p>
+</footer>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

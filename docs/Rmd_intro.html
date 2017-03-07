@@ -324,6 +324,9 @@ div.tocify {
     <li>
       <a href="Rmd_intro.html">R Markdown入門</a>
     </li>
+    <li>
+      <a href="fdb_intro.html">R Markdownでダッシュボード</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -366,10 +369,10 @@ div.tocify {
 </div>
 
 
-<div class="section level1">
-<h1>はじめに</h1>
 <div class="section level2">
-<h2>今回の内容</h2>
+<h2>はじめに</h2>
+<div class="section level3">
+<h3>今回の内容</h3>
 <ul>
 <li>R Markdownとは
 <ul>
@@ -389,16 +392,16 @@ div.tocify {
 </ul></li>
 </ul>
 </div>
-<div class="section level2">
-<h2>留意事項</h2>
+<div class="section level3">
+<h3>留意事項</h3>
 <p>このドキュメントはR Markdownの初心者を想定しています。なので基本的な内容を中心に構成しています。なおRのコードは必要最低限しか出てきません。なおこれは過去にスライド形式で発表したRmdファイルをほぼそのままドキュメントとして出力しています。そのためほぼ箇条書きで書いています。</p>
 <p>実行環境は,<a href="about.html">about</a>を参照してください。</p>
 </div>
 </div>
-<div id="r-markdown" class="section level1">
-<h1>R Markdownとは</h1>
-<div id="r" class="section level2">
-<h2>Rでドキュメント生成</h2>
+<div id="r-markdown" class="section level2">
+<h2>R Markdownとは</h2>
+<div id="r" class="section level3">
+<h3>Rでドキュメント生成</h3>
 <ul>
 <li>Rはデータ解析</li>
 <li>実はRでドキュメントを生成することが可能
@@ -409,8 +412,8 @@ div.tocify {
 <li>今日はR Markdownによるドキュメントやスライド生成をご紹介</li>
 </ul>
 </div>
-<div id="r" class="section level2">
-<h2>Rでやるメリット</h2>
+<div id="r" class="section level3">
+<h3>Rでやるメリット</h3>
 <ul>
 <li>分析からレポート生成までが完結
 <ul>
@@ -433,8 +436,8 @@ div.tocify {
 <li>and more!!</li>
 </ul>
 </div>
-<div id="r-markdown" class="section level2">
-<h2>R Markdownの基本的な仕組み</h2>
+<div id="r-markdown" class="section level3">
+<h3>R Markdownの基本的な仕組み</h3>
 <ul>
 <li>以下の2ステップでドキュメントなどを生成します
 <ul>
@@ -449,8 +452,8 @@ div.tocify {
 </ul>
 <p><img src="Rmd_intro_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
 </div>
-<div class="section level2">
-<h2>ワークフロー</h2>
+<div class="section level3">
+<h3>ワークフロー</h3>
 <ol style="list-style-type: decimal">
 <li>R Markdownファイル(hoge.Rmd)を準備</li>
 <li>中身を記述</li>
@@ -466,8 +469,8 @@ div.tocify {
 </ul></li>
 </ul>
 </div>
-<div id="r-markdown" class="section level2">
-<h2>はじめてのR Markdown</h2>
+<div id="r-markdown" class="section level3">
+<h3>はじめてのR Markdown</h3>
 <div class="column1">
 <ol style="list-style-type: decimal">
 <li>Rmdファイルを作成
@@ -530,8 +533,8 @@ div.tocify {
 
 </div>
 </div>
-<div class="section level2">
-<h2>ワークフローの確認</h2>
+<div class="section level3">
+<h3>ワークフローの確認</h3>
 <ol style="list-style-type: decimal">
 <li>R Markdownファイル(hoge.Rmd)を準備</li>
 <li>中身を記述</li>
@@ -545,10 +548,10 @@ div.tocify {
 </ul>
 </div>
 </div>
-<div id="markdown" class="section level1">
-<h1>Markdown記法</h1>
-<div id="markdownmd" class="section level2">
-<h2>Markdown(md)とは</h2>
+<div id="markdown" class="section level2">
+<h2>Markdown記法</h2>
+<div id="markdownmd" class="section level3">
+<h3>Markdown(md)とは</h3>
 <ul>
 <li>文書を記述するための軽量マークアップ言語のひとつ
 <ul>
@@ -566,8 +569,8 @@ div.tocify {
 </ul></li>
 </ul>
 </div>
-<div id="h1-h4" class="section level2">
-<h2>見出し(h1-h4)</h2>
+<div id="h1-h4" class="section level3">
+<h3>見出し(h1-h4)</h3>
 <div class="column1">
 <ul>
 <li>文書構造を明確にするためにも、きっちり割り振る
@@ -586,8 +589,8 @@ div.tocify {
 #### レベル4(h4)</code></pre>
 </div>
 </div>
-<div id="pbr" class="section level2">
-<h2>段落(p)と強制改行(br)</h2>
+<div id="pbr" class="section level3">
+<h3>段落(p)と強制改行(br)</h3>
 <pre><code>「もうすこしだ！　この山を越えると、梅の林がある。――疾く参って梅林の木陰に憩い、思うさま梅の実みをとれ。――梅の実をたたき落して喰え」
 
 　聞くと、奄々と渇にくるしんでいた兵も、  
@@ -602,8 +605,8 @@ div.tocify {
 <li>行末に半角スペース2つ以上いれると強制改行(br)</li>
 </ul>
 </div>
-<div id="ulli" class="section level2">
-<h2>番号なし箇条書き(ul&gt;li)</h2>
+<div id="ulli" class="section level3">
+<h3>番号なし箇条書き(ul&gt;li)</h3>
 <div class="column1">
 <pre><code>- 箇条書き1
     - 箇条書き1-1
@@ -621,8 +624,8 @@ div.tocify {
 </ul>
 </div>
 </div>
-<div id="olli" class="section level2">
-<h2>番号あり箇条書き(ol&gt;li)</h2>
+<div id="olli" class="section level3">
+<h3>番号あり箇条書き(ol&gt;li)</h3>
 <div class="column1">
 <pre><code>1. 番号1
     1. 番号1-1
@@ -639,8 +642,8 @@ div.tocify {
 </ul>
 </div>
 </div>
-<div id="precode" class="section level2">
-<h2>コードブロック(pre&gt;code)</h2>
+<div id="precode" class="section level3">
+<h3>コードブロック(pre&gt;code)</h3>
 <div class="column1">
 <ul>
 <li>入力した内容がそのまま表示されます
@@ -655,8 +658,8 @@ div.tocify {
 ```</code></pre>
 </div>
 </div>
-<div class="section level2">
-<h2>強調表示</h2>
+<div class="section level3">
+<h3>強調表示</h3>
 <div class="column1">
 <ul>
 <li>左のとおりです</li>
@@ -668,8 +671,8 @@ div.tocify {
 **太字**、もひとつ__太字__</code></pre>
 </div>
 </div>
-<div class="section level2">
-<h2>リンク、画像</h2>
+<div class="section level3">
+<h3>リンク、画像</h3>
 <div class="column1">
 <pre><code>- http://blog.kz-md.net/
 - [リンク文字](http://blog.kz-me.net/)
@@ -684,8 +687,8 @@ div.tocify {
 </ul>
 </div>
 </div>
-<div class="section level2">
-<h2>その他</h2>
+<div class="section level3">
+<h3>その他</h3>
 <ul>
 <li>以下の内容もいけます
 <ul>
@@ -704,10 +707,10 @@ div.tocify {
 </ul>
 </div>
 </div>
-<div id="r-markdown" class="section level1">
-<h1>R Markdownの書き方</h1>
-<div id="markdown" class="section level2">
-<h2>Markdownとの違い</h2>
+<div id="r-markdown" class="section level2">
+<h2>R Markdownの書き方</h2>
+<div id="markdown" class="section level3">
+<h3>Markdownとの違い</h3>
 <ul>
 <li>Markdownに<strong>Rのコードを評価するブロック(Rチャンク)</strong>と<strong>ドキュメント設定用のYAMLヘッダ</strong>を組み込めるようにしたもの
 <ul>
@@ -722,8 +725,8 @@ div.tocify {
 </ul></li>
 </ul>
 </div>
-<div class="section level2">
-<h2>対応する出力形式</h2>
+<div class="section level3">
+<h3>対応する出力形式</h3>
 <ul>
 <li>いろんなものに対応しています(一部抜粋)
 <ul>
@@ -755,8 +758,8 @@ div.tocify {
 </ul></li>
 </ul>
 </div>
-<div class="section level2">
-<h2>なにから手を付けるべき?</h2>
+<div class="section level3">
+<h3>なにから手を付けるべき?</h3>
 <ul>
 <li>まずはMarkdownに慣れる
 <ul>
@@ -776,10 +779,10 @@ div.tocify {
 <p>これでOK。</p>
 </div>
 </div>
-<div id="rchunk" class="section level1">
-<h1>Rチャンク(chunk)の基本</h1>
-<div id="r" class="section level2">
-<h2>Rチャンクとは</h2>
+<div id="rchunk" class="section level2">
+<h2>Rチャンク(chunk)の基本</h2>
+<div id="r" class="section level3">
+<h3>Rチャンクとは</h3>
 <ul>
 <li>Rのコードを記述したブロック
 <ul>
@@ -814,8 +817,8 @@ head(iris)
 </div>
 </div>
 </div>
-<div id="r" class="section level2">
-<h2>Rチャンクの基本</h2>
+<div id="r" class="section level3">
+<h3>Rチャンクの基本</h3>
 <ul>
 <li>Rチャンクはいくつでも設置可
 <ul>
@@ -835,8 +838,8 @@ head(iris)
 </ul></li>
 </ul>
 </div>
-<div id="r-" class="section level2">
-<h2>Rチャンク オプション</h2>
+<div id="r-" class="section level3">
+<h3>Rチャンク オプション</h3>
 <ul>
 <li>そのRチャンクでの設定を記述
 <ul>
@@ -849,8 +852,8 @@ head(iris)
 head(iris)
 ```</code></pre>
 </div>
-<div id="echo" class="section level2">
-<h2>echo(コード部の表示・非表示)</h2>
+<div id="echo" class="section level3">
+<h3>echo(コード部の表示・非表示)</h3>
 <ul>
 <li>Rのチャンクコードを表示させるかどうか
 <ul>
@@ -863,8 +866,8 @@ head(iris)
 head(iris)
 ```</code></pre>
 </div>
-<div id="eval" class="section level2">
-<h2>eval(コード部の評価・非評価)</h2>
+<div id="eval" class="section level3">
+<h3>eval(コード部の評価・非評価)</h3>
 <ul>
 <li>Rチャンクのコードを評価するかしないか
 <ul>
@@ -875,8 +878,8 @@ head(iris)
 head(iris)
 ```</code></pre>
 </div>
-<div id="include" class="section level2">
-<h2>include(レポートに組み込むか否か)</h2>
+<div id="include" class="section level3">
+<h3>include(レポートに組み込むか否か)</h3>
 <ul>
 <li>Rチャンクをレポートに組み込むかどうか
 <ul>
@@ -890,10 +893,10 @@ library(zousan)
 ```</code></pre>
 </div>
 </div>
-<div id="yaml" class="section level1">
-<h1>yamlヘッダ</h1>
 <div id="yaml" class="section level2">
-<h2>yamlヘッダの基本</h2>
+<h2>yamlヘッダ</h2>
+<div id="yaml" class="section level3">
+<h3>yamlヘッダの基本</h3>
 <div class="column1">
 <ul>
 <li>ドキュメントの全体的な設定など記述</li>
@@ -912,8 +915,8 @@ date: &quot;2017年2月17日&quot;
 output: html_document
 ---</code></pre>
 </div>
-<div class="section level2">
-<h2>標準で入る項目</h2>
+<div class="section level3">
+<h3>標準で入る項目</h3>
 <div class="column1">
 <ul>
 <li><code>Title:</code>はドキュメントのタイトル</li>
@@ -935,8 +938,8 @@ output: html_document
 ---</code></pre>
 </div>
 </div>
-<div id="-toc" class="section level2">
-<h2>練習: tocを有効にする</h2>
+<div id="-toc" class="section level3">
+<h3>練習: tocを有効にする</h3>
 <div class="column1">
 <ul>
 <li>Rmdファイルを新規作成</li>
@@ -957,8 +960,8 @@ output:
 ---</code></pre>
 </div>
 </div>
-<div id="-floating-toc" class="section level2">
-<h2>練習: floating tocを有効にする</h2>
+<div id="-floating-toc" class="section level3">
+<h3>練習: floating tocを有効にする</h3>
 <div class="column1">
 <ul>
 <li>冒頭のyamlヘッダを編集
@@ -978,8 +981,8 @@ output:
 ---</code></pre>
 </div>
 </div>
-<div id="toc" class="section level2">
-<h2>toc関連の設定項目</h2>
+<div id="toc" class="section level3">
+<h3>toc関連の設定項目</h3>
 <div class="column1">
 <ul>
 <li>toc: 見出しリスト作成。論理値。</li>
@@ -1000,8 +1003,8 @@ output:
 ---</code></pre>
 </div>
 </div>
-<div class="section level2">
-<h2>出力まわり</h2>
+<div class="section level3">
+<h3>出力まわり</h3>
 <div class="column1">
 <ul>
 <li>keep_md: knitした時に途中で作成されるMarkdownをファイルとして残すかどうか。論理値。</li>
@@ -1039,8 +1042,8 @@ output:
 ---</code></pre>
 </div>
 </div>
-<div class="section level2">
-<h2>その他の設定項目について</h2>
+<div class="section level3">
+<h3>その他の設定項目について</h3>
 <ul>
 <li>html_documentで使える項目一覧は以下にまとめました:
 <ul>
@@ -1054,10 +1057,10 @@ output:
 </ul>
 </div>
 </div>
-<div id="r-markdown" class="section level1">
-<h1>R Markdownでスライド生成</h1>
 <div id="r-markdown" class="section level2">
-<h2>なぜR Markdownでスライドを作るのか?</h2>
+<h2>R Markdownでスライド生成</h2>
+<div id="r-markdown" class="section level3">
+<h3>なぜR Markdownでスライドを作るのか?</h3>
 <ul>
 <li>先述したドキュメント生成のメリットは共通</li>
 <li>スライドはアウトラインから起こすと作りやすい
@@ -1072,8 +1075,8 @@ output:
 </ul></li>
 </ul>
 </div>
-<div class="section level2">
-<h2>スライド作成のバリエーション</h2>
+<div class="section level3">
+<h3>スライド作成のバリエーション</h3>
 <ul>
 <li>R Presentation
 <ul>
@@ -1099,8 +1102,8 @@ output:
 </ul></li>
 </ul>
 </div>
-<div id="rmd" class="section level2">
-<h2>Rmdでスライドを作るには</h2>
+<div id="rmd" class="section level3">
+<h3>Rmdでスライドを作るには</h3>
 <p>以下のワークフローで進めます:</p>
 <ol style="list-style-type: decimal">
 <li>スライド用のRmdファイルを新規で作成</li>
@@ -1111,8 +1114,8 @@ output:
 </ol>
 <p>ほぼドキュメントのときと違いませんが、どれで作るかによって1と2が変化してきます</p>
 </div>
-<div id="ioslides" class="section level2">
-<h2>ioslidesでスライド作成</h2>
+<div id="ioslides" class="section level3">
+<h3>ioslidesでスライド作成</h3>
 <ol style="list-style-type: decimal">
 <li>R Markdownファイルをダイアログボックスから作成
 <ul>
@@ -1133,8 +1136,8 @@ output:
 
 </div>
 </div>
-<div id="ioslides" class="section level2">
-<h2>ioslidesの使い方</h2>
+<div id="ioslides" class="section level3">
+<h3>ioslidesの使い方</h3>
 <ul>
 <li>スライド区切り
 <ul>
@@ -1155,8 +1158,8 @@ output:
 </ul></li>
 </ul>
 </div>
-<div id="revealjs" class="section level2">
-<h2>revealjsパッケージで作成</h2>
+<div id="revealjs" class="section level3">
+<h3>revealjsパッケージで作成</h3>
 <ol style="list-style-type: decimal">
 <li>パッケージをインストール</li>
 </ol>
@@ -1187,8 +1190,8 @@ githubinstall::githubinstall(&quot;revealjs&quot;)</code></pre>
 
 </div>
 </div>
-<div id="revealjs" class="section level2">
-<h2>revealjsの使い方</h2>
+<div id="revealjs" class="section level3">
+<h3>revealjsの使い方</h3>
 <ul>
 <li>水平スライド遷移のみ(1Dスライド)
 <ul>
@@ -1255,10 +1258,10 @@ output:
 </ul>
 </div>
 </div>
-<div id="faq" class="section level1">
-<h1>FAQ</h1>
-<div class="section level2">
-<h2>スライドが戻る(進まない)</h2>
+<div id="faq" class="section level2">
+<h2>FAQ</h2>
+<div class="section level3">
+<h3>スライドが戻る(進まない)</h3>
 <ul>
 <li>見出しがかぶるとこういう症状が発生します
 <ul>
@@ -1294,8 +1297,8 @@ pandoc_args: [
 </ul></li>
 </ul>
 </div>
-<div class="section level2">
-<h2>スライドの縦が足りない</h2>
+<div class="section level3">
+<h3>スライドの縦が足りない</h3>
 <ul>
 <li>まずは1枚に収まるように内容を再考しましょう
 <ul>
@@ -1308,8 +1311,8 @@ pandoc_args: [
 </ul></li>
 </ul>
 </div>
-<div class="section level2">
-<h2>動的なコンテンツがおかしい</h2>
+<div class="section level3">
+<h3>動的なコンテンツがおかしい</h3>
 <ul>
 <li>htmlで出力してくるものが{revealjs}などのcssと干渉してくるため</li>
 <li><p>以下のおまじないをsetupチャンクに仕込んでください</p>
@@ -1330,8 +1333,8 @@ knitr::knit_print(x, options = options, ...)
 }</code></pre></li>
 </ul>
 </div>
-<div class="section level2">
-<h2>○○を追加したい!</h2>
+<div class="section level3">
+<h3>○○を追加したい!</h3>
 <ul>
 <li>基本、html上で実現可能なものならすべて対応できます
 <ul>
@@ -1344,8 +1347,8 @@ knitr::knit_print(x, options = options, ...)
 <li>面倒だったら、直接私に聞いてください</li>
 </ul>
 </div>
-<div class="section level2">
-<h2>インタラクティブな要素を組み込みたい</h2>
+<div class="section level3">
+<h3>インタラクティブな要素を組み込みたい</h3>
 <ul>
 <li>RにはShinyがあります
 <ul>
@@ -1354,8 +1357,8 @@ knitr::knit_print(x, options = options, ...)
 </ul></li>
 </ul>
 </div>
-<div id="pythonr-markdown" class="section level2">
-<h2>PythonでR Markdownみたいなのないの?</h2>
+<div id="pythonr-markdown" class="section level3">
+<h3>PythonでR Markdownみたいなのないの?</h3>
 <ul>
 <li>私の知る限り、ここまでのものは現在ありません
 <ul>
@@ -1365,8 +1368,8 @@ knitr::knit_print(x, options = options, ...)
 </ul></li>
 </ul>
 </div>
-<div class="section level2">
-<h2>デフォルトで入ってくる文字列うざい</h2>
+<div class="section level3">
+<h3>デフォルトで入ってくる文字列うざい</h3>
 <ul>
 <li>Rmdのテンプレートを自作する方法が
 <ul>
@@ -1377,8 +1380,8 @@ knitr::knit_print(x, options = options, ...)
 </ul></li>
 </ul>
 </div>
-<div class="section level2">
-<h2>チャンクを入れるのがめんどくさい</h2>
+<div class="section level3">
+<h3>チャンクを入れるのがめんどくさい</h3>
 <ul>
 <li>チャンクを入れるボタンがあります</li>
 <li>キーボードショートカットを活用
@@ -1395,18 +1398,18 @@ knitr::knit_print(x, options = options, ...)
 </ul></li>
 </ul>
 </div>
-<div id="windows" class="section level2">
-<h2>Windowsだと文字化けしたりする</h2>
+<div id="windows" class="section level3">
+<h3>Windowsだと文字化けしたりする</h3>
 <div class="figure">
 <img src="pics/Rmd/why_are_you_using_SJIS.PNG" />
 
 </div>
 </div>
 </div>
-<div class="section level1">
-<h1>次のステップに進むには?</h1>
-<div id="html_document" class="section level2">
-<h2>まずはhtml_documentになれる</h2>
+<div class="section level2">
+<h2>次のステップに進むには?</h2>
+<div id="html_document" class="section level3">
+<h3>まずはhtml_documentになれる</h3>
 <ul>
 <li>これが一番の基本です
 <ul>
@@ -1423,8 +1426,8 @@ knitr::knit_print(x, options = options, ...)
 </ul></li>
 </ul>
 </div>
-<div id="pandoc" class="section level2">
-<h2>Pandocについて調べる</h2>
+<div id="pandoc" class="section level3">
+<h3>Pandocについて調べる</h3>
 <ul>
 <li>R MarkdownはPandocを使ってmdを変換
 <ul>
@@ -1437,8 +1440,8 @@ knitr::knit_print(x, options = options, ...)
 </ul></li>
 </ul>
 </div>
-<div id="cssjavascript" class="section level2">
-<h2>CSSとJavascriptを勉強する</h2>
+<div id="cssjavascript" class="section level3">
+<h3>CSSとJavascriptを勉強する</h3>
 <ul>
 <li>htmlドキュメントはcssで書式設定
 <ul>
@@ -1458,8 +1461,8 @@ knitr::knit_print(x, options = options, ...)
 </ul></li>
 </ul>
 </div>
-<div class="section level2">
-<h2>いろんな出力フォーマットを試す</h2>
+<div class="section level3">
+<h3>いろんな出力フォーマットを試す</h3>
 <ul>
 <li>docxドキュメントやpdf(tex)にも対応</li>
 <li>Webサイト構築も</li>

@@ -33,7 +33,7 @@
 <script src="site_libs/leaflet-label-0.2.2/leaflet.label.js"></script>
 <script src="site_libs/Proj4Leaflet-0.7.2/proj4-compressed.js"></script>
 <script src="site_libs/Proj4Leaflet-0.7.2/proj4leaflet.js"></script>
-<script src="site_libs/leaflet-binding-1.1.0.9000/leaflet.js"></script>
+<script src="site_libs/leaflet-binding-1.1.0/leaflet.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -333,6 +333,9 @@ div.tocify {
     <li>
       <a href="Rmd_intro.html">R Markdown入門</a>
     </li>
+    <li>
+      <a href="fdb_intro.html">R Markdownでダッシュボード</a>
+    </li>
   </ul>
 </li>
 <li class="dropdown">
@@ -548,8 +551,8 @@ library(leaflet)
 m &lt;- leaflet() %&gt;% addTiles() %&gt;% 
   addPopups(135, 35, &quot;Popup!&quot;)
 m</code></pre>
-<div id="htmlwidget-8e6a993de5a867213a27" style="width:672px;height:480px;" class="leaflet html-widget"></div>
-<script type="application/json" data-for="htmlwidget-8e6a993de5a867213a27">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"maxNativeZoom":null,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"continuousWorld":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":null,"unloadInvisibleTiles":null,"updateWhenIdle":null,"detectRetina":false,"reuseTiles":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addPopups","args":[35,135,"Popup!",null,null,{"maxWidth":300,"minWidth":50,"maxHeight":null,"autoPan":true,"keepInView":false,"closeButton":true,"zoomAnimation":true,"closeOnClick":null,"className":""}]}],"limits":{"lat":[35,35],"lng":[135,135]}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-025a101f1321a595ec09" style="width:672px;height:480px;" class="leaflet html-widget"></div>
+<script type="application/json" data-for="htmlwidget-025a101f1321a595ec09">{"x":{"options":{"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}}},"calls":[{"method":"addTiles","args":["//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",null,null,{"minZoom":0,"maxZoom":18,"maxNativeZoom":null,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"continuousWorld":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":null,"unloadInvisibleTiles":null,"updateWhenIdle":null,"detectRetina":false,"reuseTiles":false,"attribution":"&copy; <a href=\"http://openstreetmap.org\">OpenStreetMap<\/a> contributors, <a href=\"http://creativecommons.org/licenses/by-sa/2.0/\">CC-BY-SA<\/a>"}]},{"method":"addPopups","args":[35,135,"Popup!",null,null,{"maxWidth":300,"minWidth":50,"maxHeight":null,"autoPan":true,"keepInView":false,"closeButton":true,"zoomAnimation":true,"closeOnClick":null,"className":""}]}],"limits":{"lat":[35,35],"lng":[135,135]}},"evals":[],"jsHooks":[]}</script>
 <p>ではこれを{webshot}で画像するには以下のようにします:</p>
 <pre class="r"><code>library(htmlwidgets)
 saveWidget(m, file = &quot;leaflet2png.html&quot;)

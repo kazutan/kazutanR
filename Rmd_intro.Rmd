@@ -7,9 +7,9 @@ knitr::opts_chunk$set(echo = TRUE)
 library(DiagrammeR)
 ```
 
-# はじめに
+## はじめに
 
-## 今回の内容
+### 今回の内容
 
 - R Markdownとは
     - 仕組みを簡単に紹介します
@@ -20,16 +20,16 @@ library(DiagrammeR)
 - R Markdownでスライド生成
     - 実際にファイルを使って作ってみます
 
-## 留意事項
+### 留意事項
 
 このドキュメントはR Markdownの初心者を想定しています。なので基本的な内容を中心に構成しています。なおRのコードは必要最低限しか出てきません。なおこれは過去にスライド形式で発表したRmdファイルをほぼそのままドキュメントとして出力しています。そのためほぼ箇条書きで書いています。
 
 実行環境は,[about](about.html)を参照してください。
 
 
-# R Markdownとは
+## R Markdownとは
 
-## Rでドキュメント生成
+### Rでドキュメント生成
 
 - Rはデータ解析
 - 実はRでドキュメントを生成することが可能
@@ -37,7 +37,7 @@ library(DiagrammeR)
     - その便利さ、その将来性に注目が
 - 今日はR Markdownによるドキュメントやスライド生成をご紹介
 
-## Rでやるメリット
+### Rでやるメリット
 
 - 分析からレポート生成までが完結
     - WordもExcelも(そしてぱわぽも)いらない
@@ -51,7 +51,7 @@ library(DiagrammeR)
     - ドキュメント部分は基本Markdown
 - and more!!
 
-## R Markdownの基本的な仕組み
+### R Markdownの基本的な仕組み
 
 - 以下の2ステップでドキュメントなどを生成します
     - Rmdファイル内のRコードを評価
@@ -95,7 +95,7 @@ digraph knit {
 }
 ```
 
-## ワークフロー
+### ワークフロー
 
 1. R Markdownファイル(hoge.Rmd)を準備
 2. 中身を記述
@@ -107,7 +107,7 @@ digraph knit {
     - 様々な機能や設定は大量にありますが，デフォルトでも十分使えます
     - まずは早速使ってみましょう
 
-## はじめてのR Markdown
+### はじめてのR Markdown
 
 <div class="column1">
 1. Rmdファイルを作成
@@ -153,7 +153,7 @@ digraph knit {
 
 ![](pics/Rmd/default_rmd_render.png)
 
-## ワークフローの確認
+### ワークフローの確認
 
 1. R Markdownファイル(hoge.Rmd)を準備
 2. 中身を記述
@@ -164,9 +164,9 @@ digraph knit {
 - というわけで，1と3の基本はこれでOKです
 - 次に，中身の作り方を説明します
 
-# Markdown記法
+## Markdown記法
 
-## Markdown(md)とは
+### Markdown(md)とは
 
 - 文書を記述するための軽量マークアップ言語のひとつ
     - ドキュメント構造の基本的なものを提供
@@ -177,7 +177,7 @@ digraph knit {
     - [Help] - [Markdown Quick Reference]
     - これみとけばOK
 
-## 見出し(h1-h4)
+### 見出し(h1-h4)
 
 <div class="column1">
 - 文書構造を明確にするためにも、きっちり割り振る
@@ -195,7 +195,7 @@ digraph knit {
 ```
 </div>
 
-## 段落(p)と強制改行(br)
+### 段落(p)と強制改行(br)
 
 ```
 「もうすこしだ！　この山を越えると、梅の林がある。――疾く参って梅林の木陰に憩い、思うさま梅の実みをとれ。――梅の実をたたき落して喰え」
@@ -212,7 +212,7 @@ digraph knit {
 - 上下に空行を挟むと、そこを段落ブロック(p)として認識
 - 行末に半角スペース2つ以上いれると強制改行(br)
 
-## 番号なし箇条書き(ul>li)
+### 番号なし箇条書き(ul>li)
 
 <div class="column1">
 ```
@@ -229,7 +229,7 @@ digraph knit {
     - 行頭の空白4つで1レベル下がる
 </div>
 
-## 番号あり箇条書き(ol>li)
+### 番号あり箇条書き(ol>li)
 
 <div class="column1">
 ```
@@ -245,7 +245,7 @@ digraph knit {
     - 行頭の空白4つで1レベル下がる
 </div>
 
-## コードブロック(pre>code)
+### コードブロック(pre>code)
 
 <div class="column1">
 - 入力した内容がそのまま表示されます
@@ -262,7 +262,7 @@ digraph knit {
 </div>
 
 
-## 強調表示
+### 強調表示
 
 <div class="column1">
 - 左のとおりです
@@ -275,7 +275,7 @@ digraph knit {
 ```
 </div>
 
-## リンク、画像
+### リンク、画像
 
 <div class="column1">
 ```
@@ -292,7 +292,7 @@ digraph knit {
 - URLでもOK
 </div>
 
-## その他
+### その他
 
 - 以下の内容もいけます
     - コードブロック
@@ -305,9 +305,9 @@ digraph knit {
 - その他，htmlタグ直打ちでもOKです
     - ただし，出力フォーマットがhtmlのみ
 
-# R Markdownの書き方
+## R Markdownの書き方
 
-## Markdownとの違い
+### Markdownとの違い
 
 - Markdownに**Rのコードを評価するブロック(Rチャンク)**と**ドキュメント設定用のYAMLヘッダ**を組み込めるようにしたもの
     - 拡張子は**.Rmd**
@@ -317,7 +317,7 @@ digraph knit {
     - すぐに内容を確認(Preview)できる
     - 補完機能も充実
 
-## 対応する出力形式
+### 対応する出力形式
 
 - いろんなものに対応しています(一部抜粋)
     - htmlファイル
@@ -334,7 +334,7 @@ digraph knit {
         - リッチテキスト形式。
     - その他いろいろ
 
-## なにから手を付けるべき?
+### なにから手を付けるべき?
 
 - まずはMarkdownに慣れる
     - 慣れないうちはQuick Referenceをみましょう
@@ -347,9 +347,9 @@ digraph knit {
 
 これでOK。
 
-# Rチャンク(chunk)の基本
+## Rチャンク(chunk)の基本
 
-## Rチャンクとは
+### Rチャンクとは
 
 - Rのコードを記述したブロック
     - 基本的な書き方は以下の通り
@@ -375,7 +375,7 @@ head(iris)
 ![](pics/Rmd/rchunk_output.png)
 </div>
 
-## Rチャンクの基本
+### Rチャンクの基本
 
 - Rチャンクはいくつでも設置可
     - チャンクに名前をつけることも可能
@@ -388,7 +388,7 @@ head(iris)
     - Knitした場合，別のEnvironmentで実行される
     - cacheしておくことも可能(今回は省略)
 
-## Rチャンク オプション
+### Rチャンク オプション
 
 - そのRチャンクでの設定を記述
     - 設定項目はたくさんある
@@ -401,7 +401,7 @@ head(iris)
 `r ''````
 ````
 
-## echo(コード部の表示・非表示)
+### echo(コード部の表示・非表示)
 
 - Rのチャンクコードを表示させるかどうか
     - `echo=FALSE`で非表示
@@ -414,7 +414,7 @@ head(iris)
 `r ''````
 ````
 
-## eval(コード部の評価・非評価)
+### eval(コード部の評価・非評価)
 
 - Rチャンクのコードを評価するかしないか
     - `eval=FALSE`で非評価
@@ -425,7 +425,7 @@ head(iris)
 `r ''````
 ````
 
-## include(レポートに組み込むか否か)
+### include(レポートに組み込むか否か)
 
 - Rチャンクをレポートに組み込むかどうか
     - `include=FALSE`でレポートから除外
@@ -438,9 +438,9 @@ library(zousan)
 `r ''````
 ````
 
-# yamlヘッダ
+## yamlヘッダ
 
-## yamlヘッダの基本
+### yamlヘッダの基本
 
 <div class="column1">
 - ドキュメントの全体的な設定など記述
@@ -458,7 +458,7 @@ output: html_document
 ---
 ```
 
-## 標準で入る項目
+### 標準で入る項目
 
 <div class="column1">
 - `Title: `はドキュメントのタイトル
@@ -479,7 +479,7 @@ output: html_document
 ```
 </div>
 
-## 練習: tocを有効にする
+### 練習: tocを有効にする
 
 <div class="column1">
 - Rmdファイルを新規作成
@@ -499,7 +499,7 @@ output:
 ```
 </div>
 
-## 練習: floating tocを有効にする
+### 練習: floating tocを有効にする
 
 <div class="column1">
 - 冒頭のyamlヘッダを編集
@@ -518,7 +518,7 @@ output:
 ```
 </div>
 
-## toc関連の設定項目
+### toc関連の設定項目
 
 <div class="column1">
 - toc: 見出しリスト作成。論理値。
@@ -540,7 +540,7 @@ output:
 ```
 </div>
 
-## 出力まわり
+### 出力まわり
 
 <div class="column1">
 - keep_md: knitした時に途中で作成されるMarkdownをファイルとして残すかどうか。論理値。
@@ -576,7 +576,7 @@ output:
 ```
 </div>
 
-## その他の設定項目について
+### その他の設定項目について
 
 - html_documentで使える項目一覧は以下にまとめました:
     - [R Markdownのhtml_documentで指定できるyamlヘッダ項目について](http://qiita.com/kazutan/items/726e03dfcef1615ae999)
@@ -585,9 +585,9 @@ output:
     - [R Markdownのhtml documentの解説ページ](http://rmarkdown.rstudio.com/html_document_format.html)
 
 
-# R Markdownでスライド生成
+## R Markdownでスライド生成
 
-## なぜR Markdownでスライドを作るのか?
+### なぜR Markdownでスライドを作るのか?
 
 - 先述したドキュメント生成のメリットは共通
 - スライドはアウトラインから起こすと作りやすい
@@ -597,7 +597,7 @@ output:
     - ごてごてしたレイアウト、本当に必要?
     - テーマはスライドで共通してるから全体設定すればOK
 
-## スライド作成のバリエーション
+### スライド作成のバリエーション
 
 - R Presentation
     - RStudioに組み込まれたものでreveal.jsがベース
@@ -612,7 +612,7 @@ output:
     - 多機能、デザイン豊富、カスタマイズしやすい
     - このスライドもこれで作ってます
 
-## Rmdでスライドを作るには
+### Rmdでスライドを作るには
 
 以下のワークフローで進めます:
 
@@ -624,7 +624,7 @@ output:
 
 ほぼドキュメントのときと違いませんが、どれで作るかによって1と2が変化してきます
 
-## ioslidesでスライド作成
+### ioslidesでスライド作成
 
 1. R Markdownファイルをダイアログボックスから作成
     - **Presentation**に切り替える
@@ -637,7 +637,7 @@ output:
 
 ![](pics/Rmd/ioslides_capt.PNG)
 
-## ioslidesの使い方
+### ioslidesの使い方
 
 - スライド区切り
     - 見出しレベル2`##`が各スライドのタイトル
@@ -649,7 +649,7 @@ output:
 - いろんな機能がありますので、以下を参照してください
     - [Presentations with ioslides](http://rmarkdown.rstudio.com/ioslides_presentation_format.html)
 
-## revealjsパッケージで作成
+### revealjsパッケージで作成
 
 1. パッケージをインストール
 
@@ -675,7 +675,7 @@ githubinstall::githubinstall("revealjs")
 
 ![](pics/Rmd/revealjs_capt.PNG)
 
-## revealjsの使い方
+### revealjsの使い方
 
 - 水平スライド遷移のみ(1Dスライド)
     - 見出しレベル2`##`でスライド区切り
@@ -727,9 +727,9 @@ output:
     - https://kazutan.github.io/SappoRoR6/rmd_slide.html
 - あるいは、Twitterなどで私に直接聞いてください
 
-# FAQ
+## FAQ
 
-## スライドが戻る(進まない)
+### スライドが戻る(進まない)
 
 - 見出しがかぶるとこういう症状が発生します
     - htmlの{#id}が自動生成されるときに重複するため
@@ -763,7 +763,7 @@ output:
     # ほげほげ{#hogehoge}
     ```
 
-## スライドの縦が足りない
+### スライドの縦が足りない
 
 - まずは1枚に収まるように内容を再考しましょう
     - **その内容は本当に必要ですか?
@@ -771,7 +771,7 @@ output:
     - 適当なところで`---`を差し込んで複数に分ける
     - slidyを使う
 
-## 動的なコンテンツがおかしい
+### 動的なコンテンツがおかしい
 
 - htmlで出力してくるものが{revealjs}などのcssと干渉してくるため
 - 以下のおまじないをsetupチャンクに仕込んでください
@@ -793,7 +793,7 @@ knit_print.htmlwidget <- function (widget, ..., options = NULL)
 }
 ```
 
-## ○○を追加したい!
+### ○○を追加したい!
 
 - 基本、html上で実現可能なものならすべて対応できます
     - Rmd(というかmd)はhtml直打ちに対応
@@ -801,20 +801,20 @@ knit_print.htmlwidget <- function (widget, ..., options = NULL)
     - これらで実現できることならわりと簡単にできる
 - 面倒だったら、直接私に聞いてください
 
-## インタラクティブな要素を組み込みたい
+### インタラクティブな要素を組み込みたい
 
 - RにはShinyがあります
     - langtestはshinyです
     - 詳しくはshinyマスターへご相談ください
 
-## PythonでR Markdownみたいなのないの?
+### PythonでR Markdownみたいなのないの?
 
 - 私の知る限り、ここまでのものは現在ありません
     - でも**R Markdown上でPythonを実行できます**
     - 詳しくは以下を参照してください
     - http://rmarkdown.rstudio.com/authoring_knitr_engines.html
 
-## デフォルトで入ってくる文字列うざい
+### デフォルトで入ってくる文字列うざい
 
 - Rmdのテンプレートを自作する方法が
     - 詳しくは本家ドキュメントを
@@ -823,7 +823,7 @@ knit_print.htmlwidget <- function (widget, ..., options = NULL)
     - 自分用に作りました
     - ただし、急に仕様変更使用することがあるので注意
 
-## チャンクを入れるのがめんどくさい
+### チャンクを入れるのがめんどくさい
 
 - チャンクを入れるボタンがあります
 - キーボードショートカットを活用
@@ -833,13 +833,13 @@ knit_print.htmlwidget <- function (widget, ..., options = NULL)
 - チャンク内コードを実行するショートカットも
     - Ctrl/Cmd + Shift + Enter
 
-## Windowsだと文字化けしたりする
+### Windowsだと文字化けしたりする
 
 ![](pics/Rmd/why_are_you_using_SJIS.PNG)
 
-# 次のステップに進むには?
+## 次のステップに進むには?
 
-## まずはhtml_documentになれる
+### まずはhtml_documentになれる
 
 - これが一番の基本です
     - 公式ドキュメントを一度見てください
@@ -849,7 +849,7 @@ knit_print.htmlwidget <- function (widget, ..., options = NULL)
         - R Markdown CheatSheatが便利です
         - R Markdown Reference Guideもいい感じです
 
-## Pandocについて調べる
+### Pandocについて調べる
 
 - R MarkdownはPandocを使ってmdを変換
     - よくも悪くもPandocの仕様が大きく影響
@@ -857,7 +857,7 @@ knit_print.htmlwidget <- function (widget, ..., options = NULL)
     - http://sky-y.github.io/site-pandoc-jp/users-guide/
         - 実際、私はよくここでトラブルの解決策を探してます
 
-## CSSとJavascriptを勉強する
+### CSSとJavascriptを勉強する
 
 - htmlドキュメントはcssで書式設定
     - cssが使えるようになれば自由自在
@@ -868,7 +868,7 @@ knit_print.htmlwidget <- function (widget, ..., options = NULL)
     - jQueryが標準で組み込まれている
         - あわせてこちらもチェックするとよりすごいことが
 
-## いろんな出力フォーマットを試す
+### いろんな出力フォーマットを試す
 
 - docxドキュメントやpdf(tex)にも対応
 - Webサイト構築も
