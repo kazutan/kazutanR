@@ -13,7 +13,7 @@
 
 <title>このサイトについて</title>
 
-<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<script src="site_libs/jquery-1.12.4/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
@@ -22,6 +22,14 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<script src="site_libs/htmlwidgets-0.8/htmlwidgets.js"></script>
+<link href="site_libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="site_libs/datatables-binding-0.2.11/datatables.js"></script>
+<link href="site_libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="site_libs/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="site_libs/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
+<link href="site_libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="site_libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -281,11 +289,27 @@ $(document).ready(function () {
 </div>
 <div id="session-info" class="section level2">
 <h2>Session Info</h2>
-<p>このページをBuildした状態のSession Infoを以下に示します。各コードを実行するのに必要なパッケージ群は<code>other attached pakcages:</code>の箇所です。</p>
+<p><strong>最終ビルド時刻: 2017-03-13 22:50:26</strong></p>
+<p>このページをBuildした状態のSession Infoを以下に示します。</p>
+<pre class="r"><code>si &lt;- devtools::session_info()
+si$platform</code></pre>
+<pre><code>##  setting  value                       
+##  version  R version 3.3.3 (2017-03-06)
+##  system   x86_64, linux-gnu           
+##  ui       X11                         
+##  language ja                          
+##  collate  ja_JP.UTF-8                 
+##  tz       Japan                       
+##  date     2017-03-13</code></pre>
+<p>パッケージ群を表にして示します。</p>
+<pre class="r"><code>si$packages %&gt;% datatable()</code></pre>
+<div id="htmlwidget-8760453312e01b6c378a" style="width:100%;height:auto;" class="datatables html-widget"></div>
+<script type="application/json" data-for="htmlwidget-8760453312e01b6c378a">{"x":{"filter":"none","data":[["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57","58","59","60","61","62","63","64","65","66","67","68","69","70","71","72","73","74","75"],["DBI","DT","DiagrammeR","R6","RColorBrewer","Rcpp","Rook","XML","assertthat","backports","brew","broom","colorspace","corrr","crosstalk","curl","data.table","devtools","digest","dplyr","evaluate","flexdashboard","forcats","foreign","ggplot2","githubinstall","gridExtra","gtable","haven","hms","htmltools","htmlwidgets","httpuv","httr","igraph","influenceR","jsonlite","knitr","lattice","lazyeval","leaflet","lubridate","magrittr","memoise","mime","mnormt","modelr","munsell","networkD3","nlme","plyr","psych","purrr","readr","readxl","reshape2","rgexf","rmarkdown","rprojroot","rstudioapi","rvest","scales","shiny","stringi","stringr","tibble","tidyr","tidyverse","viridis","visNetwork","webshot","withr","xml2","xtable","yaml"],["","*","*","","","","","","","","","","","*","","","","*","","*","","*","*","","*","*","","","","","*","*","","","","","","*","","","*","","","","","","","","*","","","","*","*","","","","*","","","","","","","*","*","*","*","","","*","","","",""],["0.6","0.2.11","0.9.0","2.2.0","1.1-2","0.12.9","1.1-1","3.98-1.5","0.1","1.0.5","1.0-6","0.4.2","1.3-2","0.2.1","1.0.0","2.3","1.10.4","1.12.0","0.6.12","0.5.0.9000","0.10","0.4","0.2.0","0.8-67","2.2.1","0.2.1.9001","2.2.1","0.2.0","1.0.0","0.3","0.3.5","0.8","1.3.3","1.2.1","1.0.1","0.1.0","1.3","1.15.14","0.20-34","0.2.0.9000","1.1.0.9000","1.6.0","1.5","1.0.0","0.5","1.5-5","0.1.0","0.4.3","0.3","3.1-131","1.8.4","1.6.12","0.2.2.9000","1.0.0","0.1.1","1.4.2","0.15.3","1.3","1.2","0.6","0.3.2","0.4.1","1.0.0","1.1.2","1.2.0","1.2","0.6.1","1.1.1.9000","0.3.4","1.0.3","0.4.0","1.0.2","1.1.1","1.8-2","2.1.14"],["2017-03-09","2017-02-27","2017-01-04","2016-10-05","2014-12-07","2017-01-14","2014-10-20","2016-11-10","2013-12-06","2017-01-18","2011-04-13","2017-02-13","2016-12-14","2016-10-10","2016-12-21","2016-11-24","2017-02-01","2016-06-24","2017-01-27","2017-02-27","2016-10-11","2017-03-13","2017-01-23","2016-09-13","2016-12-30","2017-02-27","2016-02-29","2016-02-26","2016-09-23","2016-11-22","2016-03-21","2017-03-04","2015-08-04","2016-07-03","2015-06-26","2015-09-03","2017-02-28","2017-03-13","2016-09-06","2017-02-27","2017-03-04","2016-09-13","2014-11-22","2016-01-29","2016-07-07","2016-10-15","2016-08-31","2016-02-13","2017-03-06","2017-02-06","2016-06-08","2017-01-08","2017-02-27","2016-08-03","2016-03-28","2016-10-22","2015-03-24","2016-12-21","2017-01-16","2016-06-27","2016-06-17","2016-11-09","2017-01-12","2016-10-01","2017-02-18","2016-08-26","2017-01-10","2017-02-27","2016-03-12","2016-12-22","2017-02-27","2016-06-20","2017-01-24","2016-02-05","2016-11-12"],["CRAN (R 3.3.3)","Github (rstudio/DT@08731fe)","CRAN (R 3.3.2)","cran (@2.2.0)","cran (@1.1-2)","CRAN (R 3.3.2)","CRAN (R 3.3.2)","CRAN (R 3.3.2)","cran (@0.1)","CRAN (R 3.3.2)","CRAN (R 3.3.2)","CRAN (R 3.3.2)","CRAN (R 3.3.2)","CRAN (R 3.3.2)","CRAN (R 3.3.2)","cran (@2.3)","CRAN (R 3.3.2)","CRAN (R 3.3.2)","CRAN (R 3.3.2)","Github (hadley/dplyr@3b8e1e3)","CRAN (R 3.3.2)","Github (rstudio/flexdashboard@1f848f7)","CRAN (R 3.3.2)","CRAN (R 3.3.1)","CRAN (R 3.3.2)","Github (hoxo-m/githubinstall@ef4f4aa)","CRAN (R 3.3.2)","cran (@0.2.0)","cran (@1.0.0)","CRAN (R 3.3.2)","cran (@0.3.5)","Github (ramnathv/htmlwidgets@3ce9f90)","CRAN (R 3.3.2)","CRAN (R 3.3.2)","CRAN (R 3.3.2)","CRAN (R 3.3.2)","CRAN (R 3.3.2)","Github (yihui/knitr@6d270ba)","CRAN (R 3.3.1)","Github (hadley/lazyeval@c155c3d)","Github (rstudio/leaflet@d6918ce)","cran (@1.6.0)","cran (@1.5)","CRAN (R 3.3.1)","CRAN (R 3.3.2)","cran (@1.5-5)","cran (@0.1.0)","cran (@0.4.3)","Github (christophergandrud/networkD3@f4da70e)","CRAN (R 3.3.2)","cran (@1.8.4)","CRAN (R 3.3.2)","Github (hadley/purrr@5360143)","cran (@1.0.0)","CRAN (R 3.3.2)","cran (@1.4.2)","CRAN (R 3.3.2)","CRAN (R 3.3.2)","CRAN (R 3.3.2)","CRAN (R 3.3.2)","cran (@0.3.2)","cran (@0.4.1)","CRAN (R 3.3.2)","cran (@1.1.2)","CRAN (R 3.3.2)","CRAN (R 3.3.2)","CRAN (R 3.3.2)","Github (tidyverse/tidyverse@2771fd7)","CRAN (R 3.3.2)","CRAN (R 3.3.2)","Github (wch/webshot@5ae60bb)","CRAN (R 3.3.1)","cran (@1.1.1)","CRAN (R 3.3.1)","CRAN (R 3.3.2)"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th> <\/th>\n      <th>package<\/th>\n      <th>*<\/th>\n      <th>version<\/th>\n      <th>date<\/th>\n      <th>source<\/th>\n    <\/tr>\n  <\/thead>\n<\/table>","options":{"crosstalkOptions":{"key":null,"group":null},"order":[],"autoWidth":false,"orderClasses":false,"columnDefs":[{"orderable":false,"targets":0}]},"selection":{"mode":"multiple","selected":null,"target":"row"}},"evals":[],"jsHooks":[]}</script>
+<p>一覧は以下のとおりです:</p>
 <pre class="r"><code>sessionInfo()</code></pre>
-<pre><code>## R version 3.3.2 (2016-10-31)
+<pre><code>## R version 3.3.3 (2017-03-06)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
-## Running under: Ubuntu 16.04.2 LTS
+## Running under: Ubuntu 16.04.1 LTS
 ## 
 ## locale:
 ##  [1] LC_CTYPE=ja_JP.UTF-8       LC_NUMERIC=C              
@@ -299,17 +323,17 @@ $(document).ready(function () {
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] networkD3_0.3            corrr_0.2.1.9000        
-##  [3] rmarkdown_1.3.9004       htmlwidgets_0.8         
-##  [5] webshot_0.4.0            htmltools_0.3.6         
-##  [7] leaflet_1.1.0            forcats_0.2.0           
-##  [9] stringr_1.2.0            knitr_1.15.13           
-## [11] dplyr_0.5.0              purrr_0.2.2             
-## [13] readr_1.0.0              tidyr_0.6.1             
-## [15] tibble_1.2               ggplot2_2.2.1           
-## [17] tidyverse_1.1.1          githubinstall_0.2.1.9001
-## [19] devtools_1.12.0          DiagrammeR_0.9.0        
-## [21] DT_0.2.11               
+##  [1] flexdashboard_0.4        networkD3_0.3           
+##  [3] corrr_0.2.1              rmarkdown_1.3           
+##  [5] htmlwidgets_0.8          webshot_0.4.0           
+##  [7] htmltools_0.3.5          leaflet_1.1.0.9000      
+##  [9] forcats_0.2.0            stringr_1.2.0           
+## [11] knitr_1.15.14            dplyr_0.5.0.9000        
+## [13] purrr_0.2.2.9000         readr_1.0.0             
+## [15] tidyr_0.6.1              tibble_1.2              
+## [17] ggplot2_2.2.1            tidyverse_1.1.1.9000    
+## [19] githubinstall_0.2.1.9001 devtools_1.12.0         
+## [21] DiagrammeR_0.9.0         DT_0.2.11               
 ## 
 ## loaded via a namespace (and not attached):
 ##  [1] Rcpp_0.12.9         lubridate_1.6.0     lattice_0.20-34    
@@ -319,16 +343,16 @@ $(document).ready(function () {
 ## [13] evaluate_0.10       httr_1.2.1          readxl_0.1.1       
 ## [16] lazyeval_0.2.0.9000 curl_2.3            rstudioapi_0.6     
 ## [19] data.table_1.10.4   foreign_0.8-67      igraph_1.0.1       
-## [22] munsell_0.4.3       shiny_1.0.0.9001    broom_0.4.2        
+## [22] munsell_0.4.3       shiny_1.0.0         broom_0.4.2        
 ## [25] influenceR_0.1.0    rgexf_0.15.3        httpuv_1.3.3       
 ## [28] modelr_0.1.0        mnormt_1.5-5        gridExtra_2.2.1    
-## [31] XML_3.98-1.5        withr_1.0.2         grid_3.3.2         
+## [31] XML_3.98-1.5        withr_1.0.2         grid_3.3.3         
 ## [34] nlme_3.1-131        jsonlite_1.3        xtable_1.8-2       
-## [37] gtable_0.2.0        DBI_0.5-1           magrittr_1.5       
+## [37] gtable_0.2.0        DBI_0.6             magrittr_1.5       
 ## [40] scales_0.4.1        stringi_1.1.2       reshape2_1.4.2     
 ## [43] viridis_0.3.4       xml2_1.1.1          brew_1.0-6         
-## [46] RColorBrewer_1.1-2  tools_3.3.2         hms_0.3            
-## [49] crosstalk_1.0.1     Rook_1.1-1          parallel_3.3.2     
+## [46] RColorBrewer_1.1-2  tools_3.3.3         hms_0.3            
+## [49] crosstalk_1.0.0     Rook_1.1-1          parallel_3.3.3     
 ## [52] yaml_2.1.14         colorspace_1.3-2    rvest_0.3.2        
 ## [55] memoise_1.0.0       haven_1.0.0</code></pre>
 </div>

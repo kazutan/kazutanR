@@ -26,6 +26,7 @@ library(htmlwidgets)
 library(rmarkdown)
 library(corrr)
 library(networkD3)
+library(flexdashboard)
 ```
 
 
@@ -39,7 +40,23 @@ library(networkD3)
 
 ## Session Info
 
-このページをBuildした状態のSession Infoを以下に示します。各コードを実行するのに必要なパッケージ群は`other attached pakcages:`の箇所です。
+**最終ビルド時刻: `r Sys.time()`**
+
+このページをBuildした状態のSession Infoを以下に示します。
+
+```{r}
+si <- devtools::session_info()
+si$platform
+```
+
+パッケージ群を表にして示します。
+
+```{r}
+si$packages %>% datatable()
+```
+
+
+一覧は以下のとおりです:
 
 ```{r}
 sessionInfo()
