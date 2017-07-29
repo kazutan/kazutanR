@@ -369,12 +369,12 @@ TF &lt;- sample(c(TRUE, FALSE), size = 150, replace = TRUE, prob = c(1,9))
 # TRUEの数を確認
 summary(TF)</code></pre>
 <pre><code>##    Mode   FALSE    TRUE 
-## logical     137      13</code></pre>
+## logical     141       9</code></pre>
 <pre class="r"><code># filterを実行
 filter(iris, TF)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["Sepal.Length"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Sepal.Width"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Petal.Length"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Petal.Width"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Species"],"name":[5],"type":["fctr"],"align":["left"]}],"data":[{"1":"4.9","2":"3.1","3":"1.5","4":"0.1","5":"setosa"},{"1":"5.0","2":"3.0","3":"1.6","4":"0.2","5":"setosa"},{"1":"5.5","2":"4.2","3":"1.4","4":"0.2","5":"setosa"},{"1":"5.1","2":"3.8","3":"1.9","4":"0.4","5":"setosa"},{"1":"6.9","2":"3.1","3":"4.9","4":"1.5","5":"versicolor"},{"1":"6.5","2":"2.8","3":"4.6","4":"1.5","5":"versicolor"},{"1":"5.7","2":"2.8","3":"4.5","4":"1.3","5":"versicolor"},{"1":"6.6","2":"2.9","3":"4.6","4":"1.3","5":"versicolor"},{"1":"5.0","2":"2.0","3":"3.5","4":"1.0","5":"versicolor"},{"1":"5.6","2":"3.0","3":"4.5","4":"1.5","5":"versicolor"},{"1":"5.7","2":"2.9","3":"4.2","4":"1.3","5":"versicolor"},{"1":"6.3","2":"3.3","3":"6.0","4":"2.5","5":"virginica"},{"1":"5.9","2":"3.0","3":"5.1","4":"1.8","5":"virginica"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["Sepal.Length"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Sepal.Width"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Petal.Length"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Petal.Width"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Species"],"name":[5],"type":["fctr"],"align":["left"]}],"data":[{"1":"4.9","2":"3.0","3":"1.4","4":"0.2","5":"setosa"},{"1":"4.6","2":"3.4","3":"1.4","4":"0.3","5":"setosa"},{"1":"5.1","2":"3.7","3":"1.5","4":"0.4","5":"setosa"},{"1":"6.1","2":"2.9","3":"4.7","4":"1.4","5":"versicolor"},{"1":"5.8","2":"2.7","3":"4.1","4":"1.0","5":"versicolor"},{"1":"6.1","2":"2.8","3":"4.0","4":"1.3","5":"versicolor"},{"1":"5.4","2":"3.0","3":"4.5","4":"1.5","5":"versicolor"},{"1":"6.3","2":"3.3","3":"6.0","4":"2.5","5":"virginica"},{"1":"6.5","2":"3.0","3":"5.8","4":"2.2","5":"virginica"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p>なお、この論理値ベクトルは行数と同一である必要があり,異なる場合エラーを返します。エラーが出ない特別な場合として,ベクトル長が1(要するにTRUEまたはFALSEがひとつだけ)がありますが,実質意味はないでしょう:</p>
@@ -417,7 +417,7 @@ filter(iris, TF)</code></pre>
 df</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"3","2":"13","3":"chitoge","4":"chitoge"},{"1":"4","2":"14","3":"chitoge","4":"NA"},{"1":"5","2":"15","3":"marika","4":"chitoge"},{"1":"6","2":"16","3":"marika","4":"kosaki"},{"1":"7","2":"17","3":"marika","4":"chitoge"},{"1":"8","2":"18","3":"chitoge","4":"NA"},{"1":"9","2":"19","3":"chitoge","4":"chitoge"},{"1":"10","2":"20","3":"chitoge","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"3","2":"13","3":"marika","4":"kosaki"},{"1":"4","2":"14","3":"chitoge","4":"kosaki"},{"1":"5","2":"15","3":"marika","4":"kosaki"},{"1":"6","2":"16","3":"chitoge","4":"kosaki"},{"1":"7","2":"17","3":"chitoge","4":"NA"},{"1":"8","2":"18","3":"chitoge","4":"chitoge"},{"1":"9","2":"19","3":"marika","4":"NA"},{"1":"10","2":"20","3":"kosaki","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <div id="数値フィルタ" class="section level3">
@@ -427,28 +427,28 @@ df</code></pre>
 filter(df, x0 == 4)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"4","2":"14","3":"chitoge","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"4","2":"14","3":"chitoge","4":"kosaki"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <pre class="r"><code># 「*と等しくない」
 filter(df, x0 != 4)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"3","2":"13","3":"chitoge","4":"chitoge"},{"1":"5","2":"15","3":"marika","4":"chitoge"},{"1":"6","2":"16","3":"marika","4":"kosaki"},{"1":"7","2":"17","3":"marika","4":"chitoge"},{"1":"8","2":"18","3":"chitoge","4":"NA"},{"1":"9","2":"19","3":"chitoge","4":"chitoge"},{"1":"10","2":"20","3":"chitoge","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"3","2":"13","3":"marika","4":"kosaki"},{"1":"5","2":"15","3":"marika","4":"kosaki"},{"1":"6","2":"16","3":"chitoge","4":"kosaki"},{"1":"7","2":"17","3":"chitoge","4":"NA"},{"1":"8","2":"18","3":"chitoge","4":"chitoge"},{"1":"9","2":"19","3":"marika","4":"NA"},{"1":"10","2":"20","3":"kosaki","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <pre class="r"><code># 「*より小さい」
 filter(df, x0 &lt; 4)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"3","2":"13","3":"chitoge","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"3","2":"13","3":"marika","4":"kosaki"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <pre class="r"><code># 「*以上」
 filter(df, x0 &gt;= 4)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"4","2":"14","3":"chitoge","4":"NA"},{"1":"5","2":"15","3":"marika","4":"chitoge"},{"1":"6","2":"16","3":"marika","4":"kosaki"},{"1":"7","2":"17","3":"marika","4":"chitoge"},{"1":"8","2":"18","3":"chitoge","4":"NA"},{"1":"9","2":"19","3":"chitoge","4":"chitoge"},{"1":"10","2":"20","3":"chitoge","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"4","2":"14","3":"chitoge","4":"kosaki"},{"1":"5","2":"15","3":"marika","4":"kosaki"},{"1":"6","2":"16","3":"chitoge","4":"kosaki"},{"1":"7","2":"17","3":"chitoge","4":"NA"},{"1":"8","2":"18","3":"chitoge","4":"chitoge"},{"1":"9","2":"19","3":"marika","4":"NA"},{"1":"10","2":"20","3":"kosaki","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p>このあたりは出力と比較すればすぐにわかると思います。</p>
@@ -457,28 +457,28 @@ filter(df, x0 &gt;= 4)</code></pre>
 filter(df, x0 &lt; 8 &amp; x1 &gt; 12)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"3","2":"13","3":"chitoge","4":"chitoge"},{"1":"4","2":"14","3":"chitoge","4":"NA"},{"1":"5","2":"15","3":"marika","4":"chitoge"},{"1":"6","2":"16","3":"marika","4":"kosaki"},{"1":"7","2":"17","3":"marika","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"3","2":"13","3":"marika","4":"kosaki"},{"1":"4","2":"14","3":"chitoge","4":"kosaki"},{"1":"5","2":"15","3":"marika","4":"kosaki"},{"1":"6","2":"16","3":"chitoge","4":"kosaki"},{"1":"7","2":"17","3":"chitoge","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <pre class="r"><code># 「AまたはB」(OR)
 filter(df, x0 &gt; 8 | x1 &lt; 15)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"3","2":"13","3":"chitoge","4":"chitoge"},{"1":"4","2":"14","3":"chitoge","4":"NA"},{"1":"9","2":"19","3":"chitoge","4":"chitoge"},{"1":"10","2":"20","3":"chitoge","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"3","2":"13","3":"marika","4":"kosaki"},{"1":"4","2":"14","3":"chitoge","4":"kosaki"},{"1":"9","2":"19","3":"marika","4":"NA"},{"1":"10","2":"20","3":"kosaki","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <pre class="r"><code># 「AかつB」の余事象
 filter(df, xor(x0 &lt; 8, x1 &gt; 12))</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"8","2":"18","3":"chitoge","4":"NA"},{"1":"9","2":"19","3":"chitoge","4":"chitoge"},{"1":"10","2":"20","3":"chitoge","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"8","2":"18","3":"chitoge","4":"chitoge"},{"1":"9","2":"19","3":"marika","4":"NA"},{"1":"10","2":"20","3":"kosaki","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <pre class="r"><code># 「AからB」
 filter(df, dplyr::between(x0, 3, 7))</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"3","2":"13","3":"chitoge","4":"chitoge"},{"1":"4","2":"14","3":"chitoge","4":"NA"},{"1":"5","2":"15","3":"marika","4":"chitoge"},{"1":"6","2":"16","3":"marika","4":"kosaki"},{"1":"7","2":"17","3":"marika","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"3","2":"13","3":"marika","4":"kosaki"},{"1":"4","2":"14","3":"chitoge","4":"kosaki"},{"1":"5","2":"15","3":"marika","4":"kosaki"},{"1":"6","2":"16","3":"chitoge","4":"kosaki"},{"1":"7","2":"17","3":"chitoge","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p>論理積(AND)は、上述のように<code>,</code>で繋いでいっても反応するのですが、明示的にしたほうがいいでしょう。<code>between</code>はdplyrに含まれる関数で、その名の通り区間を指定します。なお指定した範囲の値も含みます。</p>
@@ -490,14 +490,14 @@ filter(df, dplyr::between(x0, 3, 7))</code></pre>
 filter(df, s == &quot;kosaki&quot;)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"10","2":"20","3":"kosaki","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <pre class="r"><code># 「*と一致しない」
 filter(df, s != &quot;chitoge&quot;)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"5","2":"15","3":"marika","4":"chitoge"},{"1":"6","2":"16","3":"marika","4":"kosaki"},{"1":"7","2":"17","3":"marika","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"3","2":"13","3":"marika","4":"kosaki"},{"1":"5","2":"15","3":"marika","4":"kosaki"},{"1":"9","2":"19","3":"marika","4":"NA"},{"1":"10","2":"20","3":"kosaki","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p>このあたりは数値フィルタと同一です。</p>
@@ -505,7 +505,7 @@ filter(df, s != &quot;chitoge&quot;)</code></pre>
 <pre class="r"><code>filter(df, s %in% c(&quot;kosaki&quot;, &quot;chitoge&quot;))</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"3","2":"13","3":"chitoge","4":"chitoge"},{"1":"4","2":"14","3":"chitoge","4":"NA"},{"1":"8","2":"18","3":"chitoge","4":"NA"},{"1":"9","2":"19","3":"chitoge","4":"chitoge"},{"1":"10","2":"20","3":"chitoge","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"4","2":"14","3":"chitoge","4":"kosaki"},{"1":"6","2":"16","3":"chitoge","4":"kosaki"},{"1":"7","2":"17","3":"chitoge","4":"NA"},{"1":"8","2":"18","3":"chitoge","4":"chitoge"},{"1":"10","2":"20","3":"kosaki","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p>この<code>%in%</code>はbaseにある演算子で、上記のように「Bの要素のどれか1つにマッチしたらTRUE、どれにもマッチしなければFALSE」を返してくれます。Rを使うなら絶対に覚えたほうがいいでしょう。</p>
@@ -513,7 +513,7 @@ filter(df, s != &quot;chitoge&quot;)</code></pre>
 <pre class="r"><code>filter(df, !s %in% c(&quot;marika&quot;, &quot;chitoge&quot;))</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"10","2":"20","3":"kosaki","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p>非常に残念ながら<code>%nin%</code>みたいな演算子はbaseには入っていません。そのためそのような演算子を自分で定義するか、それを含むパッケージを読み込む、あるいは上記のコードのように頭に<code>!</code>をつけて逆にするあたりが妥当なところでしょう。</p>
@@ -524,14 +524,14 @@ filter(df, s != &quot;chitoge&quot;)</code></pre>
 filter(df, str_detect(s, &quot;k&quot;))</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"5","2":"15","3":"marika","4":"chitoge"},{"1":"6","2":"16","3":"marika","4":"kosaki"},{"1":"7","2":"17","3":"marika","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"3","2":"13","3":"marika","4":"kosaki"},{"1":"5","2":"15","3":"marika","4":"kosaki"},{"1":"9","2":"19","3":"marika","4":"NA"},{"1":"10","2":"20","3":"kosaki","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <pre class="r"><code># 先頭に&quot;k&quot;を含む文字列で抽出(正規表現によるパターン記述)
 filter(df, str_detect(s, &quot;^k&quot;))</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"10","2":"20","3":"kosaki","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p><code>stringr::str_detect(string, pattern)</code>はstringで指定した文字列ベクトルから正規表現でpatternと一致するものをTRUE,それ以外をFALSEで返してきます。<code>grepl</code>を使うよりも簡単でかつ高速に処理する(はず)なのでこちらをおすすめします。</p>
@@ -543,14 +543,14 @@ filter(df, str_detect(s, &quot;^k&quot;))</code></pre>
 filter(df, is.na(s2))</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"4","2":"14","3":"chitoge","4":"NA"},{"1":"8","2":"18","3":"chitoge","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"7","2":"17","3":"chitoge","4":"NA"},{"1":"9","2":"19","3":"marika","4":"NA"},{"1":"10","2":"20","3":"kosaki","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <pre class="r"><code># s2にNAが含まれていないレコードを抽出
 filter(df, !is.na(s2))</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"3","2":"13","3":"chitoge","4":"chitoge"},{"1":"5","2":"15","3":"marika","4":"chitoge"},{"1":"6","2":"16","3":"marika","4":"kosaki"},{"1":"7","2":"17","3":"marika","4":"chitoge"},{"1":"9","2":"19","3":"chitoge","4":"chitoge"},{"1":"10","2":"20","3":"chitoge","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"3","2":"13","3":"marika","4":"kosaki"},{"1":"4","2":"14","3":"chitoge","4":"kosaki"},{"1":"5","2":"15","3":"marika","4":"kosaki"},{"1":"6","2":"16","3":"chitoge","4":"kosaki"},{"1":"8","2":"18","3":"chitoge","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <p><code>is.na</code>は「NAか否か」を判定してTRUEあるいはFALSEを返してきます。なのでこの場合s2にNAがあるレコードを抽出してきます。そのため,<code>!is.na(s2)</code>と否定することでs2がNAではないレコードを抽出してくるようになります。</p>
@@ -569,14 +569,14 @@ filter(df, !is.na(s2))</code></pre>
 filter(df, x0 &gt;= 3 &amp; !is.na(s2))</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"3","2":"13","3":"chitoge","4":"chitoge"},{"1":"5","2":"15","3":"marika","4":"chitoge"},{"1":"6","2":"16","3":"marika","4":"kosaki"},{"1":"7","2":"17","3":"marika","4":"chitoge"},{"1":"9","2":"19","3":"chitoge","4":"chitoge"},{"1":"10","2":"20","3":"chitoge","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"3","2":"13","3":"marika","4":"kosaki"},{"1":"4","2":"14","3":"chitoge","4":"kosaki"},{"1":"5","2":"15","3":"marika","4":"kosaki"},{"1":"6","2":"16","3":"chitoge","4":"kosaki"},{"1":"8","2":"18","3":"chitoge","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 <pre class="r"><code># 2の実行例
 filter(df, s %in% c(&quot;kosaki&quot;, &quot;chitoge&quot;) &amp; x1 &lt; 15)</code></pre>
 <div data-pagedtable="false">
 <script data-pagedtable-source type="application/json">
-{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"3","2":"13","3":"chitoge","4":"chitoge"},{"1":"4","2":"14","3":"chitoge","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"NA"},{"1":"2","2":"12","3":"kosaki","4":"chitoge"},{"1":"4","2":"14","3":"chitoge","4":"kosaki"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>

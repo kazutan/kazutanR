@@ -8,6 +8,17 @@ output:
 このサイトは、私がこれまで書いてきたR関連の資料をまとめています。随時更新していく予定です。  
 目的やSessionInfoについてはメニューバーの**about**を参照してください。
 
+<div class="panel panel-info">
+  <div class="panel-heading">2017/7/30のハンズオン資料について</div>
+  <div class="panel-body">
+私が担当するハンズオンの資料を、以下のリンク先に設置しています:
+
+https://kazutan.github.io/kazutanR/hands_on_170730/index.html
+
+現在は列選択と行選択のみですが、開催時刻には公開します。
+  </div>
+</div>
+
 
 # {.row}
 

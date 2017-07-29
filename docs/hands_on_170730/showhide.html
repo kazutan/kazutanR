@@ -1,0 +1,17 @@
+<script>
+$(function(){
+  $(".showhide").hide();
+  $(".showhide").before("<button type='button' class='btn btn-primary showhideBtn'></button>")
+  $(".showhideBtn").text("Show");
+  $(".showhideBtn").click(function(){
+    var index = $(".showhideBtn").index(this);
+    if($(".showhide").eq(index).is(":visible")){
+      $(".showhide").eq(index).hide();
+      $(".showhideBtn").eq(index).text("Show");
+    }else{
+      $(".showhide").eq(index).show();
+      $(".showhideBtn").eq(index).text("Hide");
+    };
+  });
+});
+</script>
