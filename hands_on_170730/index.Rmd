@@ -6,6 +6,7 @@ date: "2017/7/30"
 output:
   html_document:
     md_extensions: -ascii_identifiers
+    toc: false
 ---
 
 ```{r setup, include=FALSE}
