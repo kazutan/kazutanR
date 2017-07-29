@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -369,6 +369,19 @@ div.tocify {
 </div>
 
 
+<pre class="css"><code>dt {
+  clear: left;
+  float: left;
+  width: 15%;
+  font-weight: bold;
+  text-align: right;
+  padding: 3px 15px 3px 0;
+}
+dd {
+  margin: 0 0 0 20%;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}</code></pre>
 <style type="text/css">
 dt {
   clear: left;
@@ -435,18 +448,18 @@ library(forcats)</code></pre>
 <p>簡単なものについては，その場でさくっと作ります。</p>
 <p>大きめのデータでやりたいときは，<code>forcats</code>パッケージに内包されている<code>gss_cat</code>データを使ってます。データの内容については<code>?gss_cat</code>で表示されるヘルプを確認してください。</p>
 <pre class="r"><code>gss_cat
-#&gt; # A tibble: 21,483 × 9
+#&gt; # A tibble: 21,483 x 9
 #&gt;     year       marital   age   race        rincome            partyid
 #&gt;    &lt;int&gt;        &lt;fctr&gt; &lt;int&gt; &lt;fctr&gt;         &lt;fctr&gt;             &lt;fctr&gt;
-#&gt; 1   2000 Never married    26  White  $8000 to 9999       Ind,near rep
-#&gt; 2   2000      Divorced    48  White  $8000 to 9999 Not str republican
-#&gt; 3   2000       Widowed    67  White Not applicable        Independent
-#&gt; 4   2000 Never married    39  White Not applicable       Ind,near rep
-#&gt; 5   2000      Divorced    25  White Not applicable   Not str democrat
-#&gt; 6   2000       Married    25  White $20000 - 24999    Strong democrat
-#&gt; 7   2000 Never married    36  White $25000 or more Not str republican
-#&gt; 8   2000      Divorced    44  White  $7000 to 7999       Ind,near dem
-#&gt; 9   2000       Married    44  White $25000 or more   Not str democrat
+#&gt;  1  2000 Never married    26  White  $8000 to 9999       Ind,near rep
+#&gt;  2  2000      Divorced    48  White  $8000 to 9999 Not str republican
+#&gt;  3  2000       Widowed    67  White Not applicable        Independent
+#&gt;  4  2000 Never married    39  White Not applicable       Ind,near rep
+#&gt;  5  2000      Divorced    25  White Not applicable   Not str democrat
+#&gt;  6  2000       Married    25  White $20000 - 24999    Strong democrat
+#&gt;  7  2000 Never married    36  White $25000 or more Not str republican
+#&gt;  8  2000      Divorced    44  White  $7000 to 7999       Ind,near dem
+#&gt;  9  2000       Married    44  White $25000 or more   Not str democrat
 #&gt; 10  2000       Married    47  White $25000 or more  Strong republican
 #&gt; # ... with 21,473 more rows, and 3 more variables: relig &lt;fctr&gt;,
 #&gt; #   denom &lt;fctr&gt;, tvhours &lt;int&gt;
@@ -786,18 +799,18 @@ fct_shuffle(f)
 <p>上記のとおりです。なおlevelsの値も元々のlevelsのorderも保持されません。「factorのlevelsをちょっとそのままでは出せないなぁ」という時に活用できます。</p>
 <p>たとえば，以下のようなデータを想定します:</p>
 <pre class="r"><code>gss_cat$relig %&gt;% fct_count()
-#&gt; # A tibble: 16 × 2
+#&gt; # A tibble: 16 x 2
 #&gt;                          f     n
 #&gt;                     &lt;fctr&gt; &lt;int&gt;
-#&gt; 1                No answer    93
-#&gt; 2               Don&#39;t know    15
-#&gt; 3  Inter-nondenominational   109
-#&gt; 4          Native american    23
-#&gt; 5                Christian   689
-#&gt; 6       Orthodox-christian    95
-#&gt; 7             Moslem/islam   104
-#&gt; 8            Other eastern    32
-#&gt; 9                 Hinduism    71
+#&gt;  1               No answer    93
+#&gt;  2              Don&#39;t know    15
+#&gt;  3 Inter-nondenominational   109
+#&gt;  4         Native american    23
+#&gt;  5               Christian   689
+#&gt;  6      Orthodox-christian    95
+#&gt;  7            Moslem/islam   104
+#&gt;  8           Other eastern    32
+#&gt;  9                Hinduism    71
 #&gt; 10                Buddhism   147
 #&gt; 11                   Other   224
 #&gt; 12                    None  3523
@@ -807,18 +820,18 @@ fct_shuffle(f)
 #&gt; 16          Not applicable     0</code></pre>
 <p>これに対し，<code>fct_anon()</code>を挟むとこうなります:</p>
 <pre class="r"><code>gss_cat$relig %&gt;% fct_anon() %&gt;% fct_count()
-#&gt; # A tibble: 16 × 2
+#&gt; # A tibble: 16 x 2
 #&gt;         f     n
 #&gt;    &lt;fctr&gt; &lt;int&gt;
-#&gt; 1      01    32
-#&gt; 2      02 10846
-#&gt; 3      03  3523
-#&gt; 4      04   689
-#&gt; 5      05    95
-#&gt; 6      06   109
-#&gt; 7      07  5124
-#&gt; 8      08   388
-#&gt; 9      09   224
+#&gt;  1     01    32
+#&gt;  2     02 10846
+#&gt;  3     03  3523
+#&gt;  4     04   689
+#&gt;  5     05    95
+#&gt;  6     06   109
+#&gt;  7     07  5124
+#&gt;  8     08   388
+#&gt;  9     09   224
 #&gt; 10     10   147
 #&gt; 11     11     0
 #&gt; 12     12    93
@@ -829,18 +842,18 @@ fct_shuffle(f)
 <p>このように，levelsの値が連番の数値に書き換えられたというのが解ると思います。また，カウント数を比較してもらえばわかるように，その連番の与え方はランダムになっています。</p>
 <p>なお，連番の前に好きな文字列をつけることが可能です:</p>
 <pre class="r"><code>gss_cat$relig %&gt;% fct_anon(&quot;kosaki&quot;) %&gt;% fct_count()
-#&gt; # A tibble: 16 × 2
+#&gt; # A tibble: 16 x 2
 #&gt;           f     n
 #&gt;      &lt;fctr&gt; &lt;int&gt;
-#&gt; 1  kosaki01   109
-#&gt; 2  kosaki02   224
-#&gt; 3  kosaki03    95
-#&gt; 4  kosaki04  5124
-#&gt; 5  kosaki05    23
-#&gt; 6  kosaki06   689
-#&gt; 7  kosaki07   147
-#&gt; 8  kosaki08 10846
-#&gt; 9  kosaki09    32
+#&gt;  1 kosaki01   109
+#&gt;  2 kosaki02   224
+#&gt;  3 kosaki03    95
+#&gt;  4 kosaki04  5124
+#&gt;  5 kosaki05    23
+#&gt;  6 kosaki06   689
+#&gt;  7 kosaki07   147
+#&gt;  8 kosaki08 10846
+#&gt;  9 kosaki09    32
 #&gt; 10 kosaki10    15
 #&gt; 11 kosaki11   104
 #&gt; 12 kosaki12     0
@@ -872,18 +885,18 @@ fct_shuffle(f)
 <h4>説明と具体例</h4>
 <p>要するに，「複数のlevelsをまとめて一つのlevelsになるようにまとめていく」ことをしてくれます。たとえば，以下のようなデータを想定します:</p>
 <pre class="r"><code>fct_count(gss_cat$partyid)
-#&gt; # A tibble: 10 × 2
+#&gt; # A tibble: 10 x 2
 #&gt;                     f     n
 #&gt;                &lt;fctr&gt; &lt;int&gt;
-#&gt; 1           No answer   154
-#&gt; 2          Don&#39;t know     1
-#&gt; 3         Other party   393
-#&gt; 4   Strong republican  2314
-#&gt; 5  Not str republican  3032
-#&gt; 6        Ind,near rep  1791
-#&gt; 7         Independent  4119
-#&gt; 8        Ind,near dem  2499
-#&gt; 9    Not str democrat  3690
+#&gt;  1          No answer   154
+#&gt;  2         Don&#39;t know     1
+#&gt;  3        Other party   393
+#&gt;  4  Strong republican  2314
+#&gt;  5 Not str republican  3032
+#&gt;  6       Ind,near rep  1791
+#&gt;  7        Independent  4119
+#&gt;  8       Ind,near dem  2499
+#&gt;  9   Not str democrat  3690
 #&gt; 10    Strong democrat  3490</code></pre>
 <p>現在10のlevelsがあります。これを5つにまとめていきます:</p>
 <pre class="r"><code>partyid2 &lt;- fct_collapse(gss_cat$partyid,
@@ -894,7 +907,7 @@ fct_shuffle(f)
   dem = c(&quot;Not str democrat&quot;, &quot;Strong democrat&quot;)
 )
 fct_count(partyid2)
-#&gt; # A tibble: 5 × 2
+#&gt; # A tibble: 5 x 2
 #&gt;         f     n
 #&gt;    &lt;fctr&gt; &lt;int&gt;
 #&gt; 1 missing   155
@@ -1218,33 +1231,33 @@ table(f)
 #&gt;   w   x   y   z 
 #&gt;   4 108 129   2
 fct_count(f)
-#&gt; # A tibble: 22 × 2
+#&gt; # A tibble: 22 x 2
 #&gt;         f     n
 #&gt;    &lt;fctr&gt; &lt;int&gt;
-#&gt; 1       a    33
-#&gt; 2       b     1
-#&gt; 3       d    82
-#&gt; 4       e   130
-#&gt; 5       f    37
-#&gt; 6       g    14
-#&gt; 7       h    51
-#&gt; 8       i    10
-#&gt; 9       j    46
+#&gt;  1      a    33
+#&gt;  2      b     1
+#&gt;  3      d    82
+#&gt;  4      e   130
+#&gt;  5      f    37
+#&gt;  6      g    14
+#&gt;  7      h    51
+#&gt;  8      i    10
+#&gt;  9      j    46
 #&gt; 10      k    12
 #&gt; # ... with 12 more rows
 fct_count(f, sort = TRUE)
-#&gt; # A tibble: 22 × 2
+#&gt; # A tibble: 22 x 2
 #&gt;         f     n
 #&gt;    &lt;fctr&gt; &lt;int&gt;
-#&gt; 1       e   130
-#&gt; 2       y   129
-#&gt; 3       v   112
-#&gt; 4       x   108
-#&gt; 5       s    90
-#&gt; 6       d    82
-#&gt; 7       l    79
-#&gt; 8       h    51
-#&gt; 9       j    46
+#&gt;  1      e   130
+#&gt;  2      y   129
+#&gt;  3      v   112
+#&gt;  4      x   108
+#&gt;  5      s    90
+#&gt;  6      d    82
+#&gt;  7      l    79
+#&gt;  8      h    51
+#&gt;  9      j    46
 #&gt; 10      n    43
 #&gt; # ... with 12 more rows</code></pre>
 </div>
@@ -1414,7 +1427,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

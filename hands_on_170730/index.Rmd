@@ -1,0 +1,33 @@
+---
+title: "データハンドリング入門"
+subtitle: "Kazutan.R #1"
+author: "前田和寛(@kazutan)"
+date: "2017/7/30"
+output:
+  html_document:
+    md_extensions: -ascii_identifiers
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+## この資料について
+
+(かずたんあーるの説明)
+
+## 構成
+
+(説明する内容リスト)
+
+## 前提としていること
+
+(使うパッケージやRのバージョンなど)
+
+## Session Info
+
+```{r}
+sessionInfo()
+```
+

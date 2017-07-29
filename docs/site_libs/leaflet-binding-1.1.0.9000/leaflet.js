@@ -164,7 +164,7 @@ function getCRS(crsOptions) {
         crsOptions.options.bounds = _leaflet2.default.bounds(crsOptions.options.bounds);
       }
       if (crsOptions.options && crsOptions.options.transformation) {
-        crsOptions.options.transformation = _leaflet2.default.Transformation(crsOptions.options.transformation[0], crsOptions.options.transformation[1], crsOptions.options.transformation[2], crsOptions.options.transformation[3]);
+        crsOptions.options.transformation = new _leaflet2.default.Transformation(crsOptions.options.transformation[0], crsOptions.options.transformation[1], crsOptions.options.transformation[2], crsOptions.options.transformation[3]);
       }
       crs = new _proj4leaflet2.default.CRS(crsOptions.code, crsOptions.proj4def, crsOptions.options);
       break;
@@ -1848,7 +1848,7 @@ methods.addLegend = function (options) {
         labels.push(options.na_label);
       }
       for (var i = 0; i < colors.length; i++) {
-        legendHTML += "<i style=\"background:" + colors[i] + ";opacity:" + options.opacity + "\"></i> " + labels[i] + "<br/>";
+        legendHTML += "<i style=\"background:" + colors[i] + ";opacity:" + options.opacity + "\"></i> " + labels[i] + "<br clear='both'/>";
       }
       div.innerHTML = legendHTML;
     }

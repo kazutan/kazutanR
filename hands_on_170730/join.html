@@ -4,18 +4,18 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
 
 
 
-<title>R, RStudioの導入</title>
+<title>データの結合</title>
 
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<link href="site_libs/bootstrap-3.3.5/css/cosmo.min.css" rel="stylesheet" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
 <script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
@@ -25,6 +25,8 @@
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
 <link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
 <link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
 
 <style type="text/css">code{white-space: pre;}</style>
@@ -102,34 +104,34 @@ button.code-folding-btn:focus {
 <style type="text/css">
 /* padding for bootstrap navbar */
 body {
-  padding-top: 51px;
+  padding-top: 60px;
   padding-bottom: 40px;
 }
 /* offset scroll position for anchor links (for fixed navbar)  */
 .section h1 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 
 .section h2 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h3 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h4 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h5 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 .section h6 {
-  padding-top: 56px;
-  margin-top: -56px;
+  padding-top: 65px;
+  margin-top: -65px;
 }
 </style>
 
@@ -185,7 +187,7 @@ $(document).ready(function ()  {
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
     };
-    options.showAndHide = true;
+    options.showAndHide = false;
     options.smoothScroll = true;
 
     // tocify
@@ -248,6 +250,12 @@ div.tocify {
   border-radius: 0px;
 }
 
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
 
 </style>
 
@@ -271,86 +279,32 @@ div.tocify {
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="index.html">Kazutan.R</a>
+      <a class="navbar-brand" href="index.html">Kazutan.R #1</a>
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="about.html">about</a>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    データ操作
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="data_handling.html">データセット操作(dplyr, tidyr)</a>
-    </li>
-    <li>
-      <a href="stringr-intro.html">文字列操作(stringr)</a>
-    </li>
-    <li>
-      <a href="forcats_test.html">factor型データ操作(forcats)</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    可視化
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="ggplot2_links.html">ggplot2によるプロット</a>
-    </li>
-    <li>
-      <a href="DT_demo.html">DTによる表作成</a>
-    </li>
-    <li>
-      <a href="leaflet_d.html">leafletによる地図プロット</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    R Markdown
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="Rmd_intro.html">R Markdown入門</a>
-    </li>
-    <li>
-      <a href="fdb_intro.html">R Markdownでダッシュボード</a>
-    </li>
-  </ul>
-</li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    その他
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="webshot_demo.html">webshotによるキャプチャ</a>
-    </li>
-    <li>
-      <a href="corrr_test.html">corrrによる相関行列の操作・可視化</a>
-    </li>
-  </ul>
+  <a href="select.html">列選択</a>
 </li>
 <li>
-  <a href="koneta_top.html">小ネタ集</a>
+  <a href="filter.html">行選択</a>
+</li>
+<li>
+  <a href="mutate.html">列変換</a>
+</li>
+<li>
+  <a href="join.html">データ結合</a>
+</li>
+<li>
+  <a href="group_by.html">グループ化</a>
+</li>
+<li>
+  <a href="tidy.html">縦横変換</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/kazutan/kazutanR/">
+  <a href="https://github.com/kazutan/kazutanR/tree/master/hands_on_170730">
     <span class="fa fa-github"></span>
      
   </a>
@@ -364,42 +318,33 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">R, RStudioの導入</h1>
+<h1 class="title toc-ignore">データの結合</h1>
 
 </div>
 
 
-<div id="r" class="section level2">
-<h2>Rのインストール</h2>
-<div id="windown" class="section level3">
-<h3>Windown</h3>
-</div>
-<div id="mac" class="section level3">
-<h3>Mac</h3>
-</div>
-<div id="ubuntu" class="section level3">
-<h3>Ubuntu</h3>
-</div>
-</div>
-<div id="rstudio" class="section level2">
-<h2>RStudioのインストール</h2>
-<div id="windows" class="section level3">
-<h3>Windows</h3>
-</div>
-<div id="mac-1" class="section level3">
-<h3>Mac</h3>
-</div>
-<div id="ubuntu-1" class="section level3">
-<h3>Ubuntu</h3>
-</div>
-</div>
-<div id="rstudio-server" class="section level2">
-<h2>RStudio Serverの利用</h2>
-</div>
+
 
 <footer>
   <p>Copyright &copy; 2017 Kazutan.R. </p>
 </footer>
+<script>
+$(function(){
+  $(".showhide").hide();
+  $(".showhide").before("<button type='button' class='btn btn-primary showhideBtn'></button>")
+  $(".showhideBtn").text("Show");
+  $(".showhideBtn").click(function(){
+    var index = $(".showhideBtn").index(this);
+    if($(".showhide").eq(index).is(":visible")){
+      $(".showhide").eq(index).hide();
+      $(".showhideBtn").eq(index).text("Show");
+    }else{
+      $(".showhide").eq(index).show();
+      $(".showhideBtn").eq(index).text("Hide");
+    };
+  });
+});
+</script>
 
 
 </div>
@@ -425,7 +370,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

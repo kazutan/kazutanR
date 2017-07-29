@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -590,8 +590,8 @@ str_detect(x, pattern=&quot;ko&quot;)</code></pre>
 <div id="viewer-str_view" class="section level2">
 <h2>正規表現のViewer: str_view()</h2>
 <pre class="r"><code>str_view(x, &quot;a$&quot;)</code></pre>
-<div id="htmlwidget-098c1450d7db07cc3b40" style="width:960px;height:auto;" class="str_view html-widget"></div>
-<script type="application/json" data-for="htmlwidget-098c1450d7db07cc3b40">{"x":{"html":"<ul>\n  <li>kosaki<\/li>\n  <li>chitoge<\/li>\n  <li>marik<span class='match'>a<\/span><\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-e7160abc104077184873" style="width:960px;height:auto;" class="str_view html-widget"></div>
+<script type="application/json" data-for="htmlwidget-e7160abc104077184873">{"x":{"html":"<ul>\n  <li>kosaki<\/li>\n  <li>chitoge<\/li>\n  <li>marik<span class='match'>a<\/span><\/li>\n<\/ul>"},"evals":[],"jsHooks":[]}</script>
 <ul>
 <li>正規表現でのマッチ結果をRStudioのViewerに出してくれる</li>
 <li>最近組み込まれた</li>
@@ -631,7 +631,7 @@ str_detect(x, pattern=&quot;ko&quot;)</code></pre>
 </ul>
 <pre class="r"><code>tibble::rownames_to_column(mtcars, var = &quot;name&quot;) %&gt;% 
   dplyr::filter(str_detect(.$name, &quot;Mazda&quot;))</code></pre>
-<pre><code>## # A tibble: 2 × 12
+<pre><code>## # A tibble: 2 x 12
 ##            name   mpg   cyl  disp    hp  drat    wt  qsec    vs    am
 ##           &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
 ## 1     Mazda RX4    21     6   160   110   3.9 2.620 16.46     0     1
@@ -672,7 +672,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

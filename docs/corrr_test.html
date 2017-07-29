@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -451,7 +451,7 @@ summary(d)</code></pre>
 class(x)</code></pre>
 <pre><code>## [1] &quot;cor_df&quot;     &quot;tbl_df&quot;     &quot;tbl&quot;        &quot;data.frame&quot;</code></pre>
 <pre class="r"><code>x</code></pre>
-<pre><code>## # A tibble: 6 × 7
+<pre><code>## # A tibble: 6 x 7
 ##   rowname          v1          v2           v3           v4           v5
 ##     &lt;chr&gt;       &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
 ## 1      v1          NA  0.70533312  0.696751634 -0.019391631 -0.040154825
@@ -473,7 +473,7 @@ class(x)</code></pre>
 <h2><code>focus()</code></h2>
 <p><code>correlate()</code>で算出した相関行列(<code>cor_df</code>クラス)のうち、着目したい変数を絞り込むことができます:</p>
 <pre class="r"><code>focus(x, v1:v4)</code></pre>
-<pre><code>## # A tibble: 2 × 5
+<pre><code>## # A tibble: 2 x 5
 ##   rowname          v1          v2           v3        v4
 ##     &lt;chr&gt;       &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;
 ## 1      v5 -0.04015482 -0.03094146 -0.006444362 0.3801902
@@ -490,7 +490,7 @@ class(x)</code></pre>
 <h3><code>mirror=</code>の指定</h3>
 <p>上の例で、<code>mirror=TRUE</code>を指定すると、以下のようになります:</p>
 <pre class="r"><code>focus(x, v1:v4, mirror = TRUE)</code></pre>
-<pre><code>## # A tibble: 4 × 5
+<pre><code>## # A tibble: 4 x 5
 ##   rowname          v1          v2           v3           v4
 ##     &lt;chr&gt;       &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;        &lt;dbl&gt;
 ## 1      v1          NA  0.70533312  0.696751634 -0.019391631
@@ -503,7 +503,7 @@ class(x)</code></pre>
 <h3>変数の選択方法</h3>
 <p>このパッケージでは{dplyr}パッケージをインポートしてきます。なので、<strong><code>dplyr::select()</code>と同じように変数選択が可能</strong>です。普段から<code>dplyr::select()</code>に慣れているならば、その意味がよくわかることでしょう。</p>
 <pre class="r"><code>focus(x, ends_with(&quot;5&quot;))</code></pre>
-<pre><code>## # A tibble: 5 × 2
+<pre><code>## # A tibble: 5 x 2
 ##   rowname           v5
 ##     &lt;chr&gt;        &lt;dbl&gt;
 ## 1      v1 -0.040154825
@@ -520,7 +520,7 @@ class(x)</code></pre>
   correlate() %&gt;% 
   focus(-cyl, -vs, -hp, mirror = TRUE)
 d2</code></pre>
-<pre><code>## # A tibble: 8 × 9
+<pre><code>## # A tibble: 8 x 9
 ##   rowname        mpg       disp        drat         wt        qsec
 ##     &lt;chr&gt;      &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;       &lt;dbl&gt;
 ## 1     mpg         NA -0.8475514  0.68117191 -0.8676594  0.41868403
@@ -534,7 +534,7 @@ d2</code></pre>
 ## # ... with 3 more variables: am &lt;dbl&gt;, gear &lt;dbl&gt;, carb &lt;dbl&gt;</code></pre>
 <p>この場合、出力される相関行列はデータセット上の並びとなります。これに<code>rearrange()</code>を適用するとこうなります:</p>
 <pre class="r"><code>rearrange(d2)</code></pre>
-<pre><code>## # A tibble: 8 × 9
+<pre><code>## # A tibble: 8 x 9
 ##   rowname        drat          am         wt       gear       disp
 ##     &lt;chr&gt;       &lt;dbl&gt;       &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
 ## 1    drat          NA  0.71271113 -0.7124406  0.6996101 -0.7102139
@@ -559,7 +559,7 @@ d2</code></pre>
 <h2><code>shave()</code></h2>
 <p><code>correlate()</code>で作成した相関行列(<code>cor_df</code>クラス)について、三角化します:</p>
 <pre class="r"><code>shave(x)</code></pre>
-<pre><code>## # A tibble: 6 × 7
+<pre><code>## # A tibble: 6 x 7
 ##   rowname          v1          v2           v3        v4        v5    v6
 ##     &lt;chr&gt;       &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt;
 ## 1      v1          NA          NA           NA        NA        NA    NA
@@ -580,18 +580,18 @@ d2</code></pre>
 <h2><code>stretch()</code></h2>
 <p><code>correlate()</code>で作成した相関行列(<code>cor_df</code>クラス)について、Long型のデータ構造へ変換します:</p>
 <pre class="r"><code>stretch(x)</code></pre>
-<pre><code>## # A tibble: 36 × 3
+<pre><code>## # A tibble: 36 x 3
 ##        x     y           r
 ##    &lt;chr&gt; &lt;chr&gt;       &lt;dbl&gt;
-## 1     v1    v1          NA
-## 2     v1    v2  0.70533312
-## 3     v1    v3  0.69675163
-## 4     v1    v4 -0.01939163
-## 5     v1    v5 -0.04015482
-## 6     v1    v6 -0.01903664
-## 7     v2    v1  0.70533312
-## 8     v2    v2          NA
-## 9     v2    v3  0.71602751
+##  1    v1    v1          NA
+##  2    v1    v2  0.70533312
+##  3    v1    v3  0.69675163
+##  4    v1    v4 -0.01939163
+##  5    v1    v5 -0.04015482
+##  6    v1    v6 -0.01903664
+##  7    v2    v1  0.70533312
+##  8    v2    v2          NA
+##  9    v2    v3  0.71602751
 ## 10    v2    v4 -0.01963545
 ## # ... with 26 more rows</code></pre>
 <p>この関数は以下のように使います:</p>
@@ -603,18 +603,18 @@ d2</code></pre>
 <p>よく使う流れとしては、<code>shave()</code>で三角だけ残して、それを<code>%&gt;% stretch(na.rm = TRUE)</code>とするパターンかと思います:</p>
 <pre class="r"><code>x %&gt;% shave() %&gt;% 
   stretch(na.rm = TRUE)</code></pre>
-<pre><code>## # A tibble: 15 × 3
+<pre><code>## # A tibble: 15 x 3
 ##        x     y            r
 ##    &lt;chr&gt; &lt;chr&gt;        &lt;dbl&gt;
-## 1     v1    v2  0.705333119
-## 2     v1    v3  0.696751634
-## 3     v1    v4 -0.019391631
-## 4     v1    v5 -0.040154825
-## 5     v1    v6 -0.019036643
-## 6     v2    v3  0.716027507
-## 7     v2    v4 -0.019635452
-## 8     v2    v5 -0.030941464
-## 9     v2    v6 -0.031238765
+##  1    v1    v2  0.705333119
+##  2    v1    v3  0.696751634
+##  3    v1    v4 -0.019391631
+##  4    v1    v5 -0.040154825
+##  5    v1    v6 -0.019036643
+##  6    v2    v3  0.716027507
+##  7    v2    v4 -0.019635452
+##  8    v2    v5 -0.030941464
+##  9    v2    v6 -0.031238765
 ## 10    v3    v4 -0.003882606
 ## 11    v3    v5 -0.006444362
 ## 12    v3    v6 -0.003892283
@@ -649,7 +649,7 @@ d2</code></pre>
 <h2><code>fashion()</code></h2>
 <p>プリント向けに調整する関数です:</p>
 <pre class="r"><code>fashion(x)</code></pre>
-<pre><code>## # A tibble: 6 × 7
+<pre><code>## # A tibble: 6 x 7
 ##         rowname            v1            v2            v3            v4
 ##   &lt;S3: noquote&gt; &lt;S3: noquote&gt; &lt;S3: noquote&gt; &lt;S3: noquote&gt; &lt;S3: noquote&gt;
 ## 1            v1                         .71           .70          -.02
@@ -669,7 +669,7 @@ d2</code></pre>
 <p>おそらくよく使うパターンとしては、<code>shave() %&gt;% fashion()</code>だと思います:</p>
 <pre class="r"><code>shave(x) %&gt;% 
   fashion(decimals = 3)</code></pre>
-<pre><code>## # A tibble: 6 × 7
+<pre><code>## # A tibble: 6 x 7
 ##         rowname            v1            v2            v3            v4
 ##   &lt;S3: noquote&gt; &lt;S3: noquote&gt; &lt;S3: noquote&gt; &lt;S3: noquote&gt; &lt;S3: noquote&gt;
 ## 1            v1                                                        
@@ -683,18 +683,18 @@ d2</code></pre>
 <pre class="r"><code>x %&gt;% shave() %&gt;% 
   stretch(na.rm = TRUE) %&gt;% 
   fashion(decimals = 3)</code></pre>
-<pre><code>## # A tibble: 15 × 3
+<pre><code>## # A tibble: 15 x 3
 ##                x             y             r
 ##    &lt;S3: noquote&gt; &lt;S3: noquote&gt; &lt;S3: noquote&gt;
-## 1             v1            v2          .705
-## 2             v1            v3          .697
-## 3             v1            v4         -.019
-## 4             v1            v5         -.040
-## 5             v1            v6         -.019
-## 6             v2            v3          .716
-## 7             v2            v4         -.020
-## 8             v2            v5         -.031
-## 9             v2            v6         -.031
+##  1            v1            v2          .705
+##  2            v1            v3          .697
+##  3            v1            v4         -.019
+##  4            v1            v5         -.040
+##  5            v1            v6         -.019
+##  6            v2            v3          .716
+##  7            v2            v4         -.020
+##  8            v2            v5         -.031
+##  9            v2            v6         -.031
 ## 10            v3            v4         -.004
 ## 11            v3            v5         -.006
 ## 12            v3            v6         -.004
@@ -780,7 +780,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

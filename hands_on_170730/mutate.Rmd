@@ -1,0 +1,14 @@
+---
+title: "列の変換"
+subtitle: ""
+author: ""
+date: 
+output:
+  html_document:
+    md_extensions: -ascii_identifiers
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```

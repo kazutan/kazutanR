@@ -4,7 +4,7 @@
 
 <head>
 
-<meta charset="utf-8">
+<meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
 
@@ -402,6 +402,9 @@ div.tocify {
 <div id="_1-" class="section level2">
 <h2><span class="header-section-number">2.1</span> 具体例_1: ほしいもの</h2>
 <p>このような結果がほしいとします:</p>
+<pre><code>## `summarise_each()` is deprecated.
+## Use `summarise_all()`, `summarise_at()` or `summarise_if()` instead.
+## To map `funs` over all variables, use `summarise_all()`</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -436,7 +439,10 @@ div.tocify {
   dplyr::group_by(Species) %&gt;% 
   dplyr::summarize_each(funs(mean)) %&gt;% 
   dplyr::arrange(Sepal.Width) </code></pre>
-<pre><code>## # A tibble: 3 × 3
+<pre><code>## `summarise_each()` is deprecated.
+## Use `summarise_all()`, `summarise_at()` or `summarise_if()` instead.
+## To map `funs` over all variables, use `summarise_all()`</code></pre>
+<pre><code>## # A tibble: 3 x 3
 ##      Species Sepal.Length Sepal.Width
 ##       &lt;fctr&gt;        &lt;dbl&gt;       &lt;dbl&gt;
 ## 1 versicolor        5.936       2.770
@@ -503,7 +509,7 @@ div.tocify {
   dplyr::select(-Species) %&gt;% 
   tidyr::gather(key = var_name, value = value) %&gt;% 
   head</code></pre>
-<pre><code>## # A tibble: 6 × 2
+<pre><code>## # A tibble: 6 x 2
 ##       var_name value
 ## *        &lt;chr&gt; &lt;dbl&gt;
 ## 1 Sepal.Length   5.1
@@ -537,7 +543,7 @@ div.tocify {
 df &lt;- subset(iris, Species == &quot;setosa&quot;)
 df2 &lt;- subset(df, select = c(Sepal.Length, Sepal.Width))
 head(df2, 2)</code></pre>
-<pre><code>## # A tibble: 2 × 2
+<pre><code>## # A tibble: 2 x 2
 ##   Sepal.Length Sepal.Width
 ## *        &lt;dbl&gt;       &lt;dbl&gt;
 ## 1          5.1         3.5
@@ -546,7 +552,7 @@ head(df2, 2)</code></pre>
 (df &lt;- subset(iris, Species == &quot;setosa&quot;) %&gt;% 
   subset(select = c(Sepal.Length, Sepal.Width)) %&gt;% 
   head(2))</code></pre>
-<pre><code>## # A tibble: 2 × 2
+<pre><code>## # A tibble: 2 x 2
 ##   Sepal.Length Sepal.Width
 ## *        &lt;dbl&gt;       &lt;dbl&gt;
 ## 1          5.1         3.5
@@ -594,11 +600,11 @@ library(tidyr)</code></pre>
   as.data.frame() %&gt;%
   select_(&quot;Package&quot;,&quot; Version&quot;) %&gt;%
   filter(Package %in% c(&quot;dplyr&quot;, &quot;tidyr&quot;))</code></pre>
-<pre><code>## # A tibble: 2 × 2
-##   Package    Version
-##    &lt;fctr&gt;     &lt;fctr&gt;
-## 1   dplyr 0.5.0.9000
-## 2   tidyr      0.6.1</code></pre>
+<pre><code>## # A tibble: 2 x 2
+##   Package Version
+##    &lt;fctr&gt;  &lt;fctr&gt;
+## 1   dplyr   0.7.1
+## 2   tidyr   0.6.3</code></pre>
 </div>
 </div>
 <div class="section level1">
@@ -607,7 +613,7 @@ library(tidyr)</code></pre>
 <h2><span class="header-section-number">6.1</span> dplyr::select</h2>
 <pre class="r"><code>df &lt;- dplyr::select(iris, c(Sepal.Width,Species))
 head(df, 3)</code></pre>
-<pre><code>## # A tibble: 3 × 2
+<pre><code>## # A tibble: 3 x 2
 ##   Sepal.Width Species
 ## *       &lt;dbl&gt;  &lt;fctr&gt;
 ## 1         3.5  setosa
@@ -623,7 +629,7 @@ head(df, 3)</code></pre>
 <h2><span class="header-section-number">6.2</span> 列選択用関数: starts_with()</h2>
 <pre class="r"><code>df &lt;- dplyr::select(iris, starts_with(&quot;sepal&quot;))
 head(df, 3)</code></pre>
-<pre><code>## # A tibble: 3 × 2
+<pre><code>## # A tibble: 3 x 2
 ##   Sepal.Length Sepal.Width
 ## *        &lt;dbl&gt;       &lt;dbl&gt;
 ## 1          5.1         3.5
@@ -639,7 +645,7 @@ head(df, 3)</code></pre>
 <h2><span class="header-section-number">6.3</span> 列選択用関数: ends_with()</h2>
 <pre class="r"><code>df &lt;- dplyr::select(iris, ends_with(&quot;width&quot;))
 head(df, 3)</code></pre>
-<pre><code>## # A tibble: 3 × 2
+<pre><code>## # A tibble: 3 x 2
 ##   Sepal.Width Petal.Width
 ## *       &lt;dbl&gt;       &lt;dbl&gt;
 ## 1         3.5         0.2
@@ -654,7 +660,7 @@ head(df, 3)</code></pre>
 <h2><span class="header-section-number">6.4</span> 列選択用関数: contains()</h2>
 <pre class="r"><code>df &lt;- dplyr::select(iris, contains(&quot;pe&quot;))
 head(df, 3)</code></pre>
-<pre><code>## # A tibble: 3 × 3
+<pre><code>## # A tibble: 3 x 3
 ##   Petal.Length Petal.Width Species
 ## *        &lt;dbl&gt;       &lt;dbl&gt;  &lt;fctr&gt;
 ## 1          1.4         0.2  setosa
@@ -669,7 +675,7 @@ head(df, 3)</code></pre>
 <h2><span class="header-section-number">6.5</span> 列選択用関数: matches()</h2>
 <pre class="r"><code>df &lt;- dplyr::select(iris, matches(&quot;.t.&quot;))
 head(df, 3)</code></pre>
-<pre><code>## # A tibble: 3 × 4
+<pre><code>## # A tibble: 3 x 4
 ##   Sepal.Length Sepal.Width Petal.Length Petal.Width
 ## *        &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;
 ## 1          5.1         3.5          1.4         0.2
@@ -688,14 +694,14 @@ ls(df)</code></pre>
 <pre><code>##  [1] &quot;beer1&quot;  &quot;beer2&quot;  &quot;beer3&quot;  &quot;beer4&quot;  &quot;beer5&quot;  &quot;sake01&quot; &quot;sake02&quot;
 ##  [8] &quot;sake03&quot; &quot;sake04&quot; &quot;sake05&quot;</code></pre>
 <pre class="r"><code>dplyr::select(df, num_range(&quot;beer&quot;, 1:3, 1))</code></pre>
-<pre><code>## # A tibble: 3 × 3
+<pre><code>## # A tibble: 3 x 3
 ##   beer1 beer2 beer3
 ##   &lt;int&gt; &lt;int&gt; &lt;int&gt;
 ## 1     1     4     7
 ## 2     2     5     8
 ## 3     3     6     9</code></pre>
 <pre class="r"><code>dplyr::select(df, num_range(&quot;sake&quot;, 2:4, 2))</code></pre>
-<pre><code>## # A tibble: 3 × 3
+<pre><code>## # A tibble: 3 x 3
 ##   sake02 sake03 sake04
 ##    &lt;int&gt;  &lt;int&gt;  &lt;int&gt;
 ## 1     19     22     25
@@ -711,7 +717,7 @@ ls(df)</code></pre>
 <pre class="r"><code>vname &lt;- c(&quot;Petal.Length&quot;, &quot;Sepal.Width&quot;)
 df &lt;- dplyr::select(iris, one_of(vname))
 head(df, 3)</code></pre>
-<pre><code>## # A tibble: 3 × 2
+<pre><code>## # A tibble: 3 x 2
 ##   Petal.Length Sepal.Width
 ## *        &lt;dbl&gt;       &lt;dbl&gt;
 ## 1          1.4         3.5
@@ -727,14 +733,14 @@ head(df, 3)</code></pre>
 <pre class="r"><code>df &lt;- as.data.frame(matrix(1:15, nrow = 3, ncol = 5))
 colnames(df) &lt;- c(&quot;touyama&quot;, &quot;hanazawa&quot;, &quot;komatsu&quot;, &quot;asumi&quot;, &quot;sakura&quot;)
 dplyr::select(df, everything())</code></pre>
-<pre><code>## # A tibble: 3 × 5
+<pre><code>## # A tibble: 3 x 5
 ##   touyama hanazawa komatsu asumi sakura
 ##     &lt;int&gt;    &lt;int&gt;   &lt;int&gt; &lt;int&gt;  &lt;int&gt;
 ## 1       1        4       7    10     13
 ## 2       2        5       8    11     14
 ## 3       3        6       9    12     15</code></pre>
 <pre class="r"><code>dplyr::select(df, hanazawa, touyama, everything())</code></pre>
-<pre><code>## # A tibble: 3 × 5
+<pre><code>## # A tibble: 3 x 5
 ##   hanazawa touyama komatsu asumi sakura
 ##      &lt;int&gt;   &lt;int&gt;   &lt;int&gt; &lt;int&gt;  &lt;int&gt;
 ## 1        4       1       7    10     13
@@ -746,7 +752,7 @@ dplyr::select(df, everything())</code></pre>
 <hr />
 <p>こういう使い方も。</p>
 <pre class="r"><code>head(dplyr::select(iris, kosaki=starts_with(&quot;Petal&quot;), everything()))</code></pre>
-<pre><code>## # A tibble: 6 × 5
+<pre><code>## # A tibble: 6 x 5
 ##   kosaki1 kosaki2 Sepal.Length Sepal.Width Species
 ## *   &lt;dbl&gt;   &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;  &lt;fctr&gt;
 ## 1     1.4     0.2          5.1         3.5  setosa
@@ -763,14 +769,14 @@ dplyr::select(df, everything())</code></pre>
 <h2><span class="header-section-number">7.1</span> dplyr::mutate()</h2>
 <pre class="r"><code>df &lt;- dplyr::mutate(iris, beer=Sepal.Width*2)
 head(df, 2)</code></pre>
-<pre><code>## # A tibble: 2 × 6
+<pre><code>## # A tibble: 2 x 6
 ##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species  beer
 ## *        &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;  &lt;fctr&gt; &lt;dbl&gt;
 ## 1          5.1         3.5          1.4         0.2  setosa     7
 ## 2          4.9         3.0          1.4         0.2  setosa     6</code></pre>
 <pre class="r"><code>df &lt;- dplyr::mutate(df, beer=Sepal.Width*3)
 head(df, 2)</code></pre>
-<pre><code>## # A tibble: 2 × 6
+<pre><code>## # A tibble: 2 x 6
 ##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species  beer
 ## *        &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;  &lt;fctr&gt; &lt;dbl&gt;
 ## 1          5.1         3.5          1.4         0.2  setosa  10.5
@@ -783,8 +789,11 @@ head(df, 2)</code></pre>
 </div>
 <div id="dplyrmutate_each" class="section level2">
 <h2><span class="header-section-number">7.2</span> dplyr::mutate_each()</h2>
-<pre class="r"><code>df &lt;- dplyr::mutate_each(iris, funs(. * 2), -Species)
-kable(head(df,2))</code></pre>
+<pre class="r"><code>df &lt;- dplyr::mutate_each(iris, funs(. * 2), -Species)</code></pre>
+<pre><code>## `mutate_each()` is deprecated.
+## Use `mutate_all()`, `mutate_at()` or `mutate_if()` instead.
+## To map `funs` over a selection of variables, use `mutate_at()`</code></pre>
+<pre class="r"><code>kable(head(df,2))</code></pre>
 <table>
 <thead>
 <tr class="header">
@@ -835,7 +844,7 @@ kable(head(df,2))</code></pre>
 <h2><span class="header-section-number">8.1</span> dplyr::filter()</h2>
 <pre class="r"><code>df &lt;- dplyr::filter(iris, Species==&#39;virginica&#39;)
 head(df, 3)</code></pre>
-<pre><code>## # A tibble: 3 × 5
+<pre><code>## # A tibble: 3 x 5
 ##   Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
 ## *        &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;    &lt;fctr&gt;
 ## 1          6.3         3.3          6.0         2.5 virginica
@@ -850,7 +859,7 @@ head(df, 3)</code></pre>
 <h2><span class="header-section-number">8.2</span> dplyr::arrange()</h2>
 <pre class="r"><code>df &lt;- dplyr::arrange(iris, Sepal.Length)
 head(df, 3)</code></pre>
-<pre><code>## # A tibble: 3 × 5
+<pre><code>## # A tibble: 3 x 5
 ##   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
 ## *        &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;  &lt;fctr&gt;
 ## 1          4.3         3.0          1.1         0.1  setosa
@@ -858,7 +867,7 @@ head(df, 3)</code></pre>
 ## 3          4.4         3.0          1.3         0.2  setosa</code></pre>
 <pre class="r"><code>df &lt;- dplyr::arrange(df, desc(Sepal.Length))
 head(df, 3)</code></pre>
-<pre><code>## # A tibble: 3 × 5
+<pre><code>## # A tibble: 3 x 5
 ##   Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
 ## *        &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt;    &lt;fctr&gt;
 ## 1          7.9         3.8          6.4         2.0 virginica
@@ -876,7 +885,7 @@ head(df, 3)</code></pre>
 <h2><span class="header-section-number">9.1</span> dplyr::summarize()</h2>
 <pre class="r"><code>df &lt;- dplyr::summarize(iris, varmean=mean(Sepal.Length))
 df</code></pre>
-<pre><code>## # A tibble: 1 × 1
+<pre><code>## # A tibble: 1 x 1
 ##    varmean
 ##      &lt;dbl&gt;
 ## 1 5.843333</code></pre>
@@ -888,9 +897,12 @@ df</code></pre>
 </div>
 <div id="dplyrsummarize_each" class="section level2">
 <h2><span class="header-section-number">9.2</span> dplyr::summarize_each()</h2>
-<pre class="r"><code>df &lt;- dplyr::summarize_each(iris, funs(min, mean, max, sd), ends_with(&quot;Length&quot;))
-df</code></pre>
-<pre><code>## # A tibble: 1 × 8
+<pre class="r"><code>df &lt;- dplyr::summarize_each(iris, funs(min, mean, max, sd), ends_with(&quot;Length&quot;))</code></pre>
+<pre><code>## `summarise_each()` is deprecated.
+## Use `summarise_all()`, `summarise_at()` or `summarise_if()` instead.
+## To map `funs` over a selection of variables, use `summarise_at()`</code></pre>
+<pre class="r"><code>df</code></pre>
+<pre><code>## # A tibble: 1 x 8
 ##   Sepal.Length_min Petal.Length_min Sepal.Length_mean Petal.Length_mean
 ##              &lt;dbl&gt;            &lt;dbl&gt;             &lt;dbl&gt;             &lt;dbl&gt;
 ## 1              4.3                1          5.843333             3.758
@@ -917,7 +929,7 @@ df</code></pre>
 <pre class="r"><code>df &lt;- dplyr::group_by(iris, Species) %&gt;% 
   dplyr::summarize(cmean=mean(Sepal.Length))
 df</code></pre>
-<pre><code>## # A tibble: 3 × 2
+<pre><code>## # A tibble: 3 x 2
 ##      Species cmean
 ##       &lt;fctr&gt; &lt;dbl&gt;
 ## 1     setosa 5.006
@@ -950,8 +962,8 @@ x1をキーにして、mergeします</li>
 <div id="dplyrfull_join" class="section level2">
 <h2><span class="header-section-number">11.2</span> dplyr::full_join()</h2>
 <pre class="r"><code>df &lt;- dplyr::full_join(a,b,by=&quot;x1&quot;)</code></pre>
-<pre><code>## Warning in full_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining
-## factors with different levels, coercing to character vector</code></pre>
+<pre><code>## Warning: Column `x1` joining factors with different levels, coercing to
+## character vector</code></pre>
 <pre class="r"><code>kable(df)</code></pre>
 <table>
 <thead>
@@ -993,8 +1005,8 @@ x1をキーにして、mergeします</li>
 <div id="dplyrinner_join" class="section level2">
 <h2><span class="header-section-number">11.3</span> dplyr::inner_join()</h2>
 <pre class="r"><code>df &lt;- dplyr::inner_join(a,b,by=&quot;x1&quot;)</code></pre>
-<pre><code>## Warning in inner_join_impl(x, y, by$x, by$y, suffix$x, suffix$y): joining
-## factors with different levels, coercing to character vector</code></pre>
+<pre><code>## Warning: Column `x1` joining factors with different levels, coercing to
+## character vector</code></pre>
 <pre class="r"><code>kable(df)</code></pre>
 <table>
 <thead>
@@ -1031,8 +1043,8 @@ kable(df)</code></pre>
 <tr class="header">
 <th align="left">x1</th>
 <th align="right">x2</th>
-<th align="left">x1</th>
-<th align="right">x2</th>
+<th align="left">x11</th>
+<th align="right">x21</th>
 </tr>
 </thead>
 <tbody>
@@ -1065,6 +1077,11 @@ kable(df)</code></pre>
 <h2><span class="header-section-number">11.5</span> dplyr::bind_rows()</h2>
 <pre class="r"><code>df &lt;- dplyr::bind_rows(y, z)</code></pre>
 <pre><code>## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character</code></pre>
+<pre><code>## Warning in bind_rows_(x, .id): binding character and factor vector,
+## coercing into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector,
+## coercing into character vector</code></pre>
 <pre class="r"><code>kable(df)</code></pre>
 <table>
 <thead>
@@ -1109,6 +1126,11 @@ kable(df)</code></pre>
 <h2><span class="header-section-number">11.6</span> dplyr::bind_row(…, .id=)</h2>
 <pre class="r"><code>df &lt;- dplyr::bind_rows(y, z, .id = &quot;df_id&quot;)</code></pre>
 <pre><code>## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character</code></pre>
+<pre><code>## Warning in bind_rows_(x, .id): binding character and factor vector,
+## coercing into character vector
+
+## Warning in bind_rows_(x, .id): binding character and factor vector,
+## coercing into character vector</code></pre>
 <pre class="r"><code>kable(df)</code></pre>
 <table>
 <thead>
@@ -1451,7 +1473,7 @@ $(document).ready(function () {
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>
