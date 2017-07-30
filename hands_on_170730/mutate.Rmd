@@ -1,7 +1,5 @@
 ---
-title: "列の変換"
-subtitle: ""
-author: ""
+title: "列の変換 - mutate関数"
 date: 
 output:
   html_document:
@@ -12,3 +10,204 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 
 ```
+
+## mutate関数とは
+
+データセットに新たに変数を追加する関数です。また、既存の変数の書き換えも可能です。dplyrパッケージでも高頻度で利用される基本的な関数の一つです。
+
+### 使い方
+
+```r
+mutate(.data, ...)
+```
+
+### 引数
+
+.data
+
+: 対象とするデータセットを指定。
+
+...
+
+: 新たに加える変数を名前付きベクトルで指定。
+
+### 例
+
+試しに、`iris`データの`Sepal.Length`の値を2倍した変数として`kosaki`という変数を作成してみます:
+
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+mutate(iris, kosaki = Sepal.Length * 2)
+```
+
+このように、引数の`...`で受け取った内容を評価し、`.data`で指定したデータセットの最後に追加します。また、**変数名として既存の名前を与えると、その変数が上書きされます**:
+
+```{r}
+mutate(iris, Sepal.Length = Sepal.Width * 3)
+```
+
+
+## ちょっと込み入った話
+
+`mutate`に引き渡す新たな変数ですが、計算式とか関数で準備したりといろいろできます。ただ**行数が同一でないと受け付けません**。data.frameの仕様を考えたら当然ですが…。あとよく次元数でエラーを受けます。追加する変数の処理内容を確認してください。
+
+### エクササイズ1
+
+1. `iris`データセットに、`Sepal.Width`を2倍した`beer`という変数を追加してください。
+1. `iris`データセットに、`Sepal.Width`を10倍した値を`Sepal.Width`として上書きしてください。
+
+#### {.showhide}
+
+これでOKです:
+
+```{r}
+# 1の実行例
+mutate(iris, beer = Sepal.Width * 2)
+
+# 2の実行例
+mutate(iris, Sepal.Width = Sepal.Width * 10)
+```
+
+## 実例
+
+単純な加工なら、上記のような計算式を書けばOKです。また、データベース処理としてよく使われる窓(window)関数がありますが、基本的なものはdplyrパッケージに組み込まれています。詳しくは以下のサイトを参照してください:
+
+[dplyrを使いこなす！Window関数編 - Qiita](http://qiita.com/matsuou1/items/db6e8c48fcfd791dd876)
+
+このwindow関数を含め、いくつかピックアップします。また、説明用に以下のデータセットを使います:
+
+```{r}
+df <- data.frame(
+  no = 1:7,
+  x1 = c(sample(1:6), NA),
+  s1 = c(LETTERS[1:4], NA, LETTERS[6:7])
+)
+df
+```
+
+### オフセット関数
+
+要するに「*個ずらす」という関数です。差分を出したい時によく使います:
+
+```{r}
+# 1個ずらした変数を作成
+mutate(df, x2 = lag(x1))
+
+# 3個ずらした変数を作成
+mutate(df, x2 = lag(x1, 3))
+
+# ずらした空欄に値を指定
+mutate(df, x2 = lag(x1, 2, default = 0))
+```
+
+また、逆に上へずらす関数もあります:
+
+```{r}
+# 1個ずらした変数を作成
+mutate(df, x2 = lead(x1))
+
+# 3個ずらした変数を作成
+mutate(df, x2 = lead(x1, 3))
+
+# ずらした空欄に値を指定
+mutate(df, x2 = lead(x1, 2, default = 0))
+```
+
+### 累積関数
+
+累積に関するものです:
+
+```{r}
+# 累積和を計算
+mutate(df, x2 = cumsum(x1))
+```
+
+NAが入るとNAになるので注意してください。なお累積関数には他にもいろいろありますので、このページ最後の資料をぜひ参照してみてください。
+
+### 条件による値指定
+
+dplyrには`if_else`という関数があり、条件を指定して値を指定していくことができます:
+
+```{r}
+mutate(df, x2 = if_else(condition = x1 > 3, true = TRUE, false = FALSE))
+```
+
+baseにも`ifelse()`があるのですが、こちらのほうがより厳密で、trueの内容とfalseの内容の処理内容をチェックして、同じ型で同じclassかどうかをみるようです。また、引数に`missing`があり、欠損値への処理ができるようになっています:
+
+```{r}
+mutate(df, x2 = if_else(x1 > 4, "high", "low", ""))
+```
+
+### 条件を指定してNA
+
+条件に合致した値をNAにします:
+
+```{r}
+mutate(df, x2 = na_if(x1, 4))
+```
+
+NAにしたい値は単一の値、もしくはデータセットと同一の長さのベクトルを受け付けるので注意してください。
+
+### 該当する値の書き換え
+
+該当する値を書き換えます:
+
+```{r}
+mutate(df,
+       s2 = recode(s1, A = "kosaki"),
+       s3 = recode(s1, A = "kosaki", .default = "xxx"),
+       x2 = recode(x1, `5` = 55L, `6` = 66L, .default = x1),
+       x3 = recode(x1, `5` = 55L, `6` = 66L, .default = x1, .missing = -1L))
+```
+
+出力結果を確認してもらえればわかるかと思います。なお、数値の場合``5``のようにバッククォートで挟む必要があり、書き換える値で`55L`としているのは、Rで数値の末尾にLをつけるとそれを数値として扱うようするためです。このようにrecodeは型に対して厳し目になっています。
+
+### 複数の条件で場合分け
+
+`if_else()`の複数ケースで、まとめて処理できます:
+
+```{r}
+mutate(df,
+       x2 = case_when(
+         no %% 2 == 0 ~ "Even",
+         no %% 2 == 1 ~ "Odd",
+         TRUE ~ as.character(x1)
+       ),
+       x3 = case_when(
+         no <= 3 ~ x1 * -2,
+         between(no, 3, 5) ~ as.numeric(x1),
+         TRUE ~ no ^ 2
+       ),
+       s2 = case_when(
+         s1 == "A" ~ "kosaki"
+       ),
+       s3 = case_when(
+         s1 == "A" ~ "kosaki",
+         TRUE ~ as.character(s1)
+       ),
+       s4 = case_when(
+         TRUE ~ as.character(s1),
+         s1 == "A" ~ "chitoge"
+       ))
+```
+
+`case_when()`では複数の条件を指定していくことができ，引数に論理式と置き換える値を記述していきます。この際，`~`を利用したformulaを使用します。
+
+また，論理式で拾えなかった要素については全て`NA`が返ってきます。なお，「それ以外」を指し示すのは`TRUE`で，上記のように`~`の左辺に記述すればOKです。
+
+注意事項ですが，順番が重要で最初に書いてあるものが優先されます。s3とs4のコードと出力を比較してください。
+
+## エクササイズ2
+
+以下の処理について、考えてみましょう:
+
+1. dfのデータセットで、`x1`を3倍した変数を作成してみましょう
+1. dfのデータセットで、`s1`の"C"を他の文字列にしたものを作成してみましょう
+
+## 参考資料
+
+以下の資料も参考にしてください:
+
+- http://qiita.com/matsuou1/items/db6e8c48fcfd791dd876
+- http://qiita.com/kazutan/items/083605af5f0c4da30b48
+- https://github.com/rstudio/cheatsheets/raw/master/source/pdfs/data-transformation-cheatsheet.pdf (pdf注意)
