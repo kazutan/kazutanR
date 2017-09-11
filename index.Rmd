@@ -41,7 +41,7 @@ https://kazutan.github.io/kazutanR/hands_on_170730/index.html
     - DTを利用したインタラクティブな表の作成
 - [leafletによる地図作成](leaflet_d.html)
     - leafletを利用した地図およびデータプロットの作成
-- [plotly入門](plotly-intro.html)
+- [plotly入門](plotly_intro.html)
     - インタラクティブなplotを描けるplotlyの入門編
 
 ### R Markdown
