@@ -20,12 +20,18 @@ navbar:
           href: DT_demo.html
         - text: "leafletによる地図プロット"
           href: leaflet_d.html
+        - text: "plotly入門"
+          href: plolty_intro.html
     - text: "R Markdown"
       menu:
         - text: "R Markdown入門"
           href: Rmd_intro.html
         - text: "R Markdownでダッシュボード"
           href: fdb_intro.html
+    - text: "セミナー"
+      menu:
+        - text: "データハンドリング入門(2017/7/31)"
+          href: https://kazutan.github.io/kazutanR/hands_on_170730/index.html
     - text: "その他"
       menu:
         - text: "webshotによるキャプチャ"

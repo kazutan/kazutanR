@@ -41,6 +41,8 @@ https://kazutan.github.io/kazutanR/hands_on_170730/index.html
     - DTを利用したインタラクティブな表の作成
 - [leafletによる地図作成](leaflet_d.html)
     - leafletを利用した地図およびデータプロットの作成
+- [plotly入門](plotly-intro.html)
+    - インタラクティブなplotを描けるplotlyの入門編
 
 ### R Markdown
 
@@ -64,6 +66,10 @@ https://kazutan.github.io/kazutanR/hands_on_170730/index.html
     - {DiagrammeR}と{networkD3}でちょっとやってみた
 
 ## News {.col-md-4 .news}
+- 2017/9/11
+    - 可視化に「plotly入門」を追加
+- 2017/7/31
+    - Kazutan.Rハンズオンの資料を設置
 - 2017/3/7
     - R Markdownに「R Markdownでダッシュボード作成」を追加
     - トップページのリンクを調整

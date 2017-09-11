@@ -1,0 +1,45 @@
+---
+title: "グループ化 - group_by関数"
+output:
+  html_document:
+    md_extensions: -ascii_identifiers
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+ある変数の値でデータセットをグループ化します。これを行うことで、グループ単位で処理を行えるようになります。
+
+## 実例
+
+```{r}
+library(dplyr)
+df <- group_by(iris, Species)
+df
+```
+
+見た目では変化していないように見えますが、これでグループ化されて処理されるようになります:
+
+```{r}
+mutate(df, x1 = cumsum(Sepal.Length))
+```
+
+また、多くの場合集計に利用します:
+
+```{r}
+# irisでそのまま集計した場合:
+summarize(iris, n = n(), mean = mean(Sepal.Length), sd = sd(Sepal.Length))
+
+# group_byしたあと:
+summarize(df, n = n(), mean = mean(Sepal.Length), sd = sd(Sepal.Length))
+```
+
+なお、グループ化を解除するにはungroup関数を使います
+
+```{r}
+df2 <- ungroup(df)
+summarize(df2, n = n(), mean = mean(Sepal.Length), sd = sd(Sepal.Length))
+```
+

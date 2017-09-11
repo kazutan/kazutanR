@@ -1,0 +1,247 @@
+---
+title: "列の選択 - select関数"
+output:
+  html_document:
+    md_extensions: -ascii_identifiers
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+*dplyr*パッケージにある関数で、data.frameの列をピックアップしていく関数。data.frameは列が基本となるため、**データハンドリングの基本かつ必須関数**。
+
+## select関数とは
+
+### 使い方
+
+```r
+select(.data, ...)
+```
+
+### 引数
+
+.data
+
+: 対象とするデータセットを指定。
+
+...
+
+: ピックアップする変数(列)を指定。指定方法にはいろいろな方法があります(後述)。
+
+### 例
+
+試しに、`iris`データより`Sepal.Length`と`Species`を取り出してみましょう:
+
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+
+select(.data = iris, Sepal.Length, Petal.Length, Species)
+```
+
+このように、引数の`...`にピックアップしたい引数を指定すると持ってきてくれます。
+
+## ちょっと込み入った話
+
+select関数で一番のポイントは、**いかにして効率よくselect関数に変数を引き渡すか**です。ちなみにこのselect関数は`...`で受け取った内容を列番号へと変えて、それを使って列選択しています。よって、列番号をそのまま与えても反応します:
+
+```{r}
+select(iris, 1, 3, 5)
+```
+
+また、基本的には`base::subset()`で用いるような変数指定も可能です。よく使うのが`-`を使った方法で、もちろん利用可能です:
+
+```{r}
+select(iris, -Species)
+select(iris, -c(Sepal.Length, Petal.Length))
+```
+
+### エクササイズ1
+
+`iris`データセットには、以下の変数が含まれています:
+
+```{r}
+names(iris)
+```
+
+では、`Petal.Width`だけ取り除いてみてください。
+
+#### {.showhide}
+
+これでOKです:
+
+```{r}
+select(iris, -Petal.Width)
+```
+
+## 列選択のための便利関数
+
+*dplyr*には、この列選択のための便利関数がいくつも準備されています:
+
+- `starts_with()`
+- `ends_with()`
+- `contains()`
+- `matches()`
+- `num_range()`
+- `one_of()`
+- `everything()`
+
+これらを使えば、かなり思うように列を選択できるようになります。
+
+### 列名の前方一致 `starts_with()`
+
+列名を前方一致で持ってきます:
+
+```{r}
+select(iris, starts_with("petal"))
+```
+
+なお、上記の通り**デフォルトでは大文字小文字の区別はしません**。区別させたければ、引数として`ignore.case = FALSE`を指定してください:
+
+```{r}
+select(iris, starts_with("petal", ignore.case = FALSE))
+select(iris, starts_with("Petal", ignore.case = FALSE))
+```
+
+### 列名の後方一致 `ends_with()`
+
+列名を後方一致で持ってきます:
+
+```{r}
+select(iris, ends_with("Width"))
+```
+
+上述の`starts_with()`の後方一致版ですので、大文字小文字の扱いも含め同一です。
+
+### 列名の部分一致 `contains()`
+
+列名を部分一致で持ってきます:
+
+```{r}
+select(iris, contains("etal"))
+```
+
+指定した文字列を含む列をすべて選択します。大文字小文字の扱いは上記と同一です。
+
+### 列名の正規表現による一致 `matches()`
+
+正規表現を用いてmatchした列名を全て持ってきます:
+
+```{r}
+select(iris, matches(".t."))
+```
+
+正規表現については省略しますが、少しでも使えるようになると文字列操作が格段に楽になりますのでぜひ機会を見つけて練習してみてください。
+
+### 列名の通し番号を利用した選択 `num_renge()`
+
+よく列名に`x1, x2, x3, ...`というのがあると思います。これを簡単に選択するためのものです。これはirisデータセットではできないのでサンプルデータを準備します:
+
+```{r}
+df <- as.data.frame(matrix(1:30, nrow = 3, ncol = 10))
+colnames(df) <- c(paste0("beer", 1:5), paste0("sake0", 1:5))
+ls(df)
+```
+
+たとえば、ここで「beer1からbeer3までを選択したい」と思ったとします。このような場合には以下のようにします:
+
+```{r}
+select(df, num_range(prefix = "beer", range = 1:3, width = 1))
+```
+
+引数の意味は以下のとおりです;
+
+prefix
+
+: 連番変数の根っこ部分。文字列で指定。
+
+range
+
+: 連番の範囲。数値ベクトルで指定。
+
+width
+
+: **連番の桁数を指定**。
+
+ポイントは引数widthです。これがあるおかげで、以下のようなことが可能です:
+
+```{r}
+select(df, num_range("sake", 2:4, 2))
+```
+
+このように、かなり面倒な「01, 02, 03...」といった連番でも指定することが可能です。これらをbase関数群で実現しようとするとかなり苦労しますがこれなら一発です。
+
+### 列名を文字列ベクトルで指定 `one_of()`
+
+変数を文字列ベクトルで引き渡すのに用います:
+
+```{r}
+var_list <- c("Sepal.Length", "Petal.Width")
+select(iris, one_of(var_list))
+```
+
+なんとなく「別にこの関数を使わなくてもいけるんじゃね?」と思いそうですが、dplyrはこれを受け付けません。これは理由があるのですが省略します。気になる方は`dplyr::current_vars`や`dplyr::select`から、気づいたら「tidyevalって…rlangって…」って言いたくなるような奥深くに進んでみてください。
+
+### 全ての列を選択 `everything()`
+
+すべての列を持ってきます:
+
+```{r}
+select(iris, everything())
+```
+
+これを単独で使うことはまずありません(そのまま持ってくることになるため)。よくあるのが順番を入れ替える時です:
+
+```{r}
+select(iris, Species, everything())
+```
+
+他にもあるのですが、応用編に回します。
+
+### エクササイズ2
+
+先ほど説明した便利関数を使ってみましょう。
+
+1. irisデータセットから"S"で始まる変数だけを取り出してみましょう
+2. irisデータセットから"th"で終わる変数だけを取り出してみましょう
+3. irisデータセットから"ep"を含む変数だけを取り出してみましょう
+4. dfデータセットから"beer3-beer5"と"sake01-sake03"を取り出してみましょう
+
+#### 実行例 {.showhide}
+
+こんな感じです:
+
+```{r}
+# 1の実行例
+select(iris, starts_with("S"))
+
+# 2の実行例
+select(iris, ends_with("th"))
+
+# 3の実行例
+select(iris, contains("ep"))
+
+# 4の実行例
+select(df, num_range("beer", 3:5, 1), num_range("sake", 1:3, 2))
+```
+
+## 応用編
+
+select関数には、変数を指定する際に名前をつけることでまた違った動きをするようになります:
+
+```{r}
+select(iris, Sepal.Length, kosaki = Species)
+```
+
+さらにこれの展開として、以下のようなことができます:
+
+```{r}
+select(iris, kosaki = starts_with("Petal"), everything())
+```
+
+つまり、`(付けたい名前) = (ターゲットの列名)`ということが可能で、しかもそのターゲットが複数ある場合には自動的に連番を振ってくれるというのがあります。
+
+これは実に汚いデータセットの前処理をする際に抜群の効果を発揮します。このあたりまで来ると、もうdplyrなしで作業できなくなるでしょう。
+
+

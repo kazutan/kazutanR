@@ -1,0 +1,643 @@
+---
+title: "plotly入門"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      warning = FALSE, 
+                      message = FALSE)
+```
+
+この資料は，[fukuoka.R #9](https://fukuoka-r.connpass.com/event/63700/)で発表した「Rでインタラクティブなプロットを作ろう」のスライドをベースに，plotlyの部分を取り出してドキュメント形式に起こしたものです。スライドバージョンは[こちら](https://kazutan.github.io/slides/fukuokaR9_interactive_plot.html#/)にあります。
+
+なお，スライドからほぼそのまま起こしているため，ほぼ箇条書きとなっております。またwarningおよびmesseageは出ないように抑制しています。ご了承ください。
+
+
+# Rでインタラクティブなプロット
+
+## Rでプロット、何を使ってますか?
+
+- baseのplot?
+- ggplot2?
+- lattic?
+- その他パッケージ?
+
+いろんな選択肢があります
+
+## できればグリグリ動かしたい
+
+- baseのplotやggplot2は"静止画"
+    - 出力したらそれで固定
+    - 軸範囲やデータ系列の変更はコードに戻る必要
+- できれば出力した後で動かしたい
+    - しかしplotやggplot2では難しい
+
+HTML + CSS + JSで実現しよう!
+
+# plotly {#plotly_toha}
+
+## plotlyパッケージとは
+
+- [plotly](https://plot.ly/)というインタラクティブなchartsを作るパッケージ
+    - 元は同社の可視化コンテンツにアクセスするためのパッケージ(要登録)
+    - **現在はオープンソース化**
+- **htmlwigets系で一番GitHubの★を稼いでる**
+- 以下の資料がおすすめ
+    - [R Graphing Library | Plotly](https://plot.ly/r/)
+        - 公式サイトによるドキュメント。まずはここから。
+    - [plotly for R](https://plotly-book.cpsievert.me/)
+        - gitbook形式で，より深い使い方が書いてあります。ここ読めばOK
+
+## インストール
+
+```{r, eval=FALSE}
+# CRANから
+install.packages("plotly")
+# GitHubから
+devtools::install_github("ropensci/plotly")
+# githubinstallを使うなら
+githubinstall::githubinstall("plotly")
+```
+
+## Hello, plotly!
+
+```{r, message=FALSE}
+library(plotly)
+library(magrittr)
+plot_ly(iris, x = ~Sepal.Length, y = ~Sepal.Width, color = ~Species, type = "scatter")
+```
+
+---
+
+```{r}
+plot_ly(iris, x = ~Species, y = ~Sepal.Length, type = "box")
+```
+
+## 特徴
+
+- 簡単にインタラクティブなplotが作れる
+    - デフォルトでいい感じにしてくれる
+- 3Dや地図、ガントチャートも対応
+    - D3.jsベースでかなり幅広い
+- プロット記述 %>% レイアウト設定記述
+    - pipe演算子で送ると楽
+- `type`(グラフの種類)が重要
+    - これによって指定できるオプションが変わってくる
+    - ggplot2みたいに多様なgeomを使い分けるのではない
+    - 系統的に分かれていく(後述)
+        - 例えばpointとbubbleとlineはすべて`type = scatter`から分岐
+
+
+# plotlyの基本(データ・タイプ)
+
+## キャンパス
+
+
+
+```{r, eval=FALSE}
+p_empty <- plot_ly()
+p_empty
+```
+
+- 引数を与えないと，キャンパスのみ生成
+- 軸はとりあえず描かれているだけ
+- ここから要素を追加していきます
+
+
+
+```{r, echo=FALSE}
+plot_ly()
+```
+
+## データ
+
+
+
+```{r, eval=FALSE}
+plot_ly(data = iris)
+```
+
+- 描写する際に使用するデータセット(data.frame)を指定しています
+- ただデータセットを指定しただけなので，特に何が描かれているわけではないです
+
+
+
+```{r, echo=FALSE}
+plot_ly(data = iris)
+```
+
+## x軸の指定
+
+
+
+```{r, eval=FALSE}
+plot_ly(data = iris, 
+        x = ~Sepal.Length,
+        y = ~Sepal.Width)
+```
+
+- 軸に割り当てる変数を指定すると描写
+- 変数を指定する場合，変数名の前に`~`が必要
+- x,yに割り当てられているデータから，自動的にscatterプロットが選択
+
+
+
+```{r, echo=FALSE}
+plot_ly(data = iris, 
+        x = ~Sepal.Length,
+        y = ~Sepal.Width)
+```
+
+## グラフのタイプを指定
+
+
+
+```{r, eval=FALSE}
+plot_ly(data = iris, 
+        x = ~Species,
+        y = ~Sepal.Length,
+        type = "box")
+```
+
+- 引数`type`でグラフのタイプを指定
+    - bar: 棒グラフ
+    - box: 箱ひげ図
+    - scatter: 散布図
+    - pie: 円グラフ
+    - sankey: sankey diagram  
+    etc...
+
+
+
+```{r, echo=FALSE}
+plot_ly(data = iris, 
+        x = ~Species,
+        y = ~Sepal.Length,
+        type = "box")
+```
+
+## データ系列の指定(split)
+
+
+
+```{r, eval=FALSE}
+plot_ly(data = iris,
+        x = ~Sepal.Length,
+        y = ~Sepal.Width,
+        split = ~Species,
+        type = "scatter")
+```
+
+- いわゆるggplot2のgroupみたいなもの
+- splitで指定した変数で系列を分割
+    - 離散変数で使ってください
+
+
+
+```{r, echo=FALSE}
+plot_ly(data = iris,
+        x = ~Sepal.Length,
+        y = ~Sepal.Width,
+        split = ~Species,
+        type = "scatter")
+```
+
+## データ系列の指定(color)
+
+
+
+```{r, eval=FALSE}
+plot_ly(data = iris,
+        x = ~Sepal.Length,
+        y = ~Sepal.Width,
+        color  = ~Petal.Length,
+        type = "scatter")
+```
+
+- いわゆるggplot2のcolorみたいなもの
+- colorで指定した変数で色分け
+    - 連続でも離散でもOK
+
+
+
+```{r, echo=FALSE}
+plot_ly(data = iris,
+        x = ~Sepal.Length,
+        y = ~Sepal.Width,
+        color = ~Petal.Length,
+        type = "scatter")
+```
+
+
+# plotlyの基本(軸・凡例・タイトルなど)
+
+## 軸や凡例
+
+
+
+- こういったプロパティ項目は追加設定
+    - plotlyのオブジェクトを作成
+    - それにlayout関数をかける
+- 以下に設定を追加していきます:
+
+
+
+```{r, echo=FALSE}
+plot_ly(data = iris,
+        x = ~Sepal.Length,
+        y = ~Sepal.Width,
+        split = ~Species,
+        type = "scatter")
+```
+
+## 軸周りの設定
+
+
+
+```{r, eval=FALSE}
+plot_ly(data = iris,
+        x = ~Sepal.Length,
+        y = ~Sepal.Width,
+        split = ~Species,
+        type = "scatter") %>% 
+  layout(xaxis = list(
+    showgrid = F,
+    rangemode = "tozero",
+    nticks = 6,
+    title = "ほげ"
+  ))
+```
+
+- `xaxis`引数に設定したい内容をlist型で
+- Y軸に設定したい場合は`yaxis`引数へ
+- たくさんあるので詳しくは[公式サイトのreference](https://plot.ly/r/reference/#layout-xaxis)を
+
+
+
+```{r, echo=FALSE}
+plot_ly(data = iris,
+        x = ~Sepal.Length,
+        y = ~Sepal.Width,
+        split = ~Species,
+        type = "scatter") %>% 
+  layout(xaxis = list(
+    showgrid = F,
+    rangemode = "tozero",
+    nticks = 6,
+    title = "ほげ"
+  ))
+```
+
+## 凡例(legend)の設定
+
+
+
+```{r, eval=FALSE}
+plot_ly(data = iris,
+        x = ~Sepal.Length,
+        y = ~Sepal.Width,
+        split = ~Species,
+        type = "scatter") %>% 
+  layout(legend = list(
+    orientation = "h",
+    yanchor = "bottom"
+  ))
+```
+
+- `legend`引数にlist型で設定を渡す
+- 項目については[公式ドキュメント](https://plot.ly/r/reference/#layout-legend)を参照
+
+
+
+```{r, echo=FALSE}
+plot_ly(data = iris,
+        x = ~Sepal.Length,
+        y = ~Sepal.Width,
+        split = ~Species,
+        type = "scatter") %>% 
+  layout(legend = list(
+    orientation = "h",
+    yanchor = "bottom"
+  ))
+```
+
+## タイトルなど
+
+
+
+```{r, eval=FALSE}
+plot_ly(data = iris,
+        x = ~Sepal.Length,
+        y = ~Sepal.Width,
+        color = ~Species,
+        type = "scatter") %>% 
+  layout(title = "たいとる",
+         paper_bgcolor = "#aaf",
+         plot_bgcolor = "#66d",
+         showlegend = FALSE)
+```
+
+- 上述の通り
+- 詳しくは[公式のreference](https://plot.ly/r/reference/#layout)を
+
+
+
+```{r, echo=FALSE}
+plot_ly(data = iris,
+        x = ~Sepal.Length,
+        y = ~Sepal.Width,
+        color = ~Species,
+        type = "scatter") %>% 
+  layout(title = "たいとる",
+         paper_bgcolor = "#aaf",
+         plot_bgcolor = "#66d",
+         showlegend = FALSE)
+```
+
+# plotlyの基本<br/>(重ね書き・複数プロット)
+
+## 重ね書き
+
+
+
+```{r, eval=FALSE}
+df <- data.frame(
+  x = c(1:50),
+  y1 = rnorm(50, mean = 5),
+  y2 = rnorm(50, mean = 0)
+)
+plot_ly(df, x = ~x, y = ~y1,
+        name = "kosaki",
+        type = "scatter", mode = "lines+marker") %>% 
+  add_trace(y = ~y2,
+            name = "chitoge",
+            mode = "markers")
+```
+
+- `add_trace`関数で新たに描写オブジェクトを追加
+    - ggplot2でgeom重ね書きに近い
+    - dataやaes的なのは継承可
+
+
+
+```{r, echo=FALSE}
+df <- data.frame(
+  x = c(1:50),
+  y1 = rnorm(50, mean = 1),
+  y2 = rnorm(50, mean = 0)
+)
+plot_ly(df, x = ~x, y = ~y1,
+        name = "kosaki",
+        type = "scatter",
+        mode = "lines+marker") %>% 
+  add_trace(y = ~y2,
+            name = "chitoge",
+            mode = "markers")
+```
+
+## 複数プロット(個別で作成)
+
+
+
+```{r, eval=FALSE}
+p1 <- plot_ly(df, x = ~x, y = ~y1,
+              type = "scatter",
+              mode = "markers")
+p2 <- plot_ly(df, x = ~x, y = ~y2,
+              type = "scatter",
+              mode = "lines")
+subplot(p1, p2, nrows = 2)
+```
+
+- `subplot`で束ねることが可能
+    - `nrows`引数で行数を指定
+    - その後pipeで`layout`を繋げば、全体でのlayout設定が可能
+
+
+
+```{r, echo=FALSE}
+p1 <- plot_ly(df, x = ~x, y = ~y1,
+              type = "scatter",
+              mode = "markers")
+p2 <- plot_ly(df, x = ~x, y = ~y2,
+              type = "scatter",
+              mode = "lines")
+subplot(p1, p2, nrows = 2) %>% 
+  layout(title = "複数プロット1")
+```
+
+## 複数プロット(条件別で)
+
+
+
+```{r, eval=FALSE}
+df_tidy <- df %>%  
+  tidyr::gather(var, value, -x)
+plot_ly(df_tidy,
+        x = ~x, y = ~value,
+        color = ~var,
+        yaxis = ~var) %>% 
+  add_lines() %>% 
+  subplot(nrows = 2)
+```
+
+- `plot_ly`の`yaxis`でY軸のIDを準備
+    - あとはggplot2のfacetみたいに自動でやってくれる
+
+
+
+```{r, echo=FALSE}
+df_tidy <- df %>%  
+  tidyr::gather(var, value, -x)
+plot_ly(df_tidy,
+        x = ~x, y = ~value,
+        color = ~var,
+        yaxis = ~var) %>% 
+  add_lines() %>% 
+  subplot(nrows = 2)
+```
+
+# ggplot2 to plotly
+
+## ggplotlyがある
+
+
+
+```{r, eval=FALSE}
+library(ggplot2)
+gg <- ggplot(df_tidy, aes(x, value, group = var)) +
+  geom_point(aes(color = var))
+ggplotly(gg)
+```
+
+- **なんと`ggploly`関数で一発変換**
+    - かなりマニアックなものをしてなければすんなりOK
+    - どれが効かないかは把握しきれてないです...
+
+
+
+```{r, echo=FALSE}
+library(ggplot2)
+gg <- ggplot(df_tidy,
+             aes(x, value, group = var)) +
+  geom_point(aes(color = var))
+ggplotly(gg)
+```
+
+## facetもOK
+
+
+
+```{r, eval=FALSE}
+gg_facet <- ggplot(df_tidy,
+                   aes(x, value, group = var)) +
+  geom_point(aes(color = var)) +
+  facet_wrap(~var, nrow = 2)
+ggplotly(gg_facet)
+```
+
+- facetされていてもちゃんと出します
+    - ただし、plotlyのオブジェクトとしては分かれていない
+    - この点には注意
+
+
+
+```{r, echo=FALSE}
+gg_facet <- ggplot(df_tidy,
+                   aes(x, value, group = var)) +
+  geom_point(aes(color = var)) +
+  facet_wrap(~var, nrow = 2)
+ggplotly(gg_facet)
+```
+
+# plotlyの出力方法
+
+## R Markdown, Shiny
+
+- そのままでOK
+- この資料でもそのまま出しています
+- CSSで調整も可能
+    - classは`.plotly`
+    - idはハッシュ値
+
+## htmlファイル
+
+- htmlファイルとして可能
+    - いわゆるウィジットとして使える
+    - あとはiframeとかで埋め込めばOK
+- RStudioのViewerから[Export]-[Save As a html...]
+- もしくは`htmlwidgets::saveWidget`
+
+## 静止画像で
+
+- 静的な出力も可能
+    - `plotly::export`を使う
+    - RStudioのViewerに出して、[Export]のメニューから
+- もちろん「ただの画像」として出す
+    - 正直あんまり意味ない…
+
+# ギャラリー(短縮版)
+
+## bar chart
+
+
+
+```{r, eval=FALSE}
+Animals <- c("giraffes", "orangutans", "monkeys")
+SF_Zoo <- c(20, 14, 23)
+LA_Zoo <- c(12, 18, 29)
+data <- data.frame(Animals, SF_Zoo, LA_Zoo)
+
+plot_ly(data, x = ~Animals, y = ~SF_Zoo, type = 'bar', name = 'SF Zoo') %>%
+  add_trace(y = ~LA_Zoo, name = 'LA Zoo') %>%
+  layout(yaxis = list(title = 'Count'), barmode = 'stack')
+```
+
+
+
+```{r, echo=FALSE}
+Animals <- c("giraffes", "orangutans", "monkeys")
+SF_Zoo <- c(20, 14, 23)
+LA_Zoo <- c(12, 18, 29)
+data <- data.frame(Animals, SF_Zoo, LA_Zoo)
+
+plot_ly(data, x = ~Animals, y = ~SF_Zoo, type = 'bar', name = 'SF Zoo') %>%
+  add_trace(y = ~LA_Zoo, name = 'LA Zoo') %>%
+  layout(yaxis = list(title = 'Count'), barmode = 'stack')
+```
+
+## box plot
+
+
+
+```{r, eval=FALSE}
+plot_ly(y = ~rnorm(50), type = "box") %>%
+  add_trace(y = ~rnorm(50, 1))
+```
+
+
+
+```{r, echo=FALSE}
+plot_ly(y = ~rnorm(50), type = "box") %>%
+  add_trace(y = ~rnorm(50, 1))
+```
+
+
+## heatmap
+
+
+
+```{r, eval=FALSE}
+plot_ly(z = volcano, type = "heatmap")
+```
+
+
+
+```{r, echo=FALSE}
+plot_ly(z = volcano, type = "heatmap")
+```
+
+## 3D surface plot
+
+
+
+```{r, eval=FALSE}
+plot_ly(z = ~volcano) %>% add_surface()
+```
+
+
+
+```{r, echo=FALSE}
+plot_ly(z = ~volcano) %>% add_surface()
+```
+
+# さいごに
+
+## 使いドコロは?
+
+- htmlベースなドキュメントに埋め込む
+    - インタラクティブなので、インパクトが大きい
+- ダッシュボードに最適
+    - Rにはflexdashboardがある
+    - [R Markdownでダッシュボード作成](https://kazutan.github.io/kazutanR/fdb_intro.html)
+- Shinyでアプリ
+    - htmlwidgetsはShinyでこそ効果を発揮
+
+## 留意事項
+
+- **データがドキュメントに保持される**
+    - scriptタグ内に(だいたい)json形式で埋め込まれる
+        - 公開する際は注意
+- データ量が多いと重くなる
+    - ブラウザ&マシンに依存する
+    - クライアント側で処理するため
+
+## Enjoy!
+
+ 参考資料
+
+- [htmlwidgets for R](http://www.htmlwidgets.org/)
+- [htmlwidgets for R - gallery](http://gallery.htmlwidgets.org/)
+- [R Graphing Library | Plotly](https://plot.ly/r/)
+- [plotly cheat sheet(pdf)](https://images.plot.ly/plotly-documentation/images/r_cheat_sheet.pdf)
+- [plotly R chart attribute reference](https://plot.ly/r/reference/)

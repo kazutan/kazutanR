@@ -1,0 +1,224 @@
+---
+title: "行の選択 - filter関数"
+subtitle: ""
+author: ""
+date: 
+output:
+  html_document:
+    md_extensions: -ascii_identifiers
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+行(レコード)を条件によりフィルタリングして、必要な行(レコード)を残すという関数です。dplyrの中でもかなり高頻度で利用される基本的な関数のひとつです。
+
+## filter関数とは
+
+### 使い方
+
+```r
+filter(.data, ...)
+```
+
+### 引数
+
+.data
+
+: 対象とするデータセットを指定。
+
+...
+
+: フィルタリングする条件を指定。
+
+### 例
+
+試しに、`iris`データより`Sepal.Length > 6`を満たすレコードを抽出してみます:
+
+```{r, message=FALSE, warning=FALSE}
+library(dplyr)
+filter(iris, Sepal.Length > 6)
+```
+
+このように、引数の`...`にピックアップしたい引数を指定すると持ってきてくれます。また、複数指定することもできます:
+
+```{r}
+filter(iris, Sepal.Length > 6, Species == "versicolor")
+```
+
+出力から、このように続けて指定するとANDになるのがわかりますね。
+
+## ちょっと込み入った話
+
+filter関数は`...`で受け取った内容を吟味し、**`.data`で受け取ったデータと同一の長さの論理値(`TRUE`, `FALSE`)ベクトル**を準備して、それを使ってフィルタリングします。よって、論理値ベクトルをそのまま与えても反応します:
+
+```{r}
+# 論理値ベクトルを準備
+TF <- sample(c(TRUE, FALSE), size = 150, replace = TRUE, prob = c(1,9))
+# TRUEの数を確認
+summary(TF)
+# filterを実行
+filter(iris, TF)
+```
+
+なお、この論理値ベクトルは行数と同一である必要があり,異なる場合エラーを返します。エラーが出ない特別な場合として,ベクトル長が1(要するにTRUEまたはFALSEがひとつだけ)がありますが,実質意味はないでしょう:
+
+```{r}
+filter(iris, TRUE)
+```
+
+フィルターが全くかからない、あるいはレコードが空っぽになるといういときは、こういうケースに陥っていることがあるのでその時は確認してみてください。
+
+
+### エクササイズ1
+
+`iris`データセットには、以下の変数が含まれています:
+
+```{r}
+names(iris)
+```
+
+では、`Petal.Length`が`1.5`未満のレコードを抽出してください。
+
+#### {.showhide}
+
+これでOKです:
+
+```{r}
+filter(iris, Petal.Length < 1.5)
+```
+
+
+## 実例
+
+ここからは、以下のコードで作成したデータを用います:
+
+```{r}
+df <- data.frame(x0 = 1:10,
+                x1 = 11:20,
+                s = sample(c("kosaki", "chitoge", "marika"), 10,
+                           replace = TRUE),
+                s2 = sample(c("kosaki", "chitoge", NA), 10,
+                            replace = TRUE),
+                row.names = letters[1:10])
+df
+```
+
+### 数値フィルタ
+
+まずは単一条件についてです:
+
+```{r}
+# 「*に等しい」
+filter(df, x0 == 4)
+
+# 「*と等しくない」
+filter(df, x0 != 4)
+
+# 「*より小さい」
+filter(df, x0 < 4)
+
+# 「*以上」
+filter(df, x0 >= 4)
+
+```
+
+このあたりは出力と比較すればすぐにわかると思います。
+
+次に複数条件についてです:
+
+```{r}
+# 「AかつB」(AND)
+filter(df, x0 < 8 & x1 > 12)
+
+# 「AまたはB」(OR)
+filter(df, x0 > 8 | x1 < 15)
+
+# 「AかつB」の余事象
+filter(df, xor(x0 < 8, x1 > 12))
+
+# 「AからB」
+filter(df, dplyr::between(x0, 3, 7))
+```
+
+論理積(AND)は、上述のように`,`で繋いでいっても反応するのですが、明示的にしたほうがいいでしょう。`between`はdplyrに含まれる関数で、その名の通り区間を指定します。なお指定した範囲の値も含みます。
+
+### 文字列フィルタ
+
+まずは完全一致についてです:
+
+```{r}
+# 「*と一致する」
+filter(df, s == "kosaki")
+
+# 「*と一致しない」
+filter(df, s != "chitoge")
+```
+
+このあたりは数値フィルタと同一です。
+
+次に、「複数の要素のどれかと一致する」ものを抽出する場合です:
+
+```{r}
+filter(df, s %in% c("kosaki", "chitoge"))
+```
+
+この`%in%`はbaseにある演算子で、上記のように「Bの要素のどれか1つにマッチしたらTRUE、どれにもマッチしなければFALSE」を返してくれます。Rを使うなら絶対に覚えたほうがいいでしょう。
+
+なお、この余事象である「複数の要素のどれとも一致しない」ものを抽出する場合です:
+
+```{r}
+filter(df, !s %in% c("marika", "chitoge"))
+```
+
+非常に残念ながら`%nin%`みたいな演算子はbaseには入っていません。そのためそのような演算子を自分で定義するか、それを含むパッケージを読み込む、あるいは上記のコードのように頭に`!`をつけて逆にするあたりが妥当なところでしょう。
+
+次に部分一致についてです。Rのbaseにはgrep系の関数もあるのですが、ここではtidyverseパッケージ群のひとつであるstringrパッケージから、`str_detect`関数を使います:
+
+```{r}
+library(stringr)
+
+# "k"を含む文字列で抽出
+filter(df, str_detect(s, "k"))
+
+# 先頭に"k"を含む文字列で抽出(正規表現によるパターン記述)
+filter(df, str_detect(s, "^k"))
+```
+
+`stringr::str_detect(string, pattern)`はstringで指定した文字列ベクトルから正規表現でpatternと一致するものをTRUE,それ以外をFALSEで返してきます。`grepl`を使うよりも簡単でかつ高速に処理する(はず)なのでこちらをおすすめします。
+
+### NA処理
+
+`is.na()`関数を利用すると簡単に除去/抽出できます:
+
+```{r}
+# s2にNAが含まれているレコードを抽出
+filter(df, is.na(s2))
+
+# s2にNAが含まれていないレコードを抽出
+filter(df, !is.na(s2))
+```
+
+`is.na`は「NAか否か」を判定してTRUEあるいはFALSEを返してきます。なのでこの場合s2にNAがあるレコードを抽出してきます。そのため,`!is.na(s2)`と否定することでs2がNAではないレコードを抽出してくるようになります。
+
+### エクササイズ2
+
+実例であげていたテクニックを使ってみましょう。
+
+1. dfデータセットから、x0が3以降で、s2がNAでないレコードを抽出しましょう
+1. dfデータセットから、sが"kosaki"あるいは"chitoge"で、x1が15より前のレコードを抽出しましょう
+
+#### {.showhide}
+
+これでOKです:
+
+```{r}
+# 1の実行例
+filter(df, x0 >= 3 & !is.na(s2))
+
+# 2の実行例
+filter(df, s %in% c("kosaki", "chitoge") & x1 < 15)
+```
+

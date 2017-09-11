@@ -1,8 +1,8 @@
 Version: 1.0
 
-RestoreWorkspace: No
+RestoreWorkspace: Yes
 SaveWorkspace: No
-AlwaysSaveHistory: No
+AlwaysSaveHistory: Default
 
 EnableCodeIndexing: Yes
 UseSpacesForTab: Yes
@@ -12,7 +12,5 @@ Encoding: UTF-8
 RnwWeave: Sweave
 LaTeX: pdfLaTeX
 
-LineEndingConversion: Posix
-
 BuildType: Website
-WebsitePath: ~/Dropbox/for_R/kazutanR
+WebsitePath: ~/Dropbox/for_R/kazutanR/hands_on_170730

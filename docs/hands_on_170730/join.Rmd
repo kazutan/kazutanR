@@ -1,0 +1,72 @@
+---
+title: "データの結合 - *_join関数"
+subtitle: ""
+author: ""
+date: 
+output:
+  html_document:
+    md_extensions: -ascii_identifiers
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+データセットを結合する関数として、`*_join`関数群があります。SQLに慣れている方は、イメージしやすいかと思います。
+
+## 実例
+
+まず、実例に使うデータセットを準備します:
+
+```{r}
+a <- data.frame(x1=c("A","B","C"),x2=1:3)
+b <- data.frame(x1=c("A","B","D"),x3=c(TRUE, FALSE, TRUE))
+y <- data.frame(x1=c("A","B","C"),x2=1:3)
+z <- data.frame(x1=c("B","C","D"),x2=2:4)
+```
+
+aとbを結合する場合、共通する変数はx1ですので、x1をキーにしてmergeします。
+yとzを結合する場合、変数は共通です。行を追加してまとめる、あるいは列を追加してまとめます。
+
+### full_join
+
+```{r}
+library(dplyr)
+full_join(a, b, by = "x1")
+```
+
+全ての行と列を結合します。該当するものがない場合、NAがはいります。また、byでキー変数を指定しますが、変数名は文字列(ダブルクォーテーションで挟む)にしてください。
+
+### inner_join
+
+```{r}
+inner_join(a, b, by = "x1")
+```
+
+両方のデータセットで、共通して存在するもののみを結合します。
+
+### left_join
+
+```{r}
+left_join(a, b, by = "x1")
+```
+
+左側(第一引数)を優先して結合します。なお右側優先で結合する関数(right_join)もありますが省略します。
+
+### bind_cols
+
+```{r}
+bind_cols(y, z)
+```
+
+左側のデータセットに右側の列を追加します。同一名の変数がある場合、被らないように修正されます。また、**行数が一致しないとエラーとなります**。
+
+### bind_rows
+
+```{r}
+bind_rows(y, z)
+bind_rows(y, z, .id = "table_id")
+```
+
+左側のデータセットに右側の列を追加します。列数が一致しないとエラーとなります。また、**`.id`引数を使うと、上述の例のように「どのデータセットから持ってきたか」というのを識別できるような変数を自動で作成**します。
