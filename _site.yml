@@ -21,7 +21,7 @@ navbar:
         - text: "leafletによる地図プロット"
           href: leaflet_d.html
         - text: "plotly入門"
-          href: plolty_intro.html
+          href: plotly_intro.html
     - text: "R Markdown"
       menu:
         - text: "R Markdown入門"
