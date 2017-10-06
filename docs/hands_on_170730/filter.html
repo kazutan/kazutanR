@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+
+
+<title>行の選択 - filter関数</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-1.1/textmate.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-1.1/highlight.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+<script type="text/javascript">
+if (window.hljs && document.readyState && document.readyState === "complete") {
+   window.setTimeout(function() {
+      hljs.initHighlighting();
+   }, 0);
+}
+</script>
+
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+<link rel="stylesheet" href="site_style.css" type="text/css" />
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Kazutan.R #1</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="select.html">列選択</a>
+</li>
+<li>
+  <a href="filter.html">行選択</a>
+</li>
+<li>
+  <a href="mutate.html">列変換</a>
+</li>
+<li>
+  <a href="join.html">データ結合</a>
+</li>
+<li>
+  <a href="group_by.html">グループ化</a>
+</li>
+<li>
+  <a href="tidy.html">縦横変換</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/kazutan/kazutanR/tree/master/hands_on_170730">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">行の選択 - filter関数</h1>
+
+</div>
+
+
+<p>行(レコード)を条件によりフィルタリングして、必要な行(レコード)を残すという関数です。dplyrの中でもかなり高頻度で利用される基本的な関数のひとつです。</p>
+<div id="filter関数とは" class="section level2">
+<h2>filter関数とは</h2>
+<div id="使い方" class="section level3">
+<h3>使い方</h3>
+<pre class="r"><code>filter(.data, ...)</code></pre>
+</div>
+<div id="引数" class="section level3">
+<h3>引数</h3>
+<dl>
+<dt>.data</dt>
+<dd><p>対象とするデータセットを指定。</p>
+</dd>
+<dt>…</dt>
+<dd><p>フィルタリングする条件を指定。</p>
+</dd>
+</dl>
+</div>
+<div id="例" class="section level3">
+<h3>例</h3>
+<p>試しに、<code>iris</code>データより<code>Sepal.Length &gt; 6</code>を満たすレコードを抽出してみます:</p>
+<pre class="r"><code>library(dplyr)
+filter(iris, Sepal.Length &gt; 6)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Sepal.Length"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Sepal.Width"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Petal.Length"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Petal.Width"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Species"],"name":[5],"type":["fctr"],"align":["left"]}],"data":[{"1":"7.0","2":"3.2","3":"4.7","4":"1.4","5":"versicolor"},{"1":"6.4","2":"3.2","3":"4.5","4":"1.5","5":"versicolor"},{"1":"6.9","2":"3.1","3":"4.9","4":"1.5","5":"versicolor"},{"1":"6.5","2":"2.8","3":"4.6","4":"1.5","5":"versicolor"},{"1":"6.3","2":"3.3","3":"4.7","4":"1.6","5":"versicolor"},{"1":"6.6","2":"2.9","3":"4.6","4":"1.3","5":"versicolor"},{"1":"6.1","2":"2.9","3":"4.7","4":"1.4","5":"versicolor"},{"1":"6.7","2":"3.1","3":"4.4","4":"1.4","5":"versicolor"},{"1":"6.2","2":"2.2","3":"4.5","4":"1.5","5":"versicolor"},{"1":"6.1","2":"2.8","3":"4.0","4":"1.3","5":"versicolor"},{"1":"6.3","2":"2.5","3":"4.9","4":"1.5","5":"versicolor"},{"1":"6.1","2":"2.8","3":"4.7","4":"1.2","5":"versicolor"},{"1":"6.4","2":"2.9","3":"4.3","4":"1.3","5":"versicolor"},{"1":"6.6","2":"3.0","3":"4.4","4":"1.4","5":"versicolor"},{"1":"6.8","2":"2.8","3":"4.8","4":"1.4","5":"versicolor"},{"1":"6.7","2":"3.0","3":"5.0","4":"1.7","5":"versicolor"},{"1":"6.7","2":"3.1","3":"4.7","4":"1.5","5":"versicolor"},{"1":"6.3","2":"2.3","3":"4.4","4":"1.3","5":"versicolor"},{"1":"6.1","2":"3.0","3":"4.6","4":"1.4","5":"versicolor"},{"1":"6.2","2":"2.9","3":"4.3","4":"1.3","5":"versicolor"},{"1":"6.3","2":"3.3","3":"6.0","4":"2.5","5":"virginica"},{"1":"7.1","2":"3.0","3":"5.9","4":"2.1","5":"virginica"},{"1":"6.3","2":"2.9","3":"5.6","4":"1.8","5":"virginica"},{"1":"6.5","2":"3.0","3":"5.8","4":"2.2","5":"virginica"},{"1":"7.6","2":"3.0","3":"6.6","4":"2.1","5":"virginica"},{"1":"7.3","2":"2.9","3":"6.3","4":"1.8","5":"virginica"},{"1":"6.7","2":"2.5","3":"5.8","4":"1.8","5":"virginica"},{"1":"7.2","2":"3.6","3":"6.1","4":"2.5","5":"virginica"},{"1":"6.5","2":"3.2","3":"5.1","4":"2.0","5":"virginica"},{"1":"6.4","2":"2.7","3":"5.3","4":"1.9","5":"virginica"},{"1":"6.8","2":"3.0","3":"5.5","4":"2.1","5":"virginica"},{"1":"6.4","2":"3.2","3":"5.3","4":"2.3","5":"virginica"},{"1":"6.5","2":"3.0","3":"5.5","4":"1.8","5":"virginica"},{"1":"7.7","2":"3.8","3":"6.7","4":"2.2","5":"virginica"},{"1":"7.7","2":"2.6","3":"6.9","4":"2.3","5":"virginica"},{"1":"6.9","2":"3.2","3":"5.7","4":"2.3","5":"virginica"},{"1":"7.7","2":"2.8","3":"6.7","4":"2.0","5":"virginica"},{"1":"6.3","2":"2.7","3":"4.9","4":"1.8","5":"virginica"},{"1":"6.7","2":"3.3","3":"5.7","4":"2.1","5":"virginica"},{"1":"7.2","2":"3.2","3":"6.0","4":"1.8","5":"virginica"},{"1":"6.2","2":"2.8","3":"4.8","4":"1.8","5":"virginica"},{"1":"6.1","2":"3.0","3":"4.9","4":"1.8","5":"virginica"},{"1":"6.4","2":"2.8","3":"5.6","4":"2.1","5":"virginica"},{"1":"7.2","2":"3.0","3":"5.8","4":"1.6","5":"virginica"},{"1":"7.4","2":"2.8","3":"6.1","4":"1.9","5":"virginica"},{"1":"7.9","2":"3.8","3":"6.4","4":"2.0","5":"virginica"},{"1":"6.4","2":"2.8","3":"5.6","4":"2.2","5":"virginica"},{"1":"6.3","2":"2.8","3":"5.1","4":"1.5","5":"virginica"},{"1":"6.1","2":"2.6","3":"5.6","4":"1.4","5":"virginica"},{"1":"7.7","2":"3.0","3":"6.1","4":"2.3","5":"virginica"},{"1":"6.3","2":"3.4","3":"5.6","4":"2.4","5":"virginica"},{"1":"6.4","2":"3.1","3":"5.5","4":"1.8","5":"virginica"},{"1":"6.9","2":"3.1","3":"5.4","4":"2.1","5":"virginica"},{"1":"6.7","2":"3.1","3":"5.6","4":"2.4","5":"virginica"},{"1":"6.9","2":"3.1","3":"5.1","4":"2.3","5":"virginica"},{"1":"6.8","2":"3.2","3":"5.9","4":"2.3","5":"virginica"},{"1":"6.7","2":"3.3","3":"5.7","4":"2.5","5":"virginica"},{"1":"6.7","2":"3.0","3":"5.2","4":"2.3","5":"virginica"},{"1":"6.3","2":"2.5","3":"5.0","4":"1.9","5":"virginica"},{"1":"6.5","2":"3.0","3":"5.2","4":"2.0","5":"virginica"},{"1":"6.2","2":"3.4","3":"5.4","4":"2.3","5":"virginica"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>このように、引数の<code>...</code>にピックアップしたい引数を指定すると持ってきてくれます。また、複数指定することもできます:</p>
+<pre class="r"><code>filter(iris, Sepal.Length &gt; 6, Species == &quot;versicolor&quot;)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Sepal.Length"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Sepal.Width"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Petal.Length"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Petal.Width"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Species"],"name":[5],"type":["fctr"],"align":["left"]}],"data":[{"1":"7.0","2":"3.2","3":"4.7","4":"1.4","5":"versicolor"},{"1":"6.4","2":"3.2","3":"4.5","4":"1.5","5":"versicolor"},{"1":"6.9","2":"3.1","3":"4.9","4":"1.5","5":"versicolor"},{"1":"6.5","2":"2.8","3":"4.6","4":"1.5","5":"versicolor"},{"1":"6.3","2":"3.3","3":"4.7","4":"1.6","5":"versicolor"},{"1":"6.6","2":"2.9","3":"4.6","4":"1.3","5":"versicolor"},{"1":"6.1","2":"2.9","3":"4.7","4":"1.4","5":"versicolor"},{"1":"6.7","2":"3.1","3":"4.4","4":"1.4","5":"versicolor"},{"1":"6.2","2":"2.2","3":"4.5","4":"1.5","5":"versicolor"},{"1":"6.1","2":"2.8","3":"4.0","4":"1.3","5":"versicolor"},{"1":"6.3","2":"2.5","3":"4.9","4":"1.5","5":"versicolor"},{"1":"6.1","2":"2.8","3":"4.7","4":"1.2","5":"versicolor"},{"1":"6.4","2":"2.9","3":"4.3","4":"1.3","5":"versicolor"},{"1":"6.6","2":"3.0","3":"4.4","4":"1.4","5":"versicolor"},{"1":"6.8","2":"2.8","3":"4.8","4":"1.4","5":"versicolor"},{"1":"6.7","2":"3.0","3":"5.0","4":"1.7","5":"versicolor"},{"1":"6.7","2":"3.1","3":"4.7","4":"1.5","5":"versicolor"},{"1":"6.3","2":"2.3","3":"4.4","4":"1.3","5":"versicolor"},{"1":"6.1","2":"3.0","3":"4.6","4":"1.4","5":"versicolor"},{"1":"6.2","2":"2.9","3":"4.3","4":"1.3","5":"versicolor"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>出力から、このように続けて指定するとANDになるのがわかりますね。</p>
+</div>
+</div>
+<div id="ちょっと込み入った話" class="section level2">
+<h2>ちょっと込み入った話</h2>
+<p>filter関数は<code>...</code>で受け取った内容を吟味し、<strong><code>.data</code>で受け取ったデータと同一の長さの論理値(<code>TRUE</code>, <code>FALSE</code>)ベクトル</strong>を準備して、それを使ってフィルタリングします。よって、論理値ベクトルをそのまま与えても反応します:</p>
+<pre class="r"><code># 論理値ベクトルを準備
+TF &lt;- sample(c(TRUE, FALSE), size = 150, replace = TRUE, prob = c(1,9))
+# TRUEの数を確認
+summary(TF)</code></pre>
+<pre><code>##    Mode   FALSE    TRUE 
+## logical     120      30</code></pre>
+<pre class="r"><code># filterを実行
+filter(iris, TF)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Sepal.Length"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Sepal.Width"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Petal.Length"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Petal.Width"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Species"],"name":[5],"type":["fctr"],"align":["left"]}],"data":[{"1":"4.9","2":"3.0","3":"1.4","4":"0.2","5":"setosa"},{"1":"4.6","2":"3.1","3":"1.5","4":"0.2","5":"setosa"},{"1":"4.6","2":"3.4","3":"1.4","4":"0.3","5":"setosa"},{"1":"5.4","2":"3.7","3":"1.5","4":"0.2","5":"setosa"},{"1":"5.7","2":"4.4","3":"1.5","4":"0.4","5":"setosa"},{"1":"5.2","2":"3.4","3":"1.4","4":"0.2","5":"setosa"},{"1":"4.7","2":"3.2","3":"1.6","4":"0.2","5":"setosa"},{"1":"5.2","2":"4.1","3":"1.5","4":"0.1","5":"setosa"},{"1":"5.5","2":"3.5","3":"1.3","4":"0.2","5":"setosa"},{"1":"5.1","2":"3.4","3":"1.5","4":"0.2","5":"setosa"},{"1":"5.1","2":"3.8","3":"1.9","4":"0.4","5":"setosa"},{"1":"5.1","2":"3.8","3":"1.6","4":"0.2","5":"setosa"},{"1":"5.3","2":"3.7","3":"1.5","4":"0.2","5":"setosa"},{"1":"6.4","2":"3.2","3":"4.5","4":"1.5","5":"versicolor"},{"1":"5.5","2":"2.3","3":"4.0","4":"1.3","5":"versicolor"},{"1":"6.5","2":"2.8","3":"4.6","4":"1.5","5":"versicolor"},{"1":"5.7","2":"2.8","3":"4.5","4":"1.3","5":"versicolor"},{"1":"4.9","2":"2.4","3":"3.3","4":"1.0","5":"versicolor"},{"1":"6.2","2":"2.2","3":"4.5","4":"1.5","5":"versicolor"},{"1":"6.1","2":"2.8","3":"4.0","4":"1.3","5":"versicolor"},{"1":"6.8","2":"2.8","3":"4.8","4":"1.4","5":"versicolor"},{"1":"6.7","2":"3.0","3":"5.0","4":"1.7","5":"versicolor"},{"1":"5.6","2":"2.7","3":"4.2","4":"1.3","5":"versicolor"},{"1":"6.2","2":"2.9","3":"4.3","4":"1.3","5":"versicolor"},{"1":"4.9","2":"2.5","3":"4.5","4":"1.7","5":"virginica"},{"1":"6.9","2":"3.2","3":"5.7","4":"2.3","5":"virginica"},{"1":"5.6","2":"2.8","3":"4.9","4":"2.0","5":"virginica"},{"1":"6.4","2":"2.8","3":"5.6","4":"2.1","5":"virginica"},{"1":"6.3","2":"2.5","3":"5.0","4":"1.9","5":"virginica"},{"1":"6.5","2":"3.0","3":"5.2","4":"2.0","5":"virginica"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>なお、この論理値ベクトルは行数と同一である必要があり,異なる場合エラーを返します。エラーが出ない特別な場合として,ベクトル長が1(要するにTRUEまたはFALSEがひとつだけ)がありますが,実質意味はないでしょう:</p>
+<pre class="r"><code>filter(iris, TRUE)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Sepal.Length"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Sepal.Width"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Petal.Length"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Petal.Width"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Species"],"name":[5],"type":["fctr"],"align":["left"]}],"data":[{"1":"5.1","2":"3.5","3":"1.4","4":"0.2","5":"setosa"},{"1":"4.9","2":"3.0","3":"1.4","4":"0.2","5":"setosa"},{"1":"4.7","2":"3.2","3":"1.3","4":"0.2","5":"setosa"},{"1":"4.6","2":"3.1","3":"1.5","4":"0.2","5":"setosa"},{"1":"5.0","2":"3.6","3":"1.4","4":"0.2","5":"setosa"},{"1":"5.4","2":"3.9","3":"1.7","4":"0.4","5":"setosa"},{"1":"4.6","2":"3.4","3":"1.4","4":"0.3","5":"setosa"},{"1":"5.0","2":"3.4","3":"1.5","4":"0.2","5":"setosa"},{"1":"4.4","2":"2.9","3":"1.4","4":"0.2","5":"setosa"},{"1":"4.9","2":"3.1","3":"1.5","4":"0.1","5":"setosa"},{"1":"5.4","2":"3.7","3":"1.5","4":"0.2","5":"setosa"},{"1":"4.8","2":"3.4","3":"1.6","4":"0.2","5":"setosa"},{"1":"4.8","2":"3.0","3":"1.4","4":"0.1","5":"setosa"},{"1":"4.3","2":"3.0","3":"1.1","4":"0.1","5":"setosa"},{"1":"5.8","2":"4.0","3":"1.2","4":"0.2","5":"setosa"},{"1":"5.7","2":"4.4","3":"1.5","4":"0.4","5":"setosa"},{"1":"5.4","2":"3.9","3":"1.3","4":"0.4","5":"setosa"},{"1":"5.1","2":"3.5","3":"1.4","4":"0.3","5":"setosa"},{"1":"5.7","2":"3.8","3":"1.7","4":"0.3","5":"setosa"},{"1":"5.1","2":"3.8","3":"1.5","4":"0.3","5":"setosa"},{"1":"5.4","2":"3.4","3":"1.7","4":"0.2","5":"setosa"},{"1":"5.1","2":"3.7","3":"1.5","4":"0.4","5":"setosa"},{"1":"4.6","2":"3.6","3":"1.0","4":"0.2","5":"setosa"},{"1":"5.1","2":"3.3","3":"1.7","4":"0.5","5":"setosa"},{"1":"4.8","2":"3.4","3":"1.9","4":"0.2","5":"setosa"},{"1":"5.0","2":"3.0","3":"1.6","4":"0.2","5":"setosa"},{"1":"5.0","2":"3.4","3":"1.6","4":"0.4","5":"setosa"},{"1":"5.2","2":"3.5","3":"1.5","4":"0.2","5":"setosa"},{"1":"5.2","2":"3.4","3":"1.4","4":"0.2","5":"setosa"},{"1":"4.7","2":"3.2","3":"1.6","4":"0.2","5":"setosa"},{"1":"4.8","2":"3.1","3":"1.6","4":"0.2","5":"setosa"},{"1":"5.4","2":"3.4","3":"1.5","4":"0.4","5":"setosa"},{"1":"5.2","2":"4.1","3":"1.5","4":"0.1","5":"setosa"},{"1":"5.5","2":"4.2","3":"1.4","4":"0.2","5":"setosa"},{"1":"4.9","2":"3.1","3":"1.5","4":"0.2","5":"setosa"},{"1":"5.0","2":"3.2","3":"1.2","4":"0.2","5":"setosa"},{"1":"5.5","2":"3.5","3":"1.3","4":"0.2","5":"setosa"},{"1":"4.9","2":"3.6","3":"1.4","4":"0.1","5":"setosa"},{"1":"4.4","2":"3.0","3":"1.3","4":"0.2","5":"setosa"},{"1":"5.1","2":"3.4","3":"1.5","4":"0.2","5":"setosa"},{"1":"5.0","2":"3.5","3":"1.3","4":"0.3","5":"setosa"},{"1":"4.5","2":"2.3","3":"1.3","4":"0.3","5":"setosa"},{"1":"4.4","2":"3.2","3":"1.3","4":"0.2","5":"setosa"},{"1":"5.0","2":"3.5","3":"1.6","4":"0.6","5":"setosa"},{"1":"5.1","2":"3.8","3":"1.9","4":"0.4","5":"setosa"},{"1":"4.8","2":"3.0","3":"1.4","4":"0.3","5":"setosa"},{"1":"5.1","2":"3.8","3":"1.6","4":"0.2","5":"setosa"},{"1":"4.6","2":"3.2","3":"1.4","4":"0.2","5":"setosa"},{"1":"5.3","2":"3.7","3":"1.5","4":"0.2","5":"setosa"},{"1":"5.0","2":"3.3","3":"1.4","4":"0.2","5":"setosa"},{"1":"7.0","2":"3.2","3":"4.7","4":"1.4","5":"versicolor"},{"1":"6.4","2":"3.2","3":"4.5","4":"1.5","5":"versicolor"},{"1":"6.9","2":"3.1","3":"4.9","4":"1.5","5":"versicolor"},{"1":"5.5","2":"2.3","3":"4.0","4":"1.3","5":"versicolor"},{"1":"6.5","2":"2.8","3":"4.6","4":"1.5","5":"versicolor"},{"1":"5.7","2":"2.8","3":"4.5","4":"1.3","5":"versicolor"},{"1":"6.3","2":"3.3","3":"4.7","4":"1.6","5":"versicolor"},{"1":"4.9","2":"2.4","3":"3.3","4":"1.0","5":"versicolor"},{"1":"6.6","2":"2.9","3":"4.6","4":"1.3","5":"versicolor"},{"1":"5.2","2":"2.7","3":"3.9","4":"1.4","5":"versicolor"},{"1":"5.0","2":"2.0","3":"3.5","4":"1.0","5":"versicolor"},{"1":"5.9","2":"3.0","3":"4.2","4":"1.5","5":"versicolor"},{"1":"6.0","2":"2.2","3":"4.0","4":"1.0","5":"versicolor"},{"1":"6.1","2":"2.9","3":"4.7","4":"1.4","5":"versicolor"},{"1":"5.6","2":"2.9","3":"3.6","4":"1.3","5":"versicolor"},{"1":"6.7","2":"3.1","3":"4.4","4":"1.4","5":"versicolor"},{"1":"5.6","2":"3.0","3":"4.5","4":"1.5","5":"versicolor"},{"1":"5.8","2":"2.7","3":"4.1","4":"1.0","5":"versicolor"},{"1":"6.2","2":"2.2","3":"4.5","4":"1.5","5":"versicolor"},{"1":"5.6","2":"2.5","3":"3.9","4":"1.1","5":"versicolor"},{"1":"5.9","2":"3.2","3":"4.8","4":"1.8","5":"versicolor"},{"1":"6.1","2":"2.8","3":"4.0","4":"1.3","5":"versicolor"},{"1":"6.3","2":"2.5","3":"4.9","4":"1.5","5":"versicolor"},{"1":"6.1","2":"2.8","3":"4.7","4":"1.2","5":"versicolor"},{"1":"6.4","2":"2.9","3":"4.3","4":"1.3","5":"versicolor"},{"1":"6.6","2":"3.0","3":"4.4","4":"1.4","5":"versicolor"},{"1":"6.8","2":"2.8","3":"4.8","4":"1.4","5":"versicolor"},{"1":"6.7","2":"3.0","3":"5.0","4":"1.7","5":"versicolor"},{"1":"6.0","2":"2.9","3":"4.5","4":"1.5","5":"versicolor"},{"1":"5.7","2":"2.6","3":"3.5","4":"1.0","5":"versicolor"},{"1":"5.5","2":"2.4","3":"3.8","4":"1.1","5":"versicolor"},{"1":"5.5","2":"2.4","3":"3.7","4":"1.0","5":"versicolor"},{"1":"5.8","2":"2.7","3":"3.9","4":"1.2","5":"versicolor"},{"1":"6.0","2":"2.7","3":"5.1","4":"1.6","5":"versicolor"},{"1":"5.4","2":"3.0","3":"4.5","4":"1.5","5":"versicolor"},{"1":"6.0","2":"3.4","3":"4.5","4":"1.6","5":"versicolor"},{"1":"6.7","2":"3.1","3":"4.7","4":"1.5","5":"versicolor"},{"1":"6.3","2":"2.3","3":"4.4","4":"1.3","5":"versicolor"},{"1":"5.6","2":"3.0","3":"4.1","4":"1.3","5":"versicolor"},{"1":"5.5","2":"2.5","3":"4.0","4":"1.3","5":"versicolor"},{"1":"5.5","2":"2.6","3":"4.4","4":"1.2","5":"versicolor"},{"1":"6.1","2":"3.0","3":"4.6","4":"1.4","5":"versicolor"},{"1":"5.8","2":"2.6","3":"4.0","4":"1.2","5":"versicolor"},{"1":"5.0","2":"2.3","3":"3.3","4":"1.0","5":"versicolor"},{"1":"5.6","2":"2.7","3":"4.2","4":"1.3","5":"versicolor"},{"1":"5.7","2":"3.0","3":"4.2","4":"1.2","5":"versicolor"},{"1":"5.7","2":"2.9","3":"4.2","4":"1.3","5":"versicolor"},{"1":"6.2","2":"2.9","3":"4.3","4":"1.3","5":"versicolor"},{"1":"5.1","2":"2.5","3":"3.0","4":"1.1","5":"versicolor"},{"1":"5.7","2":"2.8","3":"4.1","4":"1.3","5":"versicolor"},{"1":"6.3","2":"3.3","3":"6.0","4":"2.5","5":"virginica"},{"1":"5.8","2":"2.7","3":"5.1","4":"1.9","5":"virginica"},{"1":"7.1","2":"3.0","3":"5.9","4":"2.1","5":"virginica"},{"1":"6.3","2":"2.9","3":"5.6","4":"1.8","5":"virginica"},{"1":"6.5","2":"3.0","3":"5.8","4":"2.2","5":"virginica"},{"1":"7.6","2":"3.0","3":"6.6","4":"2.1","5":"virginica"},{"1":"4.9","2":"2.5","3":"4.5","4":"1.7","5":"virginica"},{"1":"7.3","2":"2.9","3":"6.3","4":"1.8","5":"virginica"},{"1":"6.7","2":"2.5","3":"5.8","4":"1.8","5":"virginica"},{"1":"7.2","2":"3.6","3":"6.1","4":"2.5","5":"virginica"},{"1":"6.5","2":"3.2","3":"5.1","4":"2.0","5":"virginica"},{"1":"6.4","2":"2.7","3":"5.3","4":"1.9","5":"virginica"},{"1":"6.8","2":"3.0","3":"5.5","4":"2.1","5":"virginica"},{"1":"5.7","2":"2.5","3":"5.0","4":"2.0","5":"virginica"},{"1":"5.8","2":"2.8","3":"5.1","4":"2.4","5":"virginica"},{"1":"6.4","2":"3.2","3":"5.3","4":"2.3","5":"virginica"},{"1":"6.5","2":"3.0","3":"5.5","4":"1.8","5":"virginica"},{"1":"7.7","2":"3.8","3":"6.7","4":"2.2","5":"virginica"},{"1":"7.7","2":"2.6","3":"6.9","4":"2.3","5":"virginica"},{"1":"6.0","2":"2.2","3":"5.0","4":"1.5","5":"virginica"},{"1":"6.9","2":"3.2","3":"5.7","4":"2.3","5":"virginica"},{"1":"5.6","2":"2.8","3":"4.9","4":"2.0","5":"virginica"},{"1":"7.7","2":"2.8","3":"6.7","4":"2.0","5":"virginica"},{"1":"6.3","2":"2.7","3":"4.9","4":"1.8","5":"virginica"},{"1":"6.7","2":"3.3","3":"5.7","4":"2.1","5":"virginica"},{"1":"7.2","2":"3.2","3":"6.0","4":"1.8","5":"virginica"},{"1":"6.2","2":"2.8","3":"4.8","4":"1.8","5":"virginica"},{"1":"6.1","2":"3.0","3":"4.9","4":"1.8","5":"virginica"},{"1":"6.4","2":"2.8","3":"5.6","4":"2.1","5":"virginica"},{"1":"7.2","2":"3.0","3":"5.8","4":"1.6","5":"virginica"},{"1":"7.4","2":"2.8","3":"6.1","4":"1.9","5":"virginica"},{"1":"7.9","2":"3.8","3":"6.4","4":"2.0","5":"virginica"},{"1":"6.4","2":"2.8","3":"5.6","4":"2.2","5":"virginica"},{"1":"6.3","2":"2.8","3":"5.1","4":"1.5","5":"virginica"},{"1":"6.1","2":"2.6","3":"5.6","4":"1.4","5":"virginica"},{"1":"7.7","2":"3.0","3":"6.1","4":"2.3","5":"virginica"},{"1":"6.3","2":"3.4","3":"5.6","4":"2.4","5":"virginica"},{"1":"6.4","2":"3.1","3":"5.5","4":"1.8","5":"virginica"},{"1":"6.0","2":"3.0","3":"4.8","4":"1.8","5":"virginica"},{"1":"6.9","2":"3.1","3":"5.4","4":"2.1","5":"virginica"},{"1":"6.7","2":"3.1","3":"5.6","4":"2.4","5":"virginica"},{"1":"6.9","2":"3.1","3":"5.1","4":"2.3","5":"virginica"},{"1":"5.8","2":"2.7","3":"5.1","4":"1.9","5":"virginica"},{"1":"6.8","2":"3.2","3":"5.9","4":"2.3","5":"virginica"},{"1":"6.7","2":"3.3","3":"5.7","4":"2.5","5":"virginica"},{"1":"6.7","2":"3.0","3":"5.2","4":"2.3","5":"virginica"},{"1":"6.3","2":"2.5","3":"5.0","4":"1.9","5":"virginica"},{"1":"6.5","2":"3.0","3":"5.2","4":"2.0","5":"virginica"},{"1":"6.2","2":"3.4","3":"5.4","4":"2.3","5":"virginica"},{"1":"5.9","2":"3.0","3":"5.1","4":"1.8","5":"virginica"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>フィルターが全くかからない、あるいはレコードが空っぽになるといういときは、こういうケースに陥っていることがあるのでその時は確認してみてください。</p>
+<div id="エクササイズ1" class="section level3">
+<h3>エクササイズ1</h3>
+<p><code>iris</code>データセットには、以下の変数が含まれています:</p>
+<pre class="r"><code>names(iris)</code></pre>
+<pre><code>## [1] &quot;Sepal.Length&quot; &quot;Sepal.Width&quot;  &quot;Petal.Length&quot; &quot;Petal.Width&quot; 
+## [5] &quot;Species&quot;</code></pre>
+<p>では、<code>Petal.Length</code>が<code>1.5</code>未満のレコードを抽出してください。</p>
+<div id="section" class="section level4 showhide">
+<h4></h4>
+<p>これでOKです:</p>
+<pre class="r"><code>filter(iris, Petal.Length &lt; 1.5)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["Sepal.Length"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Sepal.Width"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Petal.Length"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["Petal.Width"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Species"],"name":[5],"type":["fctr"],"align":["left"]}],"data":[{"1":"5.1","2":"3.5","3":"1.4","4":"0.2","5":"setosa"},{"1":"4.9","2":"3.0","3":"1.4","4":"0.2","5":"setosa"},{"1":"4.7","2":"3.2","3":"1.3","4":"0.2","5":"setosa"},{"1":"5.0","2":"3.6","3":"1.4","4":"0.2","5":"setosa"},{"1":"4.6","2":"3.4","3":"1.4","4":"0.3","5":"setosa"},{"1":"4.4","2":"2.9","3":"1.4","4":"0.2","5":"setosa"},{"1":"4.8","2":"3.0","3":"1.4","4":"0.1","5":"setosa"},{"1":"4.3","2":"3.0","3":"1.1","4":"0.1","5":"setosa"},{"1":"5.8","2":"4.0","3":"1.2","4":"0.2","5":"setosa"},{"1":"5.4","2":"3.9","3":"1.3","4":"0.4","5":"setosa"},{"1":"5.1","2":"3.5","3":"1.4","4":"0.3","5":"setosa"},{"1":"4.6","2":"3.6","3":"1.0","4":"0.2","5":"setosa"},{"1":"5.2","2":"3.4","3":"1.4","4":"0.2","5":"setosa"},{"1":"5.5","2":"4.2","3":"1.4","4":"0.2","5":"setosa"},{"1":"5.0","2":"3.2","3":"1.2","4":"0.2","5":"setosa"},{"1":"5.5","2":"3.5","3":"1.3","4":"0.2","5":"setosa"},{"1":"4.9","2":"3.6","3":"1.4","4":"0.1","5":"setosa"},{"1":"4.4","2":"3.0","3":"1.3","4":"0.2","5":"setosa"},{"1":"5.0","2":"3.5","3":"1.3","4":"0.3","5":"setosa"},{"1":"4.5","2":"2.3","3":"1.3","4":"0.3","5":"setosa"},{"1":"4.4","2":"3.2","3":"1.3","4":"0.2","5":"setosa"},{"1":"4.8","2":"3.0","3":"1.4","4":"0.3","5":"setosa"},{"1":"4.6","2":"3.2","3":"1.4","4":"0.2","5":"setosa"},{"1":"5.0","2":"3.3","3":"1.4","4":"0.2","5":"setosa"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div>
+<div id="実例" class="section level2">
+<h2>実例</h2>
+<p>ここからは、以下のコードで作成したデータを用います:</p>
+<pre class="r"><code>df &lt;- data.frame(x0 = 1:10,
+                x1 = 11:20,
+                s = sample(c(&quot;kosaki&quot;, &quot;chitoge&quot;, &quot;marika&quot;), 10,
+                           replace = TRUE),
+                s2 = sample(c(&quot;kosaki&quot;, &quot;chitoge&quot;, NA), 10,
+                            replace = TRUE),
+                row.names = letters[1:10])
+df</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"kosaki","_rn_":"a"},{"1":"2","2":"12","3":"chitoge","4":"chitoge","_rn_":"b"},{"1":"3","2":"13","3":"chitoge","4":"chitoge","_rn_":"c"},{"1":"4","2":"14","3":"marika","4":"chitoge","_rn_":"d"},{"1":"5","2":"15","3":"marika","4":"chitoge","_rn_":"e"},{"1":"6","2":"16","3":"kosaki","4":"NA","_rn_":"f"},{"1":"7","2":"17","3":"marika","4":"chitoge","_rn_":"g"},{"1":"8","2":"18","3":"chitoge","4":"chitoge","_rn_":"h"},{"1":"9","2":"19","3":"kosaki","4":"chitoge","_rn_":"i"},{"1":"10","2":"20","3":"chitoge","4":"NA","_rn_":"j"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<div id="数値フィルタ" class="section level3">
+<h3>数値フィルタ</h3>
+<p>まずは単一条件についてです:</p>
+<pre class="r"><code># 「*に等しい」
+filter(df, x0 == 4)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"4","2":"14","3":"marika","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code># 「*と等しくない」
+filter(df, x0 != 4)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"kosaki"},{"1":"2","2":"12","3":"chitoge","4":"chitoge"},{"1":"3","2":"13","3":"chitoge","4":"chitoge"},{"1":"5","2":"15","3":"marika","4":"chitoge"},{"1":"6","2":"16","3":"kosaki","4":"NA"},{"1":"7","2":"17","3":"marika","4":"chitoge"},{"1":"8","2":"18","3":"chitoge","4":"chitoge"},{"1":"9","2":"19","3":"kosaki","4":"chitoge"},{"1":"10","2":"20","3":"chitoge","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code># 「*より小さい」
+filter(df, x0 &lt; 4)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"kosaki"},{"1":"2","2":"12","3":"chitoge","4":"chitoge"},{"1":"3","2":"13","3":"chitoge","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code># 「*以上」
+filter(df, x0 &gt;= 4)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"4","2":"14","3":"marika","4":"chitoge"},{"1":"5","2":"15","3":"marika","4":"chitoge"},{"1":"6","2":"16","3":"kosaki","4":"NA"},{"1":"7","2":"17","3":"marika","4":"chitoge"},{"1":"8","2":"18","3":"chitoge","4":"chitoge"},{"1":"9","2":"19","3":"kosaki","4":"chitoge"},{"1":"10","2":"20","3":"chitoge","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>このあたりは出力と比較すればすぐにわかると思います。</p>
+<p>次に複数条件についてです:</p>
+<pre class="r"><code># 「AかつB」(AND)
+filter(df, x0 &lt; 8 &amp; x1 &gt; 12)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"3","2":"13","3":"chitoge","4":"chitoge"},{"1":"4","2":"14","3":"marika","4":"chitoge"},{"1":"5","2":"15","3":"marika","4":"chitoge"},{"1":"6","2":"16","3":"kosaki","4":"NA"},{"1":"7","2":"17","3":"marika","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code># 「AまたはB」(OR)
+filter(df, x0 &gt; 8 | x1 &lt; 15)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"kosaki"},{"1":"2","2":"12","3":"chitoge","4":"chitoge"},{"1":"3","2":"13","3":"chitoge","4":"chitoge"},{"1":"4","2":"14","3":"marika","4":"chitoge"},{"1":"9","2":"19","3":"kosaki","4":"chitoge"},{"1":"10","2":"20","3":"chitoge","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code># 「AかつB」の余事象
+filter(df, xor(x0 &lt; 8, x1 &gt; 12))</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"kosaki"},{"1":"2","2":"12","3":"chitoge","4":"chitoge"},{"1":"8","2":"18","3":"chitoge","4":"chitoge"},{"1":"9","2":"19","3":"kosaki","4":"chitoge"},{"1":"10","2":"20","3":"chitoge","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code># 「AからB」
+filter(df, dplyr::between(x0, 3, 7))</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"3","2":"13","3":"chitoge","4":"chitoge"},{"1":"4","2":"14","3":"marika","4":"chitoge"},{"1":"5","2":"15","3":"marika","4":"chitoge"},{"1":"6","2":"16","3":"kosaki","4":"NA"},{"1":"7","2":"17","3":"marika","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>論理積(AND)は、上述のように<code>,</code>で繋いでいっても反応するのですが、明示的にしたほうがいいでしょう。<code>between</code>はdplyrに含まれる関数で、その名の通り区間を指定します。なお指定した範囲の値も含みます。</p>
+</div>
+<div id="文字列フィルタ" class="section level3">
+<h3>文字列フィルタ</h3>
+<p>まずは完全一致についてです:</p>
+<pre class="r"><code># 「*と一致する」
+filter(df, s == &quot;kosaki&quot;)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"kosaki"},{"1":"6","2":"16","3":"kosaki","4":"NA"},{"1":"9","2":"19","3":"kosaki","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code># 「*と一致しない」
+filter(df, s != &quot;chitoge&quot;)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"kosaki"},{"1":"4","2":"14","3":"marika","4":"chitoge"},{"1":"5","2":"15","3":"marika","4":"chitoge"},{"1":"6","2":"16","3":"kosaki","4":"NA"},{"1":"7","2":"17","3":"marika","4":"chitoge"},{"1":"9","2":"19","3":"kosaki","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>このあたりは数値フィルタと同一です。</p>
+<p>次に、「複数の要素のどれかと一致する」ものを抽出する場合です:</p>
+<pre class="r"><code>filter(df, s %in% c(&quot;kosaki&quot;, &quot;chitoge&quot;))</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"kosaki"},{"1":"2","2":"12","3":"chitoge","4":"chitoge"},{"1":"3","2":"13","3":"chitoge","4":"chitoge"},{"1":"6","2":"16","3":"kosaki","4":"NA"},{"1":"8","2":"18","3":"chitoge","4":"chitoge"},{"1":"9","2":"19","3":"kosaki","4":"chitoge"},{"1":"10","2":"20","3":"chitoge","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>この<code>%in%</code>はbaseにある演算子で、上記のように「Bの要素のどれか1つにマッチしたらTRUE、どれにもマッチしなければFALSE」を返してくれます。Rを使うなら絶対に覚えたほうがいいでしょう。</p>
+<p>なお、この余事象である「複数の要素のどれとも一致しない」ものを抽出する場合です:</p>
+<pre class="r"><code>filter(df, !s %in% c(&quot;marika&quot;, &quot;chitoge&quot;))</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"kosaki"},{"1":"6","2":"16","3":"kosaki","4":"NA"},{"1":"9","2":"19","3":"kosaki","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p>非常に残念ながら<code>%nin%</code>みたいな演算子はbaseには入っていません。そのためそのような演算子を自分で定義するか、それを含むパッケージを読み込む、あるいは上記のコードのように頭に<code>!</code>をつけて逆にするあたりが妥当なところでしょう。</p>
+<p>次に部分一致についてです。Rのbaseにはgrep系の関数もあるのですが、ここではtidyverseパッケージ群のひとつであるstringrパッケージから、<code>str_detect</code>関数を使います:</p>
+<pre class="r"><code>library(stringr)
+
+# &quot;k&quot;を含む文字列で抽出
+filter(df, str_detect(s, &quot;k&quot;))</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"kosaki"},{"1":"4","2":"14","3":"marika","4":"chitoge"},{"1":"5","2":"15","3":"marika","4":"chitoge"},{"1":"6","2":"16","3":"kosaki","4":"NA"},{"1":"7","2":"17","3":"marika","4":"chitoge"},{"1":"9","2":"19","3":"kosaki","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code># 先頭に&quot;k&quot;を含む文字列で抽出(正規表現によるパターン記述)
+filter(df, str_detect(s, &quot;^k&quot;))</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"kosaki"},{"1":"6","2":"16","3":"kosaki","4":"NA"},{"1":"9","2":"19","3":"kosaki","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p><code>stringr::str_detect(string, pattern)</code>はstringで指定した文字列ベクトルから正規表現でpatternと一致するものをTRUE,それ以外をFALSEで返してきます。<code>grepl</code>を使うよりも簡単でかつ高速に処理する(はず)なのでこちらをおすすめします。</p>
+</div>
+<div id="na処理" class="section level3">
+<h3>NA処理</h3>
+<p><code>is.na()</code>関数を利用すると簡単に除去/抽出できます:</p>
+<pre class="r"><code># s2にNAが含まれているレコードを抽出
+filter(df, is.na(s2))</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"6","2":"16","3":"kosaki","4":"NA"},{"1":"10","2":"20","3":"chitoge","4":"NA"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code># s2にNAが含まれていないレコードを抽出
+filter(df, !is.na(s2))</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"kosaki"},{"1":"2","2":"12","3":"chitoge","4":"chitoge"},{"1":"3","2":"13","3":"chitoge","4":"chitoge"},{"1":"4","2":"14","3":"marika","4":"chitoge"},{"1":"5","2":"15","3":"marika","4":"chitoge"},{"1":"7","2":"17","3":"marika","4":"chitoge"},{"1":"8","2":"18","3":"chitoge","4":"chitoge"},{"1":"9","2":"19","3":"kosaki","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<p><code>is.na</code>は「NAか否か」を判定してTRUEあるいはFALSEを返してきます。なのでこの場合s2にNAがあるレコードを抽出してきます。そのため,<code>!is.na(s2)</code>と否定することでs2がNAではないレコードを抽出してくるようになります。</p>
+</div>
+<div id="エクササイズ2" class="section level3">
+<h3>エクササイズ2</h3>
+<p>実例であげていたテクニックを使ってみましょう。</p>
+<ol style="list-style-type: decimal">
+<li>dfデータセットから、x0が3以降で、s2がNAでないレコードを抽出しましょう</li>
+<li>dfデータセットから、sが“kosaki”あるいは“chitoge”で、x1が15より前のレコードを抽出しましょう</li>
+</ol>
+<div id="section-1" class="section level4 showhide">
+<h4></h4>
+<p>これでOKです:</p>
+<pre class="r"><code># 1の実行例
+filter(df, x0 &gt;= 3 &amp; !is.na(s2))</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"3","2":"13","3":"chitoge","4":"chitoge"},{"1":"4","2":"14","3":"marika","4":"chitoge"},{"1":"5","2":"15","3":"marika","4":"chitoge"},{"1":"7","2":"17","3":"marika","4":"chitoge"},{"1":"8","2":"18","3":"chitoge","4":"chitoge"},{"1":"9","2":"19","3":"kosaki","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+<pre class="r"><code># 2の実行例
+filter(df, s %in% c(&quot;kosaki&quot;, &quot;chitoge&quot;) &amp; x1 &lt; 15)</code></pre>
+<div data-pagedtable="false">
+<script data-pagedtable-source type="application/json">
+{"columns":[{"label":["x0"],"name":[1],"type":["int"],"align":["right"]},{"label":["x1"],"name":[2],"type":["int"],"align":["right"]},{"label":["s"],"name":[3],"type":["fctr"],"align":["left"]},{"label":["s2"],"name":[4],"type":["fctr"],"align":["left"]}],"data":[{"1":"1","2":"11","3":"kosaki","4":"kosaki"},{"1":"2","2":"12","3":"chitoge","4":"chitoge"},{"1":"3","2":"13","3":"chitoge","4":"chitoge"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div>
+
+<footer>
+  <p>Copyright &copy; 2017 Kazutan.R. </p>
+</footer>
+<script>
+$(function(){
+  $(".showhide").hide();
+  $(".showhide").before("<button type='button' class='btn btn-primary showhideBtn'></button>")
+  $(".showhideBtn").text("Show");
+  $(".showhideBtn").click(function(){
+    var index = $(".showhideBtn").index(this);
+    if($(".showhide").eq(index).is(":visible")){
+      $(".showhide").eq(index).hide();
+      $(".showhideBtn").eq(index).text("Show");
+    }else{
+      $(".showhide").eq(index).show();
+      $(".showhideBtn").eq(index).text("Hide");
+    };
+  });
+});
+</script>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
